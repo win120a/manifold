@@ -16,24 +16,20 @@
 
 package manifold.preprocessor.expression;
 
-public class ParseError
-{
-  private final String _message;
-  private final int _position;
+public class ParseError {
+    private final String _message;
+    private final int _position;
 
-  ParseError( String message, int tokenStart )
-  {
-    _message = message;
-    _position = tokenStart;
-  }
+    ParseError(String message, int tokenStart) {
+        _message = message;
+        _position = tokenStart;
+    }
 
-  public String getMessage()
-  {
-    return _message;
-  }
+    public String getMessage() {
+        return _message;
+    }
 
-  public int getPosition()
-  {
-    return _position;
-  }
+    public int getPosition() {
+        return _position;
+    }
 }

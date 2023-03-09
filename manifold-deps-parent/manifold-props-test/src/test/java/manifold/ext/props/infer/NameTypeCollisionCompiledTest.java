@@ -19,12 +19,10 @@ package manifold.ext.props.infer;
 import manifold.ext.props.middle.NameTypeCollisionClass;
 import org.junit.Test;
 
-public class NameTypeCollisionCompiledTest
-{
-  @Test
-  public void testNameTypeCollision()
-  {
-    NameTypeCollisionClass c = new NameTypeCollisionClass();
-    // String[] errors = c.errors; // should not be a property due to collision of List<String> and String[]
-  }
+public class NameTypeCollisionCompiledTest {
+    @Test
+    public void testNameTypeCollision() {
+        NameTypeCollisionClass c = new NameTypeCollisionClass();
+        // String[] errors = c.errors; // should not be a property due to collision of List<String> and String[]
+    }
 }

@@ -22,25 +22,22 @@ import manifold.ext.props.middle.FromClassFile;
 import junit.framework.TestCase;
 import manifold.util.ReflectUtil;
 
-public class NonbackingTest extends TestCase
-{
-  public void testNonbacking()
-  {
-    // field should not exist
-    ReflectUtil.FieldRef nonbacking = ReflectUtil.field( FromClassFile.class, "nonbacking" );
-    assertNull( nonbacking );
+public class NonbackingTest extends TestCase {
+    public void testNonbacking() {
+        // field should not exist
+        ReflectUtil.FieldRef nonbacking = ReflectUtil.field(FromClassFile.class, "nonbacking");
+        assertNull(nonbacking);
 
-    // nonbacking field works
-    FromClassFile fromClassFile = new FromClassFile();
-    assertEquals( 8, fromClassFile.nonbacking );
-    fromClassFile.nonbacking = 9;
-    assertEquals( 9, fromClassFile.nonbacking );
-  }
+        // nonbacking field works
+        FromClassFile fromClassFile = new FromClassFile();
+        assertEquals(8, fromClassFile.nonbacking);
+        fromClassFile.nonbacking = 9;
+        assertEquals(9, fromClassFile.nonbacking);
+    }
 
-  public void testNonbackingWithPropOptions()
-  {
-    NonbackingWithPropOptions c = new NonbackingWithPropOptions();
-    c.nonbackingFinal = "hello";
-    assertEquals( "hi", c.nonbackingFinal );
-  }
+    public void testNonbackingWithPropOptions() {
+        NonbackingWithPropOptions c = new NonbackingWithPropOptions();
+        c.nonbackingFinal = "hello";
+        assertEquals("hi", c.nonbackingFinal);
+    }
 }

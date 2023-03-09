@@ -1,210 +1,212 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>systems.manifold</groupId>
-    <artifactId>manifold-parent</artifactId>
-    <version>2023.1.3-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>systems.manifold</groupId>
+        <artifactId>manifold-parent</artifactId>
+        <version>2023.1.3-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>manifold-all</artifactId>
+    <artifactId>manifold-all</artifactId>
 
-  <name>Manifold :: Über-jar</name>
+    <name>Manifold :: Über-jar</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-tuple</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-collections</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-darkj</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-delegation</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-highjump</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-ext</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-strings</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-exceptions</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-graphql</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-image</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-io</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-js</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-json</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-preprocessor</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-props</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-properties</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-yaml</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-templates</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-text</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-science</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-xml</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-csv</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-tuple</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-collections</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-darkj</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-delegation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-highjump</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-ext</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-strings</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-exceptions</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-graphql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-image</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-js</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-preprocessor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-props</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-properties</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-yaml</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-templates</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-text</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-science</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-xml</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-csv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-    <!-- since we inherit slf4j from one of our dependencies (we don't care about the logging it does) add slf4j-nop
-         to turn off logging so we can shade/rename org.slf4j.* packages (prevents JPMS collision) -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-nop</artifactId>
-      <version>1.7.26</version>
-    </dependency>
-  </dependencies>
+        <!-- since we inherit slf4j from one of our dependencies (we don't care about the logging it does) add slf4j-nop
+             to turn off logging so we can shade/rename org.slf4j.* packages (prevents JPMS collision) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.26</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>systems/manifold/Dummy.class</exclude>
-          </excludes>
-          <archive>
-            <manifestEntries>
-              <!--class files as source must be available for extension method classes-->
-              <Contains-Sources>java,class</Contains-Sources>
-              <!--JPMS module name-->
-              <Automatic-Module-Name>manifold.all</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            
-            <configuration>
-              
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <!-- manifold's license supersede's dependency license copied to root -->
-                    <exclude>LICENSE.*</exclude>
-                  </excludes>
-                </filter>
-              </filters>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>systems/manifold/Dummy.class</exclude>
+                    </excludes>
+                    <archive>
+                        <manifestEntries>
+                            <!--class files as source must be available for extension method classes-->
+                            <Contains-Sources>java,class</Contains-Sources>
+                            <!--JPMS module name-->
+                            <Automatic-Module-Name>manifold.all</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
 
-              <transformers>
-                <!-- merge all the services for a given interface file -->
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-              </transformers>
-              
-              <relocations>
-                <!-- prevent JPMS collisions, rename all org.* packages to manifold.shade.org.* -->
-                <relocation>
-                  <pattern>org</pattern>
-                  <shadedPattern>manifold.shade.org</shadedPattern>
-                  <excludes>
-                    <!-- rhino can't be shaded e.g., it dynamically loads "org.mozilla.javascript.Script" -->
-                    <exclude>org.mozilla.**</exclude>
-                  </excludes>
-                </relocation>
-<!-- todo: Can't shade graphql-java right now, breaks graphql manifold -->
-<!--                <relocation>-->
-<!--                  <pattern>graphql</pattern>-->
-<!--                  <shadedPattern>manifold.shade.graphql</shadedPattern>-->
-<!--                </relocation>-->
-              </relocations>
-            </configuration>
-            
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+                        <configuration>
+
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <!-- manifold's license supersede's dependency license copied to root -->
+                                        <exclude>LICENSE.*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <transformers>
+                                <!-- merge all the services for a given interface file -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+
+                            <relocations>
+                                <!-- prevent JPMS collisions, rename all org.* packages to manifold.shade.org.* -->
+                                <relocation>
+                                    <pattern>org</pattern>
+                                    <shadedPattern>manifold.shade.org</shadedPattern>
+                                    <excludes>
+                                        <!-- rhino can't be shaded e.g., it dynamically loads "org.mozilla.javascript.Script" -->
+                                        <exclude>org.mozilla.**</exclude>
+                                    </excludes>
+                                </relocation>
+                                <!-- todo: Can't shade graphql-java right now, breaks graphql manifold -->
+                                <!--                <relocation>-->
+                                <!--                  <pattern>graphql</pattern>-->
+                                <!--                  <shadedPattern>manifold.shade.graphql</shadedPattern>-->
+                                <!--                </relocation>-->
+                            </relocations>
+                        </configuration>
+
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -22,9 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.PARAMETER})
-@Retention( RetentionPolicy.RUNTIME )
-public @interface sampleAnno
-{
-  String name();
-  long flags();
+@Retention(RetentionPolicy.RUNTIME)
+public @interface sampleAnno {
+    String name();
+
+    long flags();
 }

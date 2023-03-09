@@ -15,23 +15,23 @@
     "MyObj": {
       "type": "object",
       "properties": {
-        "name":  {
+        "name": {
           "type": "string"
         }
       }
     }
   },
   "properties": {
-    "TheDateAndTime" : {
+    "TheDateAndTime": {
       "$ref": "#/definitions/MyDateTime"
     },
-    "TheDateAndTimeArray" : {
+    "TheDateAndTimeArray": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/MyDateTime"
       }
     },
-    "TheDateAndTimeArray2" : {
+    "TheDateAndTimeArray2": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/MyObj"

@@ -18,10 +18,8 @@ package manifold.science.api;
 
 import manifold.util.concurrent.Cache;
 
-public class UnitCache<U extends Unit> extends Cache<U, U>
-{
-  public UnitCache()
-  {
-    super( "Unit Cache", 1000, unit -> unit );
-  }
+public class UnitCache<U extends Unit> extends Cache<U, U> {
+    public UnitCache() {
+        super("Unit Cache", 1000, unit -> unit);
+    }
 }

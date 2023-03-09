@@ -17,23 +17,22 @@
 package manifold.internal.javac;
 
 /**
+ *
  */
-public interface IIssue
-{
-  enum Kind
-  {
-    Error, Warning, Info, Failure, Other
-  }
+public interface IIssue {
+    enum Kind {
+        Error, Warning, Info, Failure, Other
+    }
 
-  Kind getKind();
+    Kind getKind();
 
-  int getStartOffset();
+    int getStartOffset();
 
-  int getEndOffset();
+    int getEndOffset();
 
-  int getLine();
+    int getLine();
 
-  int getColumn();
+    int getColumn();
 
-  String getMessage();
+    String getMessage();
 }

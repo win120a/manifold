@@ -18,73 +18,66 @@ package manifold.graphql.type;
 
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import manifold.api.fs.IFile;
 import manifold.api.fs.IFileUtil;
 import manifold.internal.javac.IIssue;
 import manifold.internal.javac.IIssueContainer;
 
-public class GqlIssueContainer implements IIssueContainer
-{
-  private final IFile _file;
-  private final List<IIssue> _issues;
+public class GqlIssueContainer implements IIssueContainer {
+    private final IFile _file;
+    private final List<IIssue> _issues;
 
-  /**
-   *
-   */
-  @SuppressWarnings("WeakerAccess")
-  public GqlIssueContainer( List<GraphQLError> errors, IFile file )
-  {
-    _issues = new ArrayList<>();
-    _file = file;
+    /**
+     *
+     */
+    @SuppressWarnings("WeakerAccess")
+    public GqlIssueContainer(List<GraphQLError> errors, IFile file) {
+        _issues = new ArrayList<>();
+        _file = file;
 
-    addIssues( errors );
-  }
-
-  @Override
-  public List<IIssue> getIssues()
-  {
-    return _issues;
-  }
-
-  @Override
-  public List<IIssue> getWarnings()
-  {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public List<IIssue> getErrors()
-  {
-    return getIssues();
-  }
-
-  @SuppressWarnings("WeakerAccess")
-  public void addIssues( List<GraphQLError> errors )
-  {
-    for( GraphQLError e: errors )
-    {
-      Optional<SourceLocation> loc = e.getLocations().stream().findFirst();
-      int line = 0;
-      int column = 0;
-      int offset = 0;
-      if( loc.isPresent() )
-      {
-        SourceLocation sourceLocation = loc.get();
-        line = sourceLocation.getLine();
-        column = sourceLocation.getColumn();
-        offset = IFileUtil.findOffset( _file, line, column );
-      }
-      _issues.add( new GqlIssue( IIssue.Kind.Error, offset, line, column, e.getMessage() ) );
+        addIssues(errors);
     }
-  }
 
-  @Override
-  public boolean isEmpty()
-  {
-    return _issues == null;
-  }
+    @Override
+    public List<IIssue> getIssues() {
+        return _issues;
+    }
+
+    @Override
+    public List<IIssue> getWarnings() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<IIssue> getErrors() {
+        return getIssues();
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void addIssues(List<GraphQLError> errors) {
+        for (GraphQLError e : errors) {
+            Optional<SourceLocation> loc = e.getLocations().stream().findFirst();
+            int line = 0;
+            int column = 0;
+            int offset = 0;
+            if (loc.isPresent()) {
+                SourceLocation sourceLocation = loc.get();
+                line = sourceLocation.getLine();
+                column = sourceLocation.getColumn();
+                offset = IFileUtil.findOffset(_file, line, column);
+            }
+            _issues.add(new GqlIssue(IIssue.Kind.Error, offset, line, column, e.getMessage()));
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return _issues == null;
+    }
 }

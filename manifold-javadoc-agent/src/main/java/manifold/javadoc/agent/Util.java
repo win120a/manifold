@@ -22,45 +22,34 @@ import com.sun.source.util.Plugin;
 import javax.annotation.processing.ProcessingEnvironment;
 import java.util.ServiceLoader;
 
-public class Util
-{
-  public static void initJavacPlugin( Object context, ClassLoader cl )
-  {
-    // Load the JavacPlugin
-    bypassJava9Security( cl );
-    ServiceLoader<Plugin> sl = ServiceLoader.load( Plugin.class, cl );
-    for( Plugin plugin : sl )
-    {
-      if( plugin.getName().equals( "Manifold" ) )
-      {
-        try
-        {
-          // note, using reflection here for the case where we build manifold with java 11 when we have to compile ManXxx_11 classes
-          // otherwise, direct refs to com.sun.tools.javac.xxx classes fail to resolve cuz modules
-          Class<?> jpeClass = Class.forName( "com.sun.tools.javac.processing.JavacProcessingEnvironment" );
-          Class<?> ctxClass = Class.forName( "com.sun.tools.javac.util.Context" );
-          Object jpe = jpeClass.getMethod( "instance", ctxClass ).invoke( null, context );
-          plugin.init( JavacTask.instance( (ProcessingEnvironment)jpe ) );
-          break;
+public class Util {
+    public static void initJavacPlugin(Object context, ClassLoader cl) {
+        // Load the JavacPlugin
+        bypassJava9Security(cl);
+        ServiceLoader<Plugin> sl = ServiceLoader.load(Plugin.class, cl);
+        for (Plugin plugin : sl) {
+            if (plugin.getName().equals("Manifold")) {
+                try {
+                    // note, using reflection here for the case where we build manifold with java 11 when we have to compile ManXxx_11 classes
+                    // otherwise, direct refs to com.sun.tools.javac.xxx classes fail to resolve cuz modules
+                    Class<?> jpeClass = Class.forName("com.sun.tools.javac.processing.JavacProcessingEnvironment");
+                    Class<?> ctxClass = Class.forName("com.sun.tools.javac.util.Context");
+                    Object jpe = jpeClass.getMethod("instance", ctxClass).invoke(null, context);
+                    plugin.init(JavacTask.instance((ProcessingEnvironment) jpe));
+                    break;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
-        catch( Exception e )
-        {
-          throw new RuntimeException( e );
-        }
-      }
     }
-  }
 
-  private static void bypassJava9Security( ClassLoader cl )
-  {
-    try
-    {
-      Class<?> Neu = Class.forName( "manifold.util.NecessaryEvilUtil", true, cl );
-      Neu.getMethod( "bypassJava9Security" ).invoke( null );
+    private static void bypassJava9Security(ClassLoader cl) {
+        try {
+            Class<?> Neu = Class.forName("manifold.util.NecessaryEvilUtil", true, cl);
+            Neu.getMethod("bypassJava9Security").invoke(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 }

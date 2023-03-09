@@ -23,20 +23,18 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ShapesTest
-{
-  @Test
-  public void testShapes()
-  {
-    RightTriangle t = new RightTriangle( 3, 4 );
+public class ShapesTest {
+    @Test
+    public void testShapes() {
+        RightTriangle t = new RightTriangle(3, 4);
 
-    assertEquals( 3d, t.a, 0 );
-    assertEquals( 4d, t.b, 0 );
-    assertEquals( 5d, t.c, 0 );
-    assertEquals( 6d, t.area, 0 );
-    assertEquals( 5d, t.area(), 0 ); // tests conflicting field
-    assertEquals( 6d, t.getArea(), 0 );
-    t.color = "leopardskin";
-    assertEquals( "leopardskin", t.color );
-  }
+        assertEquals(3d, t.a, 0);
+        assertEquals(4d, t.b, 0);
+        assertEquals(5d, t.c, 0);
+        assertEquals(6d, t.area, 0);
+        assertEquals(5d, t.area(), 0); // tests conflicting field
+        assertEquals(6d, t.getArea(), 0);
+        t.color = "leopardskin";
+        assertEquals("leopardskin", t.color);
+    }
 }

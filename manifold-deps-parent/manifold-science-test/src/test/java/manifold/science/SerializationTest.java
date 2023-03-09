@@ -25,51 +25,44 @@ import java.io.*;
 import static manifold.science.util.UnitConstants.*;
 import static org.junit.Assert.assertEquals;
 
-public class SerializationTest
-{
-  @Test
-  public void testUnary() throws Exception
-  {
-    Length length = 56 m;
-    assertSerialization( length );
-  }
+public class SerializationTest {
+    @Test
+    public void testUnary() throws Exception {
+        Length length = 56 m;
+        assertSerialization(length);
+    }
 
-  @Test
-  public void testProduct() throws Exception
-  {
-    Area area = 4 ft * 6 m;
-    assertSerialization( area );
-  }
+    @Test
+    public void testProduct() throws Exception {
+        Area area = 4 ft * 6 m;
+        assertSerialization(area);
+    }
 
-  @Test
-  public void testQuotient() throws Exception
-  {
-    Velocity velocity = 195 mi/hr;
-    assertSerialization( velocity );
-  }
+    @Test
+    public void testQuotient() throws Exception {
+        Velocity velocity = 195 mi / hr;
+        assertSerialization(velocity);
+    }
 
-  @Test
-  public void testMixed() throws Exception
-  {
-    Force force = 56 kg m/s/s;
-    assertSerialization( force );
+    @Test
+    public void testMixed() throws Exception {
+        Force force = 56 kg m/s / s;
+        assertSerialization(force);
 
-    Energy energy = 100 N m;
-    assertSerialization( energy );
-  }
+        Energy energy = 100 N m;
+        assertSerialization(energy);
+    }
 
-  private void assertSerialization( AbstractMeasure<?,?> object ) throws Exception
-  {
-    assertEquals( teleclone( object ), object );
-  }
+    private void assertSerialization(AbstractMeasure<?, ?> object) throws Exception {
+        assertEquals(teleclone(object), object);
+    }
 
-  private Object teleclone( Serializable source ) throws Exception
-  {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-    ObjectOutputStream os = new ObjectOutputStream( bytes );
-    os.writeObject( source );
-    ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( bytes.toByteArray() ) );
-    return in.readObject();
-  }
+    private Object teleclone(Serializable source) throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(bytes);
+        os.writeObject(source);
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+        return in.readObject();
+    }
 }
 

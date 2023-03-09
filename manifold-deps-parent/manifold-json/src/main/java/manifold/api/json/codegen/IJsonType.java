@@ -18,39 +18,38 @@ package manifold.api.json.codegen;
 
 import java.util.Collections;
 import java.util.List;
+
 import manifold.api.json.codegen.schema.TypeAttributes;
 
 /**
+ *
  */
-public interface IJsonType
-{
-  String getName();
+public interface IJsonType {
+    String getName();
 
-  String getIdentifier();
+    String getIdentifier();
 
-  IJsonParentType getParent();
+    IJsonParentType getParent();
 
-  TypeAttributes getTypeAttributes();
-  IJsonType copyWithAttributes( TypeAttributes attributes );
+    TypeAttributes getTypeAttributes();
 
-  IJsonType merge( IJsonType type );
+    IJsonType copyWithAttributes(TypeAttributes attributes);
 
-  default List<IJsonType> getDefinitions()
-  {
-    return Collections.emptyList();
-  }
+    IJsonType merge(IJsonType type);
 
-  default void setDefinitions( List<IJsonType> definitions )
-  {
-  }
+    default List<IJsonType> getDefinitions() {
+        return Collections.emptyList();
+    }
 
-  /**
-   * JSon Schema types normally compare by identity, however for
-   * some use-cases we still need to compare them structurally e.g.,
-   * for merging types.
-   */
-  default boolean equalsStructurally( IJsonType type2 )
-  {
-    return equals( type2 );
-  }
+    default void setDefinitions(List<IJsonType> definitions) {
+    }
+
+    /**
+     * JSon Schema types normally compare by identity, however for
+     * some use-cases we still need to compare them structurally e.g.,
+     * for merging types.
+     */
+    default boolean equalsStructurally(IJsonType type2) {
+        return equals(type2);
+    }
 }

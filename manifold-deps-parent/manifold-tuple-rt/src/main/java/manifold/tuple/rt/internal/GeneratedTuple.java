@@ -33,109 +33,89 @@ import java.util.stream.Collectors;
  * The super type for tuple classes generated from tuple expressions.
  * It is not designed for general use.
  */
-@SuppressWarnings( "unused" )
-public abstract class GeneratedTuple implements Tuple, Serializable
-{
-  @Override
-  public List<?> orderedValues()
-  {
-    return orderedLabels().stream()
-      .map( f -> {
-        try
-        {
-          return ReflectUtil.field( this, f ).get();
-        }
-        catch( Exception e )
-        {
-          throw new RuntimeException( e );
-        }
-      } ).collect( Collectors.toList() );
-  }
-
-  public int hashCode()
-  {
-    return Arrays.hashCode( orderedValues().toArray() );
-  }
-
-  @Override
-  public boolean equals( Object o )
-  {
-    if( this == o )
-    {
-      return true;
+@SuppressWarnings("unused")
+public abstract class GeneratedTuple implements Tuple, Serializable {
+    @Override
+    public List<?> orderedValues() {
+        return orderedLabels().stream()
+                .map(f -> {
+                    try {
+                        return ReflectUtil.field(this, f).get();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
     }
-    if( !Tuple.class.isAssignableFrom( o.getClass() ) )
-    {
-      return false;
-    }
-    return orderedValues().equals( ((Tuple)o).orderedValues() ) &&
-      orderedLabels().equals( ((Tuple)o).orderedLabels() );
-  }
 
-  public String toString()
-  {
-    List<String> labels = orderedLabels();
-    List<?> values = orderedValues();
-    StringBuilder sb = new StringBuilder( "(" );
-    for( int i = 0; i < labels.size(); i++ )
-    {
-      if( i > 0 )
-      {
-        sb.append( ", " );
-      }
-      sb.append( labels.get( i ) ).append( ": " ).append( values.get( i ) );
-    }
-    sb.append( ')' );
-      return sb.toString();
-  }
-
-  @Override
-  public Iterator<TupleItem> iterator()
-  {
-    return
-      new Iterator<TupleItem>()
-      {
-        int _index = 0;
-        final List<String> _orderedLabels = orderedLabels();
-        final List<?> _orderedValues = orderedValues();
-
-        @Override
-        public boolean hasNext()
-        {
-          return _index < _orderedValues.size();
-        }
-
-        @Override
-        public TupleItem next()
-        {
-          return new TupleValueImpl(
-            _orderedLabels.get( _index ), _orderedValues.get( _index++ ) );
-        }
-      };
-  }
-
-  private static class TupleValueImpl implements TupleItem
-  {
-    final String _name;
-    final Object _value;
-
-    TupleValueImpl( String name, Object value )
-    {
-      _name = name;
-      _value = value;
+    public int hashCode() {
+        return Arrays.hashCode(orderedValues().toArray());
     }
 
     @Override
-    public String getName()
-    {
-      return _name;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!Tuple.class.isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return orderedValues().equals(((Tuple) o).orderedValues()) &&
+                orderedLabels().equals(((Tuple) o).orderedLabels());
+    }
+
+    public String toString() {
+        List<String> labels = orderedLabels();
+        List<?> values = orderedValues();
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < labels.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(labels.get(i)).append(": ").append(values.get(i));
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
     @Override
-    public Object getValue()
-    {
-      return _value;
+    public Iterator<TupleItem> iterator() {
+        return
+                new Iterator<TupleItem>() {
+                    int _index = 0;
+                    final List<String> _orderedLabels = orderedLabels();
+                    final List<?> _orderedValues = orderedValues();
+
+                    @Override
+                    public boolean hasNext() {
+                        return _index < _orderedValues.size();
+                    }
+
+                    @Override
+                    public TupleItem next() {
+                        return new TupleValueImpl(
+                                _orderedLabels.get(_index), _orderedValues.get(_index++));
+                    }
+                };
     }
-  }
+
+    private static class TupleValueImpl implements TupleItem {
+        final String _name;
+        final Object _value;
+
+        TupleValueImpl(String name, Object value) {
+            _name = name;
+            _value = value;
+        }
+
+        @Override
+        public String getName() {
+            return _name;
+        }
+
+        @Override
+        public Object getValue() {
+            return _value;
+        }
+    }
 
 }

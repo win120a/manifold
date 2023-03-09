@@ -18,22 +18,18 @@ package manifold.preprocessor.expression;
 
 import manifold.preprocessor.definitions.Definitions;
 
-public class EmptyExpression extends TerminalExpression
-{
-  public EmptyExpression( int tokenStart )
-  {
-    super( tokenStart, tokenStart );
-    error( "Expecting an expression", tokenStart );
-  }
+public class EmptyExpression extends TerminalExpression {
+    public EmptyExpression(int tokenStart) {
+        super(tokenStart, tokenStart);
+        error("Expecting an expression", tokenStart);
+    }
 
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return false;
-  }
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return false;
+    }
 
-  public String toString()
-  {
-    return "<empty>";
-  }
+    public String toString() {
+        return "<empty>";
+    }
 }

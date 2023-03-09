@@ -19,16 +19,16 @@ package manifold.ext.stuff;
 import manifold.ext.rt.api.Self;
 
 public abstract class AbstractBuilder {
-  String _name;
+    String _name;
 
-  public @Self AbstractBuilder withName(String name) {
-    _name = name;
-    return this;
-  }
+    public @Self AbstractBuilder withName(String name) {
+        _name = name;
+        return this;
+    }
 
-  protected String getName() {
-    return _name;
-  }
+    protected String getName() {
+        return _name;
+    }
 
-  public abstract Object build();
+    public abstract Object build();
 }

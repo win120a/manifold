@@ -33,35 +33,55 @@ import java.lang.annotation.RetentionPolicy;
  */
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
-public @interface SourcePosition
-{
-  String DEFAULT_KIND = "feature";
+public @interface SourcePosition {
+    String DEFAULT_KIND = "feature";
 
-  String URL = "url";
-  /** The location of the resource containing the feature "declaration" */
-  String url();
+    String URL = "url";
 
-  String OFFSET = "offset";
-  /** The offset of the feature declaration from the beginning of the file */
-  int offset() default -1;
+    /**
+     * The location of the resource containing the feature "declaration"
+     */
+    String url();
 
-  String LENGTH = "length";
-  /** The length of the feature declaration */
-  int length() default -1;
+    String OFFSET = "offset";
 
-  String TYPE = "type";
-  /** The qualified type of the feature */
-  String type() default "";
+    /**
+     * The offset of the feature declaration from the beginning of the file
+     */
+    int offset() default -1;
 
-  String FEATURE = "feature";
-  /** The name of the feature */
-  String feature();
+    String LENGTH = "length";
 
-  String KIND = "kind";
-  /** What kind of feature is this according to the resource's schema taxonomy? Optional. */
-  String kind() default DEFAULT_KIND;
+    /**
+     * The length of the feature declaration
+     */
+    int length() default -1;
 
-  String LINE = "line";
-  /** The line where the feature begins. Optional. */
-  int line() default -1;
+    String TYPE = "type";
+
+    /**
+     * The qualified type of the feature
+     */
+    String type() default "";
+
+    String FEATURE = "feature";
+
+    /**
+     * The name of the feature
+     */
+    String feature();
+
+    String KIND = "kind";
+
+    /**
+     * What kind of feature is this according to the resource's schema taxonomy? Optional.
+     */
+    String kind() default DEFAULT_KIND;
+
+    String LINE = "line";
+
+    /**
+     * The line where the feature begins. Optional.
+     */
+    int line() default -1;
 }

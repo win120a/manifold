@@ -18,27 +18,23 @@ package manifold.tuple;
 
 import manifold.ext.rt.api.auto;
 
-public class FooBar<T extends CharSequence>
-{
-  T t;
+public class FooBar<T extends CharSequence> {
+    T t;
 
-  public static void main( String[] args )
-  {
-    FooBar bar = new FooBar("a");
-    auto asf = bar.whatever();
-    System.out.println( asf.Nnn );
-  }
+    public static void main(String[] args) {
+        FooBar bar = new FooBar("a");
+        auto asf = bar.whatever();
+        System.out.println(asf.Nnn);
+    }
 
-  FooBar( T ch)
-  {
-    t = ch;
-  }
+    FooBar(T ch) {
+        t = ch;
+    }
 
-  auto whatever()
-  {
-    String name = "hi";
-    int age = 7;
-    auto b = (Nnn: name, Aaa: age);
-    return b;
-  }
+    auto whatever() {
+        String name = "hi";
+        int age = 7;
+        auto b = (Nnn:name, Aaa:age);
+        return b;
+    }
 }

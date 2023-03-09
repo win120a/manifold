@@ -18,6 +18,7 @@ package manifold.science;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import manifold.ext.rt.api.ComparableUsing;
 import manifold.science.util.Rational;
 import org.junit.Test;
@@ -29,85 +30,76 @@ import static manifold.science.measures.StorageCapacityUnit.Byte;
 import static manifold.science.util.CoercionConstants.r;
 import static org.junit.Assert.*;
 
-public class TestMe
-{
-  @Test
-  public void testMisc()
-  {
-    Fuzz<String> bar = new Fuzz<>("2");
-    Fuzz<String> baz = new Fuzz<>("3");
-    int s = (bar + baz) * bar;
-    assertEquals( 46, s );
-    assertEquals( false, bar > baz );
-    assertEquals( true, bar < baz );
+public class TestMe {
+    @Test
+    public void testMisc() {
+        Fuzz<String> bar = new Fuzz<>("2");
+        Fuzz<String> baz = new Fuzz<>("3");
+        int s = (bar + baz) * bar;
+        assertEquals(46, s);
+        assertEquals(false, bar > baz);
+        assertEquals(true, bar < baz);
 
-    List<Fuzz<String>> l = new ArrayList<>();
-    l.add( bar + baz );
+        List<Fuzz<String>> l = new ArrayList<>();
+        l.add(bar + baz);
 
-    Rational x = Rational.ONE;
-    Rational y = Rational.get( 8 );
-    Rational z = x * y;
-    assertEquals( y, z );
+        Rational x = Rational.ONE;
+        Rational y = Rational.get(8);
+        Rational z = x * y;
+        assertEquals(y, z);
 
-    assertTrue( 2 + 10 k / 2 * 3 + 6 * 2k + 1 == 2 + 10 k / 2 * 3 + 6 * 2k + 1 );
-    assertEquals( Rational.get( 27002 ), 1 + 10 k / 2 * 3 + 6 * 2k + 1 );
+        assertTrue(2 + 10k / 2 * 3 + 6 * 2k + 1 == 2 + 10k / 2 * 3 + 6 * 2k + 1);
+        assertEquals(Rational.get(27002), 1 + 10k / 2 * 3 + 6 * 2k + 1);
 
-    assertEquals( Rational.get( 123 ), 123r );
-  }
-
-  @Test
-  public void testInArgOfOverload()
-  {
-    // tests javac internals re binding expr in arg position of an overloaded method,
-    // deals with speculative multi-pass attribution for method scoring (note assertEquals() is an overloaded method)
-    assertEquals( Rational.get( 5 ).toString(), (5r).toString() );
-  }
-
-  @Test
-  public void testCanBeStatement()
-  {
-    10 k;
-  }
-
-  @Test
-  public void testStorage()
-  {
-    assertTrue(64Bit == 8Byte);
-    assertTrue(32Bit == 4Byte);
-    assertTrue(16Bit == 2Byte);
-    assertTrue(8Bit == 1Byte);
-    assertFalse(8Bit == 3Byte);
-  }
-
-  static class Fuzz<T extends Comparable<T>> implements ComparableUsing<Fuzz<T>>
-  {
-    T _s;
-    public Fuzz( T s )
-    {
-      _s = s;
+        assertEquals(Rational.get(123), 123r);
     }
 
-    public Fuzz<String> plus( Fuzz<T> op )
-    {
-      return new Fuzz<>( _s.toString() + op._s.toString() );
+    @Test
+    public void testInArgOfOverload() {
+        // tests javac internals re binding expr in arg position of an overloaded method,
+        // deals with speculative multi-pass attribution for method scoring (note assertEquals() is an overloaded method)
+        assertEquals(Rational.get(5).toString(), (5r).toString() );
     }
 
-    public Integer times( Fuzz<T> op )
-    {
-      return Integer.parseInt( _s.toString() ) * Integer.parseInt( op._s.toString() );
+    @Test
+    public void testCanBeStatement() {
+        10 k;
     }
 
-    public Fuzz<T> times( double op )
-    {
-      return new Fuzz<>( (T)String.valueOf( op ) );
+    @Test
+    public void testStorage() {
+        assertTrue(64Bit == 8Byte);
+        assertTrue(32Bit == 4Byte);
+        assertTrue(16Bit == 2Byte);
+        assertTrue(8Bit == 1Byte);
+        assertFalse(8Bit == 3Byte);
     }
 
-    private void foo(T t){}
+    static class Fuzz<T extends Comparable<T>> implements ComparableUsing<Fuzz<T>> {
+        T _s;
 
-    @Override
-    public int compareTo( Fuzz<T> o )
-    {
-      return _s.compareTo( o._s );
+        public Fuzz(T s) {
+            _s = s;
+        }
+
+        public Fuzz<String> plus(Fuzz<T> op) {
+            return new Fuzz<>(_s.toString() + op._s.toString());
+        }
+
+        public Integer times(Fuzz<T> op) {
+            return Integer.parseInt(_s.toString()) * Integer.parseInt(op._s.toString());
+        }
+
+        public Fuzz<T> times(double op) {
+            return new Fuzz<>((T) String.valueOf(op));
+        }
+
+        private void foo(T t) {
+        }
+
+        @Override
+        public int compareTo(Fuzz<T> o) {
+            return _s.compareTo(o._s);
+        }
     }
-  }
 }

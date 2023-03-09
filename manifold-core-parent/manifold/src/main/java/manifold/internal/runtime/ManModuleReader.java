@@ -47,89 +47,70 @@ import manifold.rt.api.util.StreamUtil;
 @SuppressWarnings({"unused", "unchecked"})
 public class ManModuleReader //implements ModuleReader
 {
-  private final Object /*ModuleReader*/_delegate;
-  private final Object /*URLClassPath*/ _ucp;
+    private final Object /*ModuleReader*/_delegate;
+    private final Object /*URLClassPath*/ _ucp;
 
-  public ManModuleReader( Object /*ModuleReader*/ delegate, Object /*URLClassPath*/ ucp )
-  {
-    _delegate = delegate;
-    _ucp = ucp;
-  }
+    public ManModuleReader(Object /*ModuleReader*/ delegate, Object /*URLClassPath*/ ucp) {
+        _delegate = delegate;
+        _ucp = ucp;
+    }
 
-  //@Override
-  public Optional<URI> find( String name ) throws IOException
-  {
-    Optional<URI> uri = (Optional<URI>)ReflectUtil.method( _delegate, "find", String.class ).invoke( name );
-    if( !uri.isPresent() )
-    {
-      URL resource = (URL)ReflectUtil.method( _ucp, "findResource", String.class, boolean.class ).invoke( name, false );
-      if( resource != null )
-      {
-        try
-        {
-          uri = Optional.of( resource.toURI() );
+    //@Override
+    public Optional<URI> find(String name) throws IOException {
+        Optional<URI> uri = (Optional<URI>) ReflectUtil.method(_delegate, "find", String.class).invoke(name);
+        if (!uri.isPresent()) {
+            URL resource = (URL) ReflectUtil.method(_ucp, "findResource", String.class, boolean.class).invoke(name, false);
+            if (resource != null) {
+                try {
+                    uri = Optional.of(resource.toURI());
+                } catch (URISyntaxException e) {
+                    throw new IOException(e);
+                }
+            }
         }
-        catch( URISyntaxException e )
-        {
-          throw new IOException( e );
+        return uri;
+    }
+
+    //@Override
+    public Optional<InputStream> open(String name) {
+        Optional<InputStream> input = (Optional<InputStream>) ReflectUtil.method(_delegate, "open", String.class).invoke(name);
+        if (!input.isPresent()) {
+            Object/*Resource*/ resource = ReflectUtil.method(_ucp, "getResource", String.class, boolean.class).invoke(name, false);
+            if (resource != null) {
+                input = Optional.of((InputStream) ReflectUtil.method(resource, "getInputStream").invoke());
+            }
         }
-      }
+        return input;
     }
-    return uri;
-  }
 
-  //@Override
-  public Optional<InputStream> open( String name )
-  {
-    Optional<InputStream> input = (Optional<InputStream>)ReflectUtil.method( _delegate, "open", String.class ).invoke( name );
-    if( !input.isPresent() )
-    {
-      Object/*Resource*/ resource = ReflectUtil.method( _ucp, "getResource", String.class, boolean.class ).invoke( name, false );
-      if( resource != null )
-      {
-        input = Optional.of( (InputStream)ReflectUtil.method( resource, "getInputStream" ).invoke() );
-      }
+    //@Override
+    public Optional<ByteBuffer> read(String name) throws IOException {
+        Optional<ByteBuffer> buffer = (Optional<ByteBuffer>) ReflectUtil.method(_delegate, "read", String.class).invoke(name);
+        if (!buffer.isPresent()) {
+            Object/*Resource*/ resource = ReflectUtil.method(_ucp, "getResource", String.class, boolean.class).invoke(name, false);
+            if (resource != null) {
+                ByteBuffer bytes = ByteBuffer.wrap(StreamUtil.getContent((InputStream) ReflectUtil.method(resource, "getInputStream").invoke()));
+                buffer = Optional.of(bytes);
+            }
+        }
+        return buffer;
     }
-    return input;
-  }
 
-  //@Override
-  public Optional<ByteBuffer> read( String name ) throws IOException
-  {
-    Optional<ByteBuffer> buffer = (Optional<ByteBuffer>)ReflectUtil.method( _delegate, "read", String.class ).invoke( name );
-    if( !buffer.isPresent() )
-    {
-      Object/*Resource*/ resource = ReflectUtil.method( _ucp, "getResource", String.class, boolean.class ).invoke( name, false );
-      if( resource != null )
-      {
-        ByteBuffer bytes = ByteBuffer.wrap( StreamUtil.getContent( (InputStream)ReflectUtil.method( resource, "getInputStream" ).invoke() ) );
-        buffer = Optional.of( bytes );
-      }
+    //@Override
+    public void release(ByteBuffer bb) {
+        try {
+            ReflectUtil.method(_delegate, "release", ByteBuffer.class).invoke(bb);
+        } catch (Exception ignore) {
+        }
     }
-    return buffer;
-  }
 
-  //@Override
-  public void release( ByteBuffer bb )
-  {
-    try
-    {
-      ReflectUtil.method( _delegate, "release", ByteBuffer.class ).invoke( bb );
+    //@Override
+    public Stream<String> list() {
+        return (Stream<String>) ReflectUtil.method(_delegate, "list").invoke();
     }
-    catch( Exception ignore )
-    {
+
+    //@Override
+    public void close() {
+        ReflectUtil.method(_delegate, "close").invoke();
     }
-  }
-
-  //@Override
-  public Stream<String> list()
-  {
-    return (Stream<String>)ReflectUtil.method( _delegate, "list" ).invoke();
-  }
-
-  //@Override
-  public void close()
-  {
-    ReflectUtil.method( _delegate, "close" ).invoke();
-  }
 }

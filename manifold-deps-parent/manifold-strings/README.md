@@ -2,13 +2,16 @@
 
 # Basics
 
-A **String template** lets you use the `$` character to embed a Java expression directly into a String.  You can use `$`
+A **String template** lets you use the `$` character to embed a Java expression directly into a String. You can use `$`
 to embed a simple variable:
+
 ```java
 int hour = 8;
 String time = "It is $hour o'clock";  // prints "It is 8 o'clock"
 ```
+
 Or you can embed an expression of any complexity in curly braces:
+
 ```java
 LocalTime localTime = LocalTime.now();
 String ltime = "It is ${localTime.getHour()}:${localTime.getMinute()}"; // prints "It is 8:39"
@@ -18,9 +21,10 @@ String ltime = "It is ${localTime.getHour()}:${localTime.getMinute()}"; // print
 
 ## `@DisableStringLiteralTemplates`
 
-If you need to turn the feature off in specific areas in your code, you can use the `@DisableStringLiteralTemplates` 
-annotation to control its use.  You can annotate a class, method, field, or local variable declaration to turn it on 
+If you need to turn the feature off in specific areas in your code, you can use the `@DisableStringLiteralTemplates`
+annotation to control its use. You can annotate a class, method, field, or local variable declaration to turn it on
 or off in that scope:
+
 ```java
 @DisableStringLiteralTemplates // turns off String templating inside this class
 public class MyClass
@@ -47,26 +51,30 @@ source. Importantly, because the service provider is used at compile-time the pr
 precompiled. Typically this means you define the class in a separate module and then make a dependency on that module.
 To use the provider you register it in the `META-INF/services` directory in your `resources` path. See the
 [string template tests](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-strings-test-excl)
-for an example of this. See the [Java SPI documentation](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html)
+for an example of this. See
+the [Java SPI documentation](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html)
 for more details regarding Java services.
- 
+
 ## Escaping '$'
 
 You can use the `$` literally and bypass string templates using standard Java character escape syntax:
+
 ```java
 String verbatim = "It is \$hour o'clock"; // prints "It is $hour o'clock"
 ```
+
 Or, if you prefer, you can use template syntax:
+
 ```java
 String verbatim = "It is ${'$'}hour o'clock"; // prints "It is $hour o'clock"
 ``` 
 
 ## Disabling simple `$foo` expressions
-           
+
 Finally, you can disable simple `$foo` syntax in favor is strictly using `${foo}` syntax with the javac
 `-Amanifold.strings.simple.disabled=true` command line option. As such, you can still use string templates with the
 `${foo}` syntax, while simple usages of `$` are excluded from processing.
-                                                        
+
 ```xml
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
@@ -77,6 +85,7 @@ Finally, you can disable simple `$foo` syntax in favor is strictly using `${foo}
     </compilerArgs>
 . . .
 ```
+
 ```java
 int hour = 5;
 out.println("It is $hour o'clock"); // prints "It is $hour o'clock"
@@ -85,14 +94,16 @@ out.println("It is ${hour} o'clock"); // prints "It is 5 o'clock"
 
 # Template Files
 
-Template **_files_** are much more powerful and are documented in project [ManTL](http://manifold.systems/manifold-templates.html).
+Template **_files_** are much more powerful and are documented in
+project [ManTL](http://manifold.systems/manifold-templates.html).
 
 > Clone the [Manifold sample Web App project](https://github.com/manifold-systems/manifold-sample-web-app) to quickly
-begin experimenting with ManTL templates using the Manifold IntelliJ plugin.
+> begin experimenting with ManTL templates using the Manifold IntelliJ plugin.
 
-# IDE Support 
+# IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -122,7 +133,7 @@ etc.
 
 ## Building this project
 
-The `manifold-strings` project is defined with Maven.  To build it install Maven and run the following command.
+The `manifold-strings` project is defined with Maven. To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -135,15 +146,16 @@ versions 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
->Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest. 
+version (8 - 19), the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -181,11 +193,15 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyProject'
 ```
+
 If you are using `module-info` files, you must declare a *static* dependency on `manifold`.
+
 ```java
 module MyProject {
     requires static manifold;
@@ -250,7 +266,9 @@ module MyProject {
     </build>
 </project>
 ```
+
 If you are using `module-info` files, you must declare a *static* dependency on `manifold`.
+
 ```java
 module my.strings.app {
     requires static manifold;
@@ -259,7 +277,7 @@ module my.strings.app {
 
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 # Versioning
 

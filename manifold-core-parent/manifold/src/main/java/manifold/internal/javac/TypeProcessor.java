@@ -37,118 +37,99 @@ import static manifold.api.type.ICompilerComponent.InitOrder.After;
 import static manifold.api.type.ICompilerComponent.InitOrder.Before;
 
 /**
+ *
  */
-public class TypeProcessor extends CompiledTypeProcessor
-{
-  private final Set<Object> _drivers;
-  private LinkedHashSet<ICompilerComponent> _compilerComponents;
+public class TypeProcessor extends CompiledTypeProcessor {
+    private final Set<Object> _drivers;
+    private LinkedHashSet<ICompilerComponent> _compilerComponents;
 
-  TypeProcessor( IManifoldHost host, BasicJavacTask javacTask )
-  {
-    super( host, javacTask );
-    _drivers = new ConcurrentHashSet<>();
-    loadCompilerComponents( javacTask );
-  }
-
-  private void loadCompilerComponents( BasicJavacTask javacTask )
-  {
-    _compilerComponents = new LinkedHashSet<>();
-    ServiceUtil.loadRegisteredServices( _compilerComponents, ICompilerComponent.class, getClass().getClassLoader() );
-    _compilerComponents = new LinkedHashSet<>( order( new ArrayList<>( _compilerComponents ) ) );
-    _compilerComponents.forEach( cc -> cc.init( javacTask, this ) );
-  }
-
-  /**
-   * Allow the components to control the order of their init() call with respect to other components.
-   */
-  private List<ICompilerComponent> order( List<ICompilerComponent> compilerComponents )
-  {
-    if( compilerComponents.size() <= 0 )
-    {
-      return compilerComponents;
+    TypeProcessor(IManifoldHost host, BasicJavacTask javacTask) {
+        super(host, javacTask);
+        _drivers = new ConcurrentHashSet<>();
+        loadCompilerComponents(javacTask);
     }
 
-    List<ICompilerComponent> copy = new ArrayList<>( compilerComponents );
-    for( int i = 0; i < copy.size(); i++ )
-    {
-      ICompilerComponent c = copy.get( i );
-      int oldIndex = compilerComponents.indexOf( c );
-      compilerComponents.remove( oldIndex );
-      int newIndex = -1;
-      for( int j = compilerComponents.size() - 1; j >= 0; j-- )
-      {
-        ICompilerComponent cc = compilerComponents.get( j );
-        InitOrder initOrder = c.initOrder( cc );
-        if( initOrder == Before )
-        {
-          newIndex = j;
-        }
-      }
-      for( int j = 0; j < compilerComponents.size(); j++ )
-      {
-        ICompilerComponent cc = compilerComponents.get( j );
-        InitOrder initOrder = c.initOrder( cc );
-        if( initOrder == After )
-        {
-          newIndex = j + 1;
-        }
-      }
-      compilerComponents.add( newIndex >= 0 ? newIndex : oldIndex, c );
-    }
-    return compilerComponents;
-  }
-
-  public Collection<ICompilerComponent> getCompilerComponents()
-  {
-    return _compilerComponents;
-  }
-
-  @Override
-  public void process( TypeElement element, IssueReporter<JavaFileObject> issueReporter )
-  {
-    if( IDynamicJdk.isInitializing() )
-    {
-      // avoid re-entry of dynamic jdk construction
-      return;
+    private void loadCompilerComponents(BasicJavacTask javacTask) {
+        _compilerComponents = new LinkedHashSet<>();
+        ServiceUtil.loadRegisteredServices(_compilerComponents, ICompilerComponent.class, getClass().getClassLoader());
+        _compilerComponents = new LinkedHashSet<>(order(new ArrayList<>(_compilerComponents)));
+        _compilerComponents.forEach(cc -> cc.init(javacTask, this));
     }
 
-    for( ITypeManifold sp: getHost().getSingleModule().getTypeManifolds() )
-    {
-      if( sp instanceof ITypeProcessor )
-      {
-        //JavacProcessingEnvironment.instance( getContext() ).getMessager().printMessage( Diagnostic.Kind.NOTE, "Processing: " + element.getQualifiedName() );
+    /**
+     * Allow the components to control the order of their init() call with respect to other components.
+     */
+    private List<ICompilerComponent> order(List<ICompilerComponent> compilerComponents) {
+        if (compilerComponents.size() <= 0) {
+            return compilerComponents;
+        }
 
-        try  
-        {
-          ((ITypeProcessor)sp).process( element, this, issueReporter );
+        List<ICompilerComponent> copy = new ArrayList<>(compilerComponents);
+        for (int i = 0; i < copy.size(); i++) {
+            ICompilerComponent c = copy.get(i);
+            int oldIndex = compilerComponents.indexOf(c);
+            compilerComponents.remove(oldIndex);
+            int newIndex = -1;
+            for (int j = compilerComponents.size() - 1; j >= 0; j--) {
+                ICompilerComponent cc = compilerComponents.get(j);
+                InitOrder initOrder = c.initOrder(cc);
+                if (initOrder == Before) {
+                    newIndex = j;
+                }
+            }
+            for (int j = 0; j < compilerComponents.size(); j++) {
+                ICompilerComponent cc = compilerComponents.get(j);
+                InitOrder initOrder = c.initOrder(cc);
+                if (initOrder == After) {
+                    newIndex = j + 1;
+                }
+            }
+            compilerComponents.add(newIndex >= 0 ? newIndex : oldIndex, c);
         }
-        catch( Throwable e )
-        {
-          StringWriter stackTrace = new StringWriter();
-          e.printStackTrace( new PrintWriter( stackTrace ) );
-          issueReporter.reportError( "Fatal error processing with Manifold type processor: " + sp.getClass().getName() +
-                                     "\non type: " + element.getQualifiedName() +
-                                     "\nPlease report the error with the accompanying stack trace.\n" + stackTrace );
-          throw e;
-        }
-      }
+        return compilerComponents;
     }
-  }
 
-  public void addDrivers( Set<Object> drivers )
-  {
-    _drivers.addAll( drivers );
-  }
-  public Set<Object> getDrivers()
-  {
-    return _drivers;
-  }
+    public Collection<ICompilerComponent> getCompilerComponents() {
+        return _compilerComponents;
+    }
 
-  // adds listener *before* TypeProcessor so that ExtensionTransformer processes whatever changes are made from listener
-  public void addTaskListener( TaskListener listener )
-  {
-    getJavacTask().removeTaskListener( this );
-    getJavacTask().addTaskListener( listener );
-    getJavacTask().addTaskListener( this );
-  }
+    @Override
+    public void process(TypeElement element, IssueReporter<JavaFileObject> issueReporter) {
+        if (IDynamicJdk.isInitializing()) {
+            // avoid re-entry of dynamic jdk construction
+            return;
+        }
+
+        for (ITypeManifold sp : getHost().getSingleModule().getTypeManifolds()) {
+            if (sp instanceof ITypeProcessor) {
+                //JavacProcessingEnvironment.instance( getContext() ).getMessager().printMessage( Diagnostic.Kind.NOTE, "Processing: " + element.getQualifiedName() );
+
+                try {
+                    ((ITypeProcessor) sp).process(element, this, issueReporter);
+                } catch (Throwable e) {
+                    StringWriter stackTrace = new StringWriter();
+                    e.printStackTrace(new PrintWriter(stackTrace));
+                    issueReporter.reportError("Fatal error processing with Manifold type processor: " + sp.getClass().getName() +
+                            "\non type: " + element.getQualifiedName() +
+                            "\nPlease report the error with the accompanying stack trace.\n" + stackTrace);
+                    throw e;
+                }
+            }
+        }
+    }
+
+    public void addDrivers(Set<Object> drivers) {
+        _drivers.addAll(drivers);
+    }
+
+    public Set<Object> getDrivers() {
+        return _drivers;
+    }
+
+    // adds listener *before* TypeProcessor so that ExtensionTransformer processes whatever changes are made from listener
+    public void addTaskListener(TaskListener listener) {
+        getJavacTask().removeTaskListener(this);
+        getJavacTask().addTaskListener(listener);
+        getJavacTask().addTaskListener(this);
+    }
 }

@@ -1,10 +1,10 @@
 # Extension Class Producer Sample
 
-The manifold-ext-producer-sample module demonstrates how to implement a 
-[type manifold](http://manifold.systems/docs.html#what-is-a-type-manifold) 
+The manifold-ext-producer-sample module demonstrates how to implement a
+[type manifold](http://manifold.systems/docs.html#what-is-a-type-manifold)
 to dynamically add [Extension Classes](http://manifold.systems/docs.html#extension-classes) from resource files.
 
-This example creates the `ExtensionProducerSampleTypeManifold` class and 
+This example creates the `ExtensionProducerSampleTypeManifold` class and
 uses the contrived `.favs` resource files with the following simple format:
 
 ```ebnf
@@ -16,6 +16,7 @@ property-value = any text
 ```  
 
 For example, file `MyFavorites.favs`:
+
 ```text
 java.lang.Integer|Color|Red
 java.lang.Integer|Food|Chicago-style pizza
@@ -24,8 +25,8 @@ abc.MyClass|Color|Blue
 
 There can be any number of `.favs` resource files in your project, each
 having any number of entries.  `ExtensionProducerSampleTypeManifold`
-reads all the `.favs` files, determines the full set of types and properties 
-per type, and produces Extension classes for each type.  If `MyFavorites.favs` 
+reads all the `.favs` files, determines the full set of types and properties
+per type, and produces Extension classes for each type. If `MyFavorites.favs`
 were the only `.favs` file, `ExtensionProducerSampleTypeManifold` would create
 two Extension classes:
 
@@ -44,7 +45,9 @@ public class ManIntegerExt {
   }
 } 
 ``` 
-and 
+
+and
+
 ```java
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
@@ -58,5 +61,5 @@ public class ManMyClassExt {
 ```  
 
 In turn the [Extension type manifold](http://manifold.systems/docs.html#the-extension-manifold)
-consumes these extension classes and augments `Integer` and `MyClass` with `favorite` methods 
+consumes these extension classes and augments `Integer` and `MyClass` with `favorite` methods
 accordingly.

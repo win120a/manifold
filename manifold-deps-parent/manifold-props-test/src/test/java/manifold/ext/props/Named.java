@@ -19,12 +19,12 @@ package manifold.ext.props;
 import manifold.ext.props.rt.api.override;
 import manifold.ext.props.rt.api.var;
 
-public class Named extends NamedBase implements INamed
-{
-  @override @var String name;
+public class Named extends NamedBase implements INamed {
+    @override
+    @var
+    String name;
 
-  public Named( String name )
-  {
-    this.name = name;
-  }
+    public Named(String name) {
+        this.name = name;
+    }
 }

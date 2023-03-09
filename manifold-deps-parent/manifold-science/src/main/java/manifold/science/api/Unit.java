@@ -21,60 +21,54 @@ import manifold.science.util.Rational;
 /**
  * Unit provides a base abstraction for postfix unit types such as length, time, mass, and velocity.
  * <p/>
+ *
  * @param <D> The {@link Dimension} type expressed using this unit type
  * @param <U> This type (recursive to enforce type-safety).
  */
-public interface Unit<D extends Dimension<D>, U extends Unit<D, U>> extends Dimension<U>
-{
-  /**
-   * @return The name of this unit, such as "Meter" or "Pound".
-   */
-  String getName();
+public interface Unit<D extends Dimension<D>, U extends Unit<D, U>> extends Dimension<U> {
+    /**
+     * @return The name of this unit, such as "Meter" or "Pound".
+     */
+    String getName();
 
-  /**
-   * @return The symbol for this unit. For example, SI units define "Meter" to have symbol "m".
-   */
-  String getSymbol();
+    /**
+     * @return The symbol for this unit. For example, SI units define "Meter" to have symbol "m".
+     */
+    String getSymbol();
 
-  /**
-   * @param theseUnits A magnitude of these units to convert to base units.
-   * @return The {@code theseUnits} converted to the base units of this unit type.
-   */
-  Rational toBaseUnits( Rational theseUnits );
+    /**
+     * @param theseUnits A magnitude of these units to convert to base units.
+     * @return The {@code theseUnits} converted to the base units of this unit type.
+     */
+    Rational toBaseUnits(Rational theseUnits);
 
-  Rational from( D dim );
+    Rational from(D dim);
 
-  D makeDimension( Number amount );
+    D makeDimension(Number amount);
 
-  @Override
-  default U copy( Rational value )
-  {
-    throw new IllegalStateException();
-  }
+    @Override
+    default U copy(Rational value) {
+        throw new IllegalStateException();
+    }
 
-  default String getFullName()
-  {
-    return getName();
-  }
+    default String getFullName() {
+        return getName();
+    }
 
-  default String getFullSymbol()
-  {
-    return getSymbol();
-  }
+    default String getFullSymbol() {
+        return getSymbol();
+    }
 
-  default D postfixBind( Number amount )
-  {
-    return makeDimension( amount );
-  }
+    default D postfixBind(Number amount) {
+        return makeDimension(amount);
+    }
 
-  @Override
-  default U fromNumber( Rational n )
-  {
-    return null;
-  }
+    @Override
+    default U fromNumber(Rational n) {
+        return null;
+    }
 
-  default int compareTo( U o )
-  {
-    return toNumber().compareTo( o.toNumber() );
-  }
+    default int compareTo(U o) {
+        return toNumber().compareTo(o.toNumber());
+    }
 }

@@ -17,56 +17,52 @@
 package manifold.api.json.codegen.schema;
 
 /**
+ *
  */
-public enum Type
-{
-  Object( "object" ),
-  Array( "array" ),
-  String( "string" ),
-  Number( "number" ),
-  Integer( "integer" ),
-  Boolean( "boolean" ),
-  Dynamic( "dynamic" ),
-  Null( "null" ),
-  Invalid( "invalid" );
+public enum Type {
+    Object("object"),
+    Array("array"),
+    String("string"),
+    Number("number"),
+    Integer("integer"),
+    Boolean("boolean"),
+    Dynamic("dynamic"),
+    Null("null"),
+    Invalid("invalid");
 
-  private final String _schemaName;
+    private final String _schemaName;
 
-  Type( String name )
-  {
-    _schemaName = name;
-  }
-
-  public String getName()
-  {
-    return _schemaName;
-  }
-
-  public static Type fromName( String schemaName )
-  {
-    switch( schemaName )
-    {
-      case "object":
-      case "Object":
-        return Object;
-      case "array":
-      case "Array":
-        return Array;
-      case "string":
-      case "String":
-        return String;
-      case "double":
-      case "number":
-        return Number;
-      case "integer":
-        return Integer;
-      case "boolean":
-        return Boolean;
-      case "dynmaic":
-        return Dynamic;
-      case "null":
-        return Null;
+    Type(String name) {
+        _schemaName = name;
     }
-    return Invalid;
-  }
+
+    public String getName() {
+        return _schemaName;
+    }
+
+    public static Type fromName(String schemaName) {
+        switch (schemaName) {
+            case "object":
+            case "Object":
+                return Object;
+            case "array":
+            case "Array":
+                return Array;
+            case "string":
+            case "String":
+                return String;
+            case "double":
+            case "number":
+                return Number;
+            case "integer":
+                return Integer;
+            case "boolean":
+                return Boolean;
+            case "dynmaic":
+                return Dynamic;
+            case "null":
+                return Null;
+        }
+        return Invalid;
+    }
 }

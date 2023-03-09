@@ -18,36 +18,33 @@ package manifold.js.rt.parser.tree;
 
 import manifold.js.rt.parser.Token;
 
-public class ArrowExpressionNode extends Node
-{
-  private String _params = "";
+public class ArrowExpressionNode extends Node {
+    private String _params = "";
 
-  public ArrowExpressionNode()
-  {
-    super(null);
-  }
-
-  public void extractParams(FillerNode fillerNode) {
-    Token backToke = fillerNode.removeLastNonWhitespaceToken();
-    //If prev token is not ')', then there is only one parameter
-    if (!backToke.getValue().equals(")")) {
-      _params = backToke.getValue();
-      return;
+    public ArrowExpressionNode() {
+        super(null);
     }
-    //Otherwise, backtrack through list until opening parens
-    backToke = fillerNode.removeLastToken();
-    while (!(backToke.getValue().equals("("))) {
-      _params = backToke.getValue() + _params;
-      backToke = fillerNode.removeLastToken();
+
+    public void extractParams(FillerNode fillerNode) {
+        Token backToke = fillerNode.removeLastNonWhitespaceToken();
+        //If prev token is not ')', then there is only one parameter
+        if (!backToke.getValue().equals(")")) {
+            _params = backToke.getValue();
+            return;
+        }
+        //Otherwise, backtrack through list until opening parens
+        backToke = fillerNode.removeLastToken();
+        while (!(backToke.getValue().equals("("))) {
+            _params = backToke.getValue() + _params;
+            backToke = fillerNode.removeLastToken();
+        }
     }
-  }
 
-  @Override
-  public String genCode()
-  {
-    //## todo: this was ok with nashorn, but maybe not with rhino...
+    @Override
+    public String genCode() {
+        //## todo: this was ok with nashorn, but maybe not with rhino...
 
-    /*For expressions, use closure extension function (ex. function square(x) x*x;)*/
-    return "function ("  + _params + ")" + super.genCode();
-  }
+        /*For expressions, use closure extension function (ex. function square(x) x*x;)*/
+        return "function (" + _params + ")" + super.genCode();
+    }
 }

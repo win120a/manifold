@@ -18,55 +18,48 @@ package manifold.internal.javac;
 
 import com.sun.source.tree.Tree;
 import com.sun.source.util.TreeScanner;
+
 import java.util.Map;
+
 import manifold.rt.api.util.Stack;
 
-public class ParentTreePathScanner extends TreeScanner<Tree, Void>
-{
-  private final Map<Tree, Tree> _parents;
-  private Stack<Tree> _parent;
+public class ParentTreePathScanner extends TreeScanner<Tree, Void> {
+    private final Map<Tree, Tree> _parents;
+    private Stack<Tree> _parent;
 
-  ParentTreePathScanner( Map<Tree, Tree> parents )
-  {
-    _parents = parents;
-    _parent = new Stack<>();
-    _parent.push( null );
-  }
-
-  /**
-   * build a map of child tree to parent tree
-   */
-  public Tree scan( Tree path, Void p )
-  {
-    if( path == null )
-    {
-      return null;
+    ParentTreePathScanner(Map<Tree, Tree> parents) {
+        _parents = parents;
+        _parent = new Stack<>();
+        _parent.push(null);
     }
 
-    _parents.put( path, _parent.peek() );
-    _parent.push( path );
-    try
-    {
-      return super.scan( path, null );
-    }
-    finally
-    {
-      _parent.pop();
-    }
-  }
+    /**
+     * build a map of child tree to parent tree
+     */
+    public Tree scan(Tree path, Void p) {
+        if (path == null) {
+            return null;
+        }
 
-  @Override
-  public Tree visitOther( Tree node, Void p )
-  {
-    if( node instanceof ILetExpr )
-    {
-      // handle the LetExpr
-
-      ILetExpr letExpr = (ILetExpr)node;
-      Tree r = scan( letExpr.getDefs(), p );
-      return reduce( scan( letExpr.getExpr(), p ), r );
+        _parents.put(path, _parent.peek());
+        _parent.push(path);
+        try {
+            return super.scan(path, null);
+        } finally {
+            _parent.pop();
+        }
     }
-    return super.visitOther( node, p );
-  }
+
+    @Override
+    public Tree visitOther(Tree node, Void p) {
+        if (node instanceof ILetExpr) {
+            // handle the LetExpr
+
+            ILetExpr letExpr = (ILetExpr) node;
+            Tree r = scan(letExpr.getDefs(), p);
+            return reduce(scan(letExpr.getExpr(), p), r);
+        }
+        return super.visitOther(node, p);
+    }
 }
 

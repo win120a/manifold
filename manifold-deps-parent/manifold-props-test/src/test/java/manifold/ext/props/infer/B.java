@@ -16,9 +16,7 @@
 
 package manifold.ext.props.infer;
 
-class B extends SimpleTest.A
-{
-  void setFoo( String msxs )
-  {
-  }
+class B extends SimpleTest.A {
+    void setFoo(String msxs) {
+    }
 }

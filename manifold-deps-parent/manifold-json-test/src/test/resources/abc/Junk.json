@@ -13,7 +13,7 @@
     },
     "B": {
       "$id": "#blah",
-      "definitions" : {
+      "definitions": {
         "InnerDef": {
           "type": "string"
         }

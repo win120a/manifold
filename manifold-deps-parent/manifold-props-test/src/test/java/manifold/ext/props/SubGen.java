@@ -22,19 +22,23 @@ import manifold.ext.props.rt.api.var;
 
 import java.util.List;
 
-public class SubGen extends BaseGen<String, Integer>
-{
-  @override @var List<String> names;
-  @override @var Integer result;
-  @override @var String abstractProp;
+public class SubGen extends BaseGen<String, Integer> {
+    @override
+    @var
+    List<String> names;
+    @override
+    @var
+    Integer result;
+    @override
+    @var
+    String abstractProp;
 
 // cannot override final prop
 //  @override @var String finalProp;
 
 
-  public SubGen( List<String> names, Integer result )
-  {
-    this.names = names;
-    this.result = result;
-  }
+    public SubGen(List<String> names, Integer result) {
+        this.names = names;
+        this.result = result;
+    }
 }

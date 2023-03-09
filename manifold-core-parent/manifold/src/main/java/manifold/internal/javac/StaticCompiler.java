@@ -64,349 +64,288 @@ import static manifold.api.type.ContributorKind.Supplemental;
  * <p/>
  * See <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-core-parent/manifold#explicit-resource-compilation">Explicit Resource Compilation</a>
  */
-public class StaticCompiler
-{
-  private static final StaticCompiler INSTANCE = new StaticCompiler();
-  private boolean _enterGuard;
-  private Map<String, Boolean> _ifaceToProxies = new ConcurrentHashMap<>();
+public class StaticCompiler {
+    private static final StaticCompiler INSTANCE = new StaticCompiler();
+    private boolean _enterGuard;
+    private Map<String, Boolean> _ifaceToProxies = new ConcurrentHashMap<>();
 
-  private StaticCompiler()
-  {
-  }
-
-  public static StaticCompiler instance()
-  {
-    return INSTANCE;
-  }
-
-  void compileRemainingTypes_ByFile()
-  {
-    if( _enterGuard )
-    {
-      return;
+    private StaticCompiler() {
     }
-    _enterGuard = true;
-    try
-    {
-      //todo: make this call in a more focused place
-      createIProxyFactoryServicesForExtensions();
 
-      List<String> others = JavacPlugin.instance().getOtherInputFiles();
-      if( others.isEmpty() )
-      {
-        return;
-      }
+    public static StaticCompiler instance() {
+        return INSTANCE;
+    }
 
-      JavacManifoldHost host = JavacPlugin.instance().getHost();
-      IFileSystem fs = host.getFileSystem();
-      Context ctx = JavacPlugin.instance().getContext();
-      for( String path : others )
-      {
-        IFile file = fs.getIFile( new File( path ) );
-        if( file.exists() )
-        {
-          IModule module = host.getSingleModule();
-          Set<ITypeManifold> tms = module.findTypeManifoldsFor( file,
-            tm -> tm.getContributorKind() != Supplemental );
-          if( tms.isEmpty() )
-          {
-            //todo: add compiler error
-            continue;
-          }
-          ITypeManifold tm = tms.iterator().next();
-          String[] types = tm.getTypesForFile( file );
-          if( types == null || types.length == 0 )
-          {
-            //todo: add compile error
-            continue;
-          }
-
-          tm.enterPostJavaCompilation();
-
-          // Cause the types to compile by entering ClassSymbols into javac's "todos"
-          if( !enterClassSymbols( module, ctx, Arrays.asList( types ) ) )
-          {
+    void compileRemainingTypes_ByFile() {
+        if (_enterGuard) {
             return;
-          }
         }
-      }
+        _enterGuard = true;
+        try {
+            //todo: make this call in a more focused place
+            createIProxyFactoryServicesForExtensions();
 
-      JavaCompiler javaCompiler = JavaCompiler.instance( JavacPlugin.instance().getContext() );
-      if( !javaCompiler.todo.isEmpty() )
-      {
-        // compile resource types we just loaded
-        compileTodo( javaCompiler );
-      }
+            List<String> others = JavacPlugin.instance().getOtherInputFiles();
+            if (others.isEmpty()) {
+                return;
+            }
+
+            JavacManifoldHost host = JavacPlugin.instance().getHost();
+            IFileSystem fs = host.getFileSystem();
+            Context ctx = JavacPlugin.instance().getContext();
+            for (String path : others) {
+                IFile file = fs.getIFile(new File(path));
+                if (file.exists()) {
+                    IModule module = host.getSingleModule();
+                    Set<ITypeManifold> tms = module.findTypeManifoldsFor(file,
+                            tm -> tm.getContributorKind() != Supplemental);
+                    if (tms.isEmpty()) {
+                        //todo: add compiler error
+                        continue;
+                    }
+                    ITypeManifold tm = tms.iterator().next();
+                    String[] types = tm.getTypesForFile(file);
+                    if (types == null || types.length == 0) {
+                        //todo: add compile error
+                        continue;
+                    }
+
+                    tm.enterPostJavaCompilation();
+
+                    // Cause the types to compile by entering ClassSymbols into javac's "todos"
+                    if (!enterClassSymbols(module, ctx, Arrays.asList(types))) {
+                        return;
+                    }
+                }
+            }
+
+            JavaCompiler javaCompiler = JavaCompiler.instance(JavacPlugin.instance().getContext());
+            if (!javaCompiler.todo.isEmpty()) {
+                // compile resource types we just loaded
+                compileTodo(javaCompiler);
+            }
+        } finally {
+            _enterGuard = false;
+        }
     }
-    finally
-    {
-      _enterGuard = false;
+
+    void compileRemainingTypes_ByTypeNameRegexes() {
+        if (_enterGuard) {
+            return;
+        }
+        _enterGuard = true;
+        try {
+            Map<String, String> others = JavacPlugin.instance().getOtherSourceMappings();
+            if (others.isEmpty()) {
+                return;
+            }
+
+            Map<ITypeManifold, Set<String>> classToRegex = new HashMap<>();
+            for (Map.Entry<String, String> entry : others.entrySet()) {
+                mapTypeManifoldToTypeNameRegexes(classToRegex, entry.getKey(), entry.getValue());
+            }
+
+            IModule module = JavacPlugin.instance().getHost().getSingleModule();
+            Context ctx = JavacPlugin.instance().getContext();
+            for (Map.Entry<ITypeManifold, Set<String>> mapping : classToRegex.entrySet()) {
+                ITypeManifold tm = mapping.getKey();
+                Collection<String> types = computeNamesToPrecompile(tm.getAllTypeNames(), mapping.getValue());
+                if (types.isEmpty()) {
+                    //todo: add compile error
+                    continue;
+                }
+
+                // signal the type manifold for post Java compilation
+                tm.enterPostJavaCompilation();
+
+                // Cause the types to compile by entering ClassSymbols into javac's "todos"
+                if (!enterClassSymbols(module, ctx, types)) {
+                    return;
+                }
+            }
+
+            JavaCompiler javaCompiler = JavaCompiler.instance(ctx);
+            if (!javaCompiler.todo.isEmpty()) {
+                // compile resource types we just loaded
+                compileTodo(javaCompiler);
+            }
+        } finally {
+            _enterGuard = false;
+        }
     }
-  }
 
-  void compileRemainingTypes_ByTypeNameRegexes()
-  {
-    if( _enterGuard )
-    {
-      return;
-    }
-    _enterGuard = true;
-    try
-    {
-      Map<String, String> others = JavacPlugin.instance().getOtherSourceMappings();
-      if( others.isEmpty() )
-      {
-        return;
-      }
-
-      Map<ITypeManifold, Set<String>> classToRegex = new HashMap<>();
-      for( Map.Entry<String, String> entry : others.entrySet() )
-      {
-        mapTypeManifoldToTypeNameRegexes( classToRegex, entry.getKey(), entry.getValue() );
-      }
-
-      IModule module = JavacPlugin.instance().getHost().getSingleModule();
-      Context ctx = JavacPlugin.instance().getContext();
-      for( Map.Entry<ITypeManifold, Set<String>> mapping : classToRegex.entrySet() )
-      {
-        ITypeManifold tm = mapping.getKey();
-        Collection<String> types = computeNamesToPrecompile( tm.getAllTypeNames(), mapping.getValue() );
-        if( types.isEmpty() )
-        {
-          //todo: add compile error
-          continue;
+    private void createIProxyFactoryServicesForExtensions() {
+        if (_ifaceToProxies.isEmpty()) {
+            return;
         }
 
-        // signal the type manifold for post Java compilation
-        tm.enterPostJavaCompilation();
-
-        // Cause the types to compile by entering ClassSymbols into javac's "todos"
-        if( !enterClassSymbols( module, ctx, types ) )
-        {
-          return;
+        String filename = "META-INF/services/manifold.ext.rt.api.IProxyFactory_gen";
+        try {
+            JavacProcessingEnvironment processingEnv = JavacProcessingEnvironment.instance(JavacPlugin.instance().getContext());
+            FileObject file = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", filename);
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(file.openOutputStream(), StandardCharsets.UTF_8));
+            for (String proxyFactory : _ifaceToProxies.keySet()) {
+                writer.println(proxyFactory);
+            }
+            writer.close();
+            _ifaceToProxies.clear();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-      }
-
-      JavaCompiler javaCompiler = JavaCompiler.instance( ctx );
-      if( !javaCompiler.todo.isEmpty() )
-      {
-        // compile resource types we just loaded
-        compileTodo( javaCompiler );
-      }
-    }
-    finally
-    {
-      _enterGuard = false;
-    }
-  }
-
-  private void createIProxyFactoryServicesForExtensions()
-  {
-    if( _ifaceToProxies.isEmpty() )
-    {
-      return;
     }
 
-    String filename = "META-INF/services/manifold.ext.rt.api.IProxyFactory_gen";
-    try
-    {
-      JavacProcessingEnvironment processingEnv = JavacProcessingEnvironment.instance( JavacPlugin.instance().getContext() );
-      FileObject file = processingEnv.getFiler().createResource( StandardLocation.CLASS_OUTPUT, "", filename );
-      PrintWriter writer = new PrintWriter( new OutputStreamWriter( file.openOutputStream(), StandardCharsets.UTF_8 ) );
-      for( String proxyFactory : _ifaceToProxies.keySet() )
-      {
-        writer.println( proxyFactory );
-      }
-      writer.close();
-      _ifaceToProxies.clear();
+    public void addIProxyFactory(String iface, String fqn) {
+        _ifaceToProxies.put(fqn, false);
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  public void addIProxyFactory( String iface, String fqn )
-  {
-    _ifaceToProxies.put( fqn, false );
-  }
+    public void surfaceGeneratedProxyFactoryClasses(Context context, CompilationUnitTree compilationUnit) {
+        // This call surfaces the type in the compiler.  If compiling in "static" mode, this means
+        // the type will be compiled to disk.
+        for (Map.Entry<String, Boolean> proxy : new HashMap<>(_ifaceToProxies).entrySet()) {
+            if (proxy.getValue()) {
+                continue;
+            }
 
-  public void surfaceGeneratedProxyFactoryClasses( Context context, CompilationUnitTree compilationUnit )
-  {
-    // This call surfaces the type in the compiler.  If compiling in "static" mode, this means
-    // the type will be compiled to disk.
-    for( Map.Entry<String, Boolean> proxy : new HashMap<>( _ifaceToProxies ).entrySet() )
-    {
-      if( proxy.getValue() )
-      {
-        continue;
-      }
-
-      Tree tree = compilationUnit.getTypeDecls().get( 0 );
-      String proxyName = proxy.getKey();
-      if( proxyName.contains( ((JCTree.JCClassDecl)tree).getSimpleName().toString() ) )
-      {
-        Symbol.ClassSymbol sym = IDynamicJdk.instance().getTypeElement( context, compilationUnit, proxyName );
-        if( sym != null )
-        {
-          _ifaceToProxies.put( proxyName, true );
+            Tree tree = compilationUnit.getTypeDecls().get(0);
+            String proxyName = proxy.getKey();
+            if (proxyName.contains(((JCTree.JCClassDecl) tree).getSimpleName().toString())) {
+                Symbol.ClassSymbol sym = IDynamicJdk.instance().getTypeElement(context, compilationUnit, proxyName);
+                if (sym != null) {
+                    _ifaceToProxies.put(proxyName, true);
+                }
+            }
         }
-      }
-    }
-  }
-
-  private boolean enterClassSymbols( IModule module, Context ctx, Collection<String> types )
-  {
-    //
-    // Push the module symbol (for Java 9+)
-    //
-
-    /*Symbol.ModuleSymbol*/ Object moduleSym = null;
-    if( JreUtil.isJava9orLater() )
-    {
-      moduleSym = pushModuleSymbol( ctx );
-      if( moduleSym == null )
-      {
-        return false;
-      }
     }
 
-    //
-    // Make ClassSymbols (to enter the types into javac's todos, which cause the types to compile)
-    //
+    private boolean enterClassSymbols(IModule module, Context ctx, Collection<String> types) {
+        //
+        // Push the module symbol (for Java 9+)
+        //
 
-    Object top = null;
-    try
-    {
-      // Cause the types to compile
-      for( String fqn : types )
-      {
-        // place gosu class in JavaCompiler's "todos" list
-        ClassSymbols.instance( module ).getClassSymbol( JavacPlugin.instance().getJavacTask(), fqn );
-      }
-    }
-    finally
-    {
-      //
-      // Pop the ModuleSymbol
-      //
-
-      if( moduleSym != null )
-      {
-        top = ctx.get( ManifoldJavaFileManager.MODULE_CTX ).pop();
-      }
-    }
-    if( top != moduleSym )
-    {
-      throw new IllegalStateException( "unbalanced stack" );
-    }
-
-    return true;
-  }
-
-  private Object pushModuleSymbol( Context ctx )
-  {
-    /*Modules*/ Object modules = ReflectUtil.method( "com.sun.tools.javac.comp.Modules", "instance", Context.class )
-    .invokeStatic( ctx );
-    Set<?>/*<Symbol.ModuleSymbol>*/ rootModules = (Set<?>)ReflectUtil.method( modules, "getRootModules" ).invoke();
-    /*Symbol.ModuleSymbol*/ Object moduleSym = null;
-    if( rootModules.size() == 1 )
-    {
-      moduleSym = rootModules.iterator().next();
-    }
-    else
-    {
-      if( rootModules.size() > 1 )
-      {
-        // todo: compile warning/error (are multiple roots possible in a single javac invocation?)
-      }
-
-      moduleSym = ReflectUtil.field( Symtab.instance( ctx ), "unnamedModule" ).get();
-    }
-    ctx.get( ManifoldJavaFileManager.MODULE_CTX ).push( moduleSym );
-
-    return moduleSym;
-  }
-
-  private void compileTodo( JavaCompiler javac )
-  {
-    Todo todo = javac.todo;
-    String compilePolicy = ((Enum<?>) ReflectUtil.field( javac, "compilePolicy" ).get()).name();
-    switch( compilePolicy )
-    {
-      case "ATTR_ONLY":
-        javac.attribute( todo );
-        break;
-
-      case "CHECK_ONLY":
-        javac.flow( javac.attribute( todo ) );
-        break;
-
-      case "SIMPLE":
-        javac.generate( javac.desugar( javac.flow( javac.attribute( todo ) ) ) );
-        break;
-
-      case "BY_FILE":
-      {
-        Queue<Queue<Env<AttrContext>>> q = todo.groupByFile();
-        while( !q.isEmpty() &&
-          !(boolean)ReflectUtil.method( javac, "shouldStop", CompileStates.CompileState.class ).invoke( CompileStates.CompileState.ATTR ) )
-        {
-          javac.generate( javac.desugar( javac.flow( javac.attribute( q.remove() ) ) ) );
+        /*Symbol.ModuleSymbol*/
+        Object moduleSym = null;
+        if (JreUtil.isJava9orLater()) {
+            moduleSym = pushModuleSymbol(ctx);
+            if (moduleSym == null) {
+                return false;
+            }
         }
-      }
-      break;
 
-      case "BY_TODO":
-        while( !todo.isEmpty() )
-          javac.generate( javac.desugar( javac.flow( javac.attribute( todo.remove() ) ) ) );
-        break;
+        //
+        // Make ClassSymbols (to enter the types into javac's todos, which cause the types to compile)
+        //
 
-      default:
-        Assert.error( "unknown compile policy" );
-    }
-  }
+        Object top = null;
+        try {
+            // Cause the types to compile
+            for (String fqn : types) {
+                // place gosu class in JavaCompiler's "todos" list
+                ClassSymbols.instance(module).getClassSymbol(JavacPlugin.instance().getJavacTask(), fqn);
+            }
+        } finally {
+            //
+            // Pop the ModuleSymbol
+            //
 
-  private Collection<String> computeNamesToPrecompile( Collection<String> allTypeNames, Set<String> regexes )
-  {
-    Set<String> matchingTypes = new HashSet<>();
-    for( String fqn: allTypeNames )
-    {
-      if( regexes.stream().anyMatch( fqn::matches ) )
-      {
-        matchingTypes.add( fqn );
-      }
-    }
-    return matchingTypes;
-  }
+            if (moduleSym != null) {
+                top = ctx.get(ManifoldJavaFileManager.MODULE_CTX).pop();
+            }
+        }
+        if (top != moduleSym) {
+            throw new IllegalStateException("unbalanced stack");
+        }
 
-  public void mapTypeManifoldToTypeNameRegexes( Map<ITypeManifold, Set<String>> typeNames, String fqnOrExt, String regex )
-  {
-    int iClass = fqnOrExt.indexOf( "class:" );
-    Set<ITypeManifold> typeManifolds = JavacPlugin.instance().getHost().getSingleModule().getTypeManifolds();
-    if( iClass > 0 )
-    {
-      String typeManifoldClassName = fqnOrExt.substring( "class:".length() );
-      ITypeManifold typeManifold = typeManifolds.stream().filter( tm -> tm.getClass().getTypeName().equals( typeManifoldClassName ) )
-        .findFirst()
-        .orElseThrow( () -> new RuntimeException( "Expecting type manifold class: " + typeManifoldClassName ) );
-      Set<String> regexes = typeNames.computeIfAbsent( typeManifold, tm -> new HashSet<>() );
-      regexes.add( regex );
+        return true;
     }
-    else
-    {
-      //noinspection UnnecessaryLocalVariable
-      String ext = fqnOrExt;
-      boolean all = "*".equals( ext );
-      typeManifolds.stream()
-        .filter( tm -> tm.getContributorKind() != ContributorKind.Supplemental )
-        .forEach( tm -> {
-          if( all || tm.handlesFileExtension( ext ) )
-          {
-            Set<String> regexes = typeNames.computeIfAbsent( tm, e -> new HashSet<>() );
-            regexes.add( regex );
-          }
-        } );
+
+    private Object pushModuleSymbol(Context ctx) {
+        /*Modules*/
+        Object modules = ReflectUtil.method("com.sun.tools.javac.comp.Modules", "instance", Context.class)
+                .invokeStatic(ctx);
+        Set<?>/*<Symbol.ModuleSymbol>*/ rootModules = (Set<?>) ReflectUtil.method(modules, "getRootModules").invoke();
+        /*Symbol.ModuleSymbol*/
+        Object moduleSym = null;
+        if (rootModules.size() == 1) {
+            moduleSym = rootModules.iterator().next();
+        } else {
+            if (rootModules.size() > 1) {
+                // todo: compile warning/error (are multiple roots possible in a single javac invocation?)
+            }
+
+            moduleSym = ReflectUtil.field(Symtab.instance(ctx), "unnamedModule").get();
+        }
+        ctx.get(ManifoldJavaFileManager.MODULE_CTX).push(moduleSym);
+
+        return moduleSym;
     }
-  }
+
+    private void compileTodo(JavaCompiler javac) {
+        Todo todo = javac.todo;
+        String compilePolicy = ((Enum<?>) ReflectUtil.field(javac, "compilePolicy").get()).name();
+        switch (compilePolicy) {
+            case "ATTR_ONLY":
+                javac.attribute(todo);
+                break;
+
+            case "CHECK_ONLY":
+                javac.flow(javac.attribute(todo));
+                break;
+
+            case "SIMPLE":
+                javac.generate(javac.desugar(javac.flow(javac.attribute(todo))));
+                break;
+
+            case "BY_FILE": {
+                Queue<Queue<Env<AttrContext>>> q = todo.groupByFile();
+                while (!q.isEmpty() &&
+                        !(boolean) ReflectUtil.method(javac, "shouldStop", CompileStates.CompileState.class).invoke(CompileStates.CompileState.ATTR)) {
+                    javac.generate(javac.desugar(javac.flow(javac.attribute(q.remove()))));
+                }
+            }
+            break;
+
+            case "BY_TODO":
+                while (!todo.isEmpty())
+                    javac.generate(javac.desugar(javac.flow(javac.attribute(todo.remove()))));
+                break;
+
+            default:
+                Assert.error("unknown compile policy");
+        }
+    }
+
+    private Collection<String> computeNamesToPrecompile(Collection<String> allTypeNames, Set<String> regexes) {
+        Set<String> matchingTypes = new HashSet<>();
+        for (String fqn : allTypeNames) {
+            if (regexes.stream().anyMatch(fqn::matches)) {
+                matchingTypes.add(fqn);
+            }
+        }
+        return matchingTypes;
+    }
+
+    public void mapTypeManifoldToTypeNameRegexes(Map<ITypeManifold, Set<String>> typeNames, String fqnOrExt, String regex) {
+        int iClass = fqnOrExt.indexOf("class:");
+        Set<ITypeManifold> typeManifolds = JavacPlugin.instance().getHost().getSingleModule().getTypeManifolds();
+        if (iClass > 0) {
+            String typeManifoldClassName = fqnOrExt.substring("class:".length());
+            ITypeManifold typeManifold = typeManifolds.stream().filter(tm -> tm.getClass().getTypeName().equals(typeManifoldClassName))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Expecting type manifold class: " + typeManifoldClassName));
+            Set<String> regexes = typeNames.computeIfAbsent(typeManifold, tm -> new HashSet<>());
+            regexes.add(regex);
+        } else {
+            //noinspection UnnecessaryLocalVariable
+            String ext = fqnOrExt;
+            boolean all = "*".equals(ext);
+            typeManifolds.stream()
+                    .filter(tm -> tm.getContributorKind() != ContributorKind.Supplemental)
+                    .forEach(tm -> {
+                        if (all || tm.handlesFileExtension(ext)) {
+                            Set<String> regexes = typeNames.computeIfAbsent(tm, e -> new HashSet<>());
+                            regexes.add(regex);
+                        }
+                    });
+        }
+    }
 }

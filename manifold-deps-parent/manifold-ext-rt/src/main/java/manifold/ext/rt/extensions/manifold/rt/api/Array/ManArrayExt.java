@@ -31,283 +31,241 @@ import java.util.stream.Stream;
  * the array component type.
  */
 @Extension
-public class ManArrayExt
-{
-  /**
-   * Returns a fixed-size list backed by the specified array.  (Changes to
-   * the returned list "write through" to the array.)  This method acts
-   * as bridge between array-based and collection-based APIs, in
-   * combination with {@link Collection#toArray}.  The returned list is
-   * serializable and implements {@link RandomAccess}.
-   *
-   * @return a list view of the specified array
-   */
-  public static List<@Self(true) Object> toList( @This Object array )
-  {
-    if( array.getClass().getComponentType().isPrimitive() )
-    {
-      int len = Array.getLength( array );
-      List<Object> list = new ArrayList<Object>( len );
-      for( int i = 0; i < len; i++ )
-      {
-        list.add( Array.get( array, i ) );
-      }
-      return list;
-    }
-    return Arrays.asList( (Object[])array );
-  }
-
-  public static boolean isEmpty( @This Object array )
-  {
-    return Array.getLength( array ) == 0;
-  }
-  public static boolean isNullOrEmpty( @This Object array )
-  {
-    return array == null || isEmpty( array );
-  }
-
-  public static @Self(true) Object first( @This Object array )
-  {
-    return Array.get( array, 0 );
-  }
-
-  public static @Self(true) Object last( @This Object array )
-  {
-    return Array.get( array, Array.getLength( array ) - 1 );
-  }
-
-  public static @Self Object copy( @This Object array )
-  {
-    return copy( array, -1 );
-  }
-
-  public static @Self Object copy( @This Object array, int newLength )
-  {
-    int length = Array.getLength( array );
-    Object dest = Array.newInstance( array.getClass().getComponentType(), newLength < 0 ? length : newLength );
-    //noinspection SuspiciousSystemArraycopy
-    System.arraycopy( array, 0, dest, 0, length );
-    return dest;
-  }
-
-  public static @Self Object copyTo( @This Object array, @Self Object to )
-  {
-    //noinspection SuspiciousSystemArraycopy
-    System.arraycopy( array, 0, to, 0, Array.getLength( array ) );
-    return to;
-  }
-
-  public static @Self Object copyRange( @This Object array, int from, int to )
-  {
-    int length = Array.getLength( array );
-    to = to < 0 ? length : to;
-    Object dest = Array.newInstance( array.getClass().getComponentType(), to - from );
-    //noinspection SuspiciousSystemArraycopy
-    System.arraycopy( array, from, dest, 0, to - from );
-    return dest;
-  }
-
-  public static @Self Object copyRangeTo( @This Object array, int from, int to, @Self Object target, int targetIndex )
-  {
-    to = to < 0 ? Array.getLength( array ) : to;
-    //noinspection SuspiciousSystemArraycopy
-    System.arraycopy( array, from, target, targetIndex, to - from );
-    return target;
-  }
-
-  public static Stream<@Self(true) Object> stream( @This Object array )
-  {
-    primitiveCheck( array );
-    return Arrays.stream( (Object[])array, 0, Array.getLength( array ) );
-  }
-
-  public static void forEach( @This Object array, IndexedConsumer<? super @Self(true) Object> action )
-  {
-    primitiveCheck( array );
-    Objects.requireNonNull( action );
-    Object[] objects = (Object[])array;
-    for( int i = 0; i < objects.length; i++ )
-    {
-      Object e = objects[i];
-      action.accept( i, e );
-    }
-  }
-
-  public static Spliterator<@Self(true) Object> spliterator( @This Object array )
-  {
-    primitiveCheck( array );
-    return Spliterators.spliterator( (Object[])array, Spliterator.ORDERED | Spliterator.IMMUTABLE );
-  }
-
-  private static void primitiveCheck( Object array )
-  {
-    Class<?> componentType = array.getClass().getComponentType();
-    if( componentType.isPrimitive() )
-    {
-      throw new IllegalArgumentException(
-        array + " has a primitive component type: " + array.getClass().getComponentType().getSimpleName() );
-    }
-  }
-
-  public static int binarySearch( @This Object array, @Self(true) Object key )
-  {
-    return binarySearch( array, 0, Array.getLength( array ), key );
-  }
-
-  public static int binarySearch( @This Object array, int from, int to, @Self(true) Object key )
-  {
-    Class<?> componentType = array.getClass().getComponentType();
-    if( componentType.isPrimitive() )
-    {
-      switch( componentType.getTypeName() )
-      {
-        case "byte":
-          return Arrays.binarySearch( (byte[])array, from, to, ((Number)key).byteValue() );
-        case "short":
-          return Arrays.binarySearch( (short[])array, from, to, ((Number)key).shortValue() );
-        case "int":
-          return Arrays.binarySearch( (int[])array, from, to, ((Number)key).intValue() );
-        case "long":
-          return Arrays.binarySearch( (long[])array, from, to, ((Number)key).longValue() );
-        case "float":
-          return Arrays.binarySearch( (float[])array, from, to, ((Number)key).floatValue() );
-        case "double":
-          return Arrays.binarySearch( (double[])array, from, to, ((Number)key).doubleValue() );
-        case "char":
-          return Arrays.binarySearch( (char[])array, from, to, (char)key );
-        default:
-          throw new UnsupportedOperationException( "Binary search unsupported for: " + componentType );
-      }
-    }
-    return Arrays.binarySearch( (Object[])array, from, to, key );
-  }
-  public static int binarySearch( @This Object array, @Self(true) Object key, Comparator<? super @Self(true) Object> comparator )
-  {
-    return Arrays.binarySearch( (Object[])array, key, comparator );
-  }
-  public static int binarySearch( @This Object array, int from, int to, @Self(true) Object key, Comparator<? super @Self(true) Object> comparator )
-  {
-    return Arrays.binarySearch( (Object[])array, from, to, key, comparator );
-  }
-
-  public static String toString( @This Object array )
-  {
-    if( array == null )
-    {
-      return "null";
+public class ManArrayExt {
+    /**
+     * Returns a fixed-size list backed by the specified array.  (Changes to
+     * the returned list "write through" to the array.)  This method acts
+     * as bridge between array-based and collection-based APIs, in
+     * combination with {@link Collection#toArray}.  The returned list is
+     * serializable and implements {@link RandomAccess}.
+     *
+     * @return a list view of the specified array
+     */
+    public static List<@Self(true) Object> toList(@This Object array) {
+        if (array.getClass().getComponentType().isPrimitive()) {
+            int len = Array.getLength(array);
+            List<Object> list = new ArrayList<Object>(len);
+            for (int i = 0; i < len; i++) {
+                list.add(Array.get(array, i));
+            }
+            return list;
+        }
+        return Arrays.asList((Object[]) array);
     }
 
-    Class<?> componentType = array.getClass().getComponentType();
-    if( componentType.isPrimitive() )
-    {
-      switch( componentType.getTypeName() )
-      {
-        case "byte":
-          return Arrays.toString( (byte[])array );
-        case "short":
-          return Arrays.toString( (short[])array );
-        case "int":
-          return Arrays.toString( (int[])array );
-        case "long":
-          return Arrays.toString( (long[])array );
-        case "float":
-          return Arrays.toString( (float[])array );
-        case "double":
-          return Arrays.toString( (double[])array );
-        case "char":
-          return Arrays.toString( (char[])array );
-        case "boolean":
-          return Arrays.toString( (boolean[])array );
-        default:
-          throw new IllegalStateException();
-      }
-    }
-    else if( !componentType.isArray() )
-    {
-      return Arrays.toString( (Object[])array );
-    }
-    return Arrays.deepToString( (Object[])array );
-  }
-
-  public static int hashCode( @This Object array )
-  {
-    Class<?> componentType = array.getClass().getComponentType();
-    if( componentType.isPrimitive() )
-    {
-      switch( componentType.getTypeName() )
-      {
-        case "byte":
-          return Arrays.hashCode( (byte[])array );
-        case "short":
-          return Arrays.hashCode( (short[])array );
-        case "int":
-          return Arrays.hashCode( (int[])array );
-        case "long":
-          return Arrays.hashCode( (long[])array );
-        case "float":
-          return Arrays.hashCode( (float[])array );
-        case "double":
-          return Arrays.hashCode( (double[])array );
-        case "char":
-          return Arrays.hashCode( (char[])array );
-        case "boolean":
-          return Arrays.hashCode( (boolean[])array );
-        default:
-          throw new IllegalStateException();
-      }
-    }
-    else if( !componentType.isArray() )
-    {
-      return Arrays.hashCode( (Object[])array );
-    }
-    return Arrays.deepHashCode( (Object[])array );
-  }
-
-  public static boolean equals( @This Object array, @Self Object that )
-  {
-    if( array == null && that == null )
-    {
-      return true;
-    }
-    if( array == null || that == null )
-    {
-      return false;
+    public static boolean isEmpty(@This Object array) {
+        return Array.getLength(array) == 0;
     }
 
-    Class<?> componentType = array.getClass().getComponentType();
-    Class<?> thatComponentType = that.getClass().getComponentType();
-    if( componentType.isPrimitive() && componentType == thatComponentType )
-    {
-      switch( componentType.getTypeName() )
-      {
-        case "byte":
-          return Arrays.equals( (byte[])array, (byte[])that );
-        case "short":
-          return Arrays.equals( (short[])array, (short[])that );
-        case "int":
-          return Arrays.equals( (int[])array, (int[])that );
-        case "long":
-          return Arrays.equals( (long[])array, (long[])that );
-        case "float":
-          return Arrays.equals( (float[])array, (float[])that );
-        case "double":
-          return Arrays.equals( (double[])array, (double[])that );
-        case "char":
-          return Arrays.equals( (char[])array, (char[])that );
-        case "boolean":
-          return Arrays.equals( (boolean[])array, (boolean[])that );
-        default:
-          throw new IllegalStateException();
-      }
+    public static boolean isNullOrEmpty(@This Object array) {
+        return array == null || isEmpty(array);
     }
-    else if( !componentType.isArray() && !thatComponentType.isArray() )
-    {
-      return Arrays.equals( (Object[])array, (Object[])that );
+
+    public static @Self(true) Object first(@This Object array) {
+        return Array.get(array, 0);
     }
-    else if( componentType.isArray() && thatComponentType.isArray() )
-    {
-      return Arrays.deepEquals( (Object[])array, (Object[])that );
+
+    public static @Self(true) Object last(@This Object array) {
+        return Array.get(array, Array.getLength(array) - 1);
     }
-    return false;
-  }
+
+    public static @Self Object copy(@This Object array) {
+        return copy(array, -1);
+    }
+
+    public static @Self Object copy(@This Object array, int newLength) {
+        int length = Array.getLength(array);
+        Object dest = Array.newInstance(array.getClass().getComponentType(), newLength < 0 ? length : newLength);
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(array, 0, dest, 0, length);
+        return dest;
+    }
+
+    public static @Self Object copyTo(@This Object array, @Self Object to) {
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(array, 0, to, 0, Array.getLength(array));
+        return to;
+    }
+
+    public static @Self Object copyRange(@This Object array, int from, int to) {
+        int length = Array.getLength(array);
+        to = to < 0 ? length : to;
+        Object dest = Array.newInstance(array.getClass().getComponentType(), to - from);
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(array, from, dest, 0, to - from);
+        return dest;
+    }
+
+    public static @Self Object copyRangeTo(@This Object array, int from, int to, @Self Object target, int targetIndex) {
+        to = to < 0 ? Array.getLength(array) : to;
+        //noinspection SuspiciousSystemArraycopy
+        System.arraycopy(array, from, target, targetIndex, to - from);
+        return target;
+    }
+
+    public static Stream<@Self(true) Object> stream(@This Object array) {
+        primitiveCheck(array);
+        return Arrays.stream((Object[]) array, 0, Array.getLength(array));
+    }
+
+    public static void forEach(@This Object array, IndexedConsumer<? super @Self(true) Object> action) {
+        primitiveCheck(array);
+        Objects.requireNonNull(action);
+        Object[] objects = (Object[]) array;
+        for (int i = 0; i < objects.length; i++) {
+            Object e = objects[i];
+            action.accept(i, e);
+        }
+    }
+
+    public static Spliterator<@Self(true) Object> spliterator(@This Object array) {
+        primitiveCheck(array);
+        return Spliterators.spliterator((Object[]) array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
+    }
+
+    private static void primitiveCheck(Object array) {
+        Class<?> componentType = array.getClass().getComponentType();
+        if (componentType.isPrimitive()) {
+            throw new IllegalArgumentException(
+                    array + " has a primitive component type: " + array.getClass().getComponentType().getSimpleName());
+        }
+    }
+
+    public static int binarySearch(@This Object array, @Self(true) Object key) {
+        return binarySearch(array, 0, Array.getLength(array), key);
+    }
+
+    public static int binarySearch(@This Object array, int from, int to, @Self(true) Object key) {
+        Class<?> componentType = array.getClass().getComponentType();
+        if (componentType.isPrimitive()) {
+            switch (componentType.getTypeName()) {
+                case "byte":
+                    return Arrays.binarySearch((byte[]) array, from, to, ((Number) key).byteValue());
+                case "short":
+                    return Arrays.binarySearch((short[]) array, from, to, ((Number) key).shortValue());
+                case "int":
+                    return Arrays.binarySearch((int[]) array, from, to, ((Number) key).intValue());
+                case "long":
+                    return Arrays.binarySearch((long[]) array, from, to, ((Number) key).longValue());
+                case "float":
+                    return Arrays.binarySearch((float[]) array, from, to, ((Number) key).floatValue());
+                case "double":
+                    return Arrays.binarySearch((double[]) array, from, to, ((Number) key).doubleValue());
+                case "char":
+                    return Arrays.binarySearch((char[]) array, from, to, (char) key);
+                default:
+                    throw new UnsupportedOperationException("Binary search unsupported for: " + componentType);
+            }
+        }
+        return Arrays.binarySearch((Object[]) array, from, to, key);
+    }
+
+    public static int binarySearch(@This Object array, @Self(true) Object key, Comparator<? super @Self(true) Object> comparator) {
+        return Arrays.binarySearch((Object[]) array, key, comparator);
+    }
+
+    public static int binarySearch(@This Object array, int from, int to, @Self(true) Object key, Comparator<? super @Self(true) Object> comparator) {
+        return Arrays.binarySearch((Object[]) array, from, to, key, comparator);
+    }
+
+    public static String toString(@This Object array) {
+        if (array == null) {
+            return "null";
+        }
+
+        Class<?> componentType = array.getClass().getComponentType();
+        if (componentType.isPrimitive()) {
+            switch (componentType.getTypeName()) {
+                case "byte":
+                    return Arrays.toString((byte[]) array);
+                case "short":
+                    return Arrays.toString((short[]) array);
+                case "int":
+                    return Arrays.toString((int[]) array);
+                case "long":
+                    return Arrays.toString((long[]) array);
+                case "float":
+                    return Arrays.toString((float[]) array);
+                case "double":
+                    return Arrays.toString((double[]) array);
+                case "char":
+                    return Arrays.toString((char[]) array);
+                case "boolean":
+                    return Arrays.toString((boolean[]) array);
+                default:
+                    throw new IllegalStateException();
+            }
+        } else if (!componentType.isArray()) {
+            return Arrays.toString((Object[]) array);
+        }
+        return Arrays.deepToString((Object[]) array);
+    }
+
+    public static int hashCode(@This Object array) {
+        Class<?> componentType = array.getClass().getComponentType();
+        if (componentType.isPrimitive()) {
+            switch (componentType.getTypeName()) {
+                case "byte":
+                    return Arrays.hashCode((byte[]) array);
+                case "short":
+                    return Arrays.hashCode((short[]) array);
+                case "int":
+                    return Arrays.hashCode((int[]) array);
+                case "long":
+                    return Arrays.hashCode((long[]) array);
+                case "float":
+                    return Arrays.hashCode((float[]) array);
+                case "double":
+                    return Arrays.hashCode((double[]) array);
+                case "char":
+                    return Arrays.hashCode((char[]) array);
+                case "boolean":
+                    return Arrays.hashCode((boolean[]) array);
+                default:
+                    throw new IllegalStateException();
+            }
+        } else if (!componentType.isArray()) {
+            return Arrays.hashCode((Object[]) array);
+        }
+        return Arrays.deepHashCode((Object[]) array);
+    }
+
+    public static boolean equals(@This Object array, @Self Object that) {
+        if (array == null && that == null) {
+            return true;
+        }
+        if (array == null || that == null) {
+            return false;
+        }
+
+        Class<?> componentType = array.getClass().getComponentType();
+        Class<?> thatComponentType = that.getClass().getComponentType();
+        if (componentType.isPrimitive() && componentType == thatComponentType) {
+            switch (componentType.getTypeName()) {
+                case "byte":
+                    return Arrays.equals((byte[]) array, (byte[]) that);
+                case "short":
+                    return Arrays.equals((short[]) array, (short[]) that);
+                case "int":
+                    return Arrays.equals((int[]) array, (int[]) that);
+                case "long":
+                    return Arrays.equals((long[]) array, (long[]) that);
+                case "float":
+                    return Arrays.equals((float[]) array, (float[]) that);
+                case "double":
+                    return Arrays.equals((double[]) array, (double[]) that);
+                case "char":
+                    return Arrays.equals((char[]) array, (char[]) that);
+                case "boolean":
+                    return Arrays.equals((boolean[]) array, (boolean[]) that);
+                default:
+                    throw new IllegalStateException();
+            }
+        } else if (!componentType.isArray() && !thatComponentType.isArray()) {
+            return Arrays.equals((Object[]) array, (Object[]) that);
+        } else if (componentType.isArray() && thatComponentType.isArray()) {
+            return Arrays.deepEquals((Object[]) array, (Object[]) that);
+        }
+        return false;
+    }
 }

@@ -20,47 +20,40 @@ import junit.framework.TestCase;
 import manifold.ext.delegation.rt.api.link;
 import manifold.ext.delegation.rt.api.part;
 
-public class InheritanceTest extends TestCase
-{
-  public void testInheritance()
-  {
-    MyA a = new MyA();
-    assertEquals( "x_x_y_z", a.a( "x_" ) );
-  }
-
-  interface A
-  {
-    String a( String a );
-    String b( String b );
-  }
-
-  static @part class AImpl implements A
-  {
-    @Override
-    public String a( String a )
-    {
-      return a + b( a );
+public class InheritanceTest extends TestCase {
+    public void testInheritance() {
+        MyA a = new MyA();
+        assertEquals("x_x_y_z", a.a("x_"));
     }
 
-    @Override
-    public String b( String b )
-    {
-      return b;
+    interface A {
+        String a(String a);
+
+        String b(String b);
     }
-  }
 
-  static @part class SubAImpl extends AImpl
-  {
-  }
+    static @part class AImpl implements A {
+        @Override
+        public String a(String a) {
+            return a + b(a);
+        }
 
-  static class MyA implements A
-  {
-    @link A a = new SubAImpl();
-
-    @Override
-    public String b( String b )
-    {
-      return a.b( b ) + "y_z";
+        @Override
+        public String b(String b) {
+            return b;
+        }
     }
-  }
+
+    static @part class SubAImpl extends AImpl {
+    }
+
+    static class MyA implements A {
+        @link
+        A a = new SubAImpl();
+
+        @Override
+        public String b(String b) {
+            return a.b(b) + "y_z";
+        }
+    }
 }

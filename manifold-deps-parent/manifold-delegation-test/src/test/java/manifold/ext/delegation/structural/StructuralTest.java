@@ -22,32 +22,30 @@ import manifold.ext.rt.api.Structural;
 
 import java.util.ArrayList;
 
-public class StructuralTest extends TestCase
-{
-  public void testStructural()
-  {
-     LimitedList<String> limitedList = new MyLimitedList<>( (LimitedList<String>)new ArrayList<>() );
-     limitedList.add( "hi" );
-     assertTrue( limitedList.contains( "hi" ) );
-     assertEquals( "hi", limitedList.get( 0 ) );
-  }
-
-  @Structural
-  interface LimitedList<E>
-  {
-    boolean add(E e);
-    E get( int index );
-    boolean contains(Object e);
-  }
-
-
-  static class MyLimitedList<E> implements LimitedList<E>
-  {
-    @link LimitedList<E> _list;
-
-    public MyLimitedList( LimitedList<E> list )
-    {
-      _list = list;
+public class StructuralTest extends TestCase {
+    public void testStructural() {
+        LimitedList<String> limitedList = new MyLimitedList<>((LimitedList<String>) new ArrayList<>());
+        limitedList.add("hi");
+        assertTrue(limitedList.contains("hi"));
+        assertEquals("hi", limitedList.get(0));
     }
-  }
+
+    @Structural
+    interface LimitedList<E> {
+        boolean add(E e);
+
+        E get(int index);
+
+        boolean contains(Object e);
+    }
+
+
+    static class MyLimitedList<E> implements LimitedList<E> {
+        @link
+        LimitedList<E> _list;
+
+        public MyLimitedList(LimitedList<E> list) {
+            _list = list;
+        }
+    }
 }

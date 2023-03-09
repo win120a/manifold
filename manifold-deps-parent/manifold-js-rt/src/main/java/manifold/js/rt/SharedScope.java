@@ -19,27 +19,24 @@ package manifold.js.rt;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
-class SharedScope
-{
-  private static final ThreadLocal<ScriptableObject> SHARED_SCOPE =
-    ThreadLocal.withInitial( () -> Context.enter().initStandardObjects() );
+class SharedScope {
+    private static final ThreadLocal<ScriptableObject> SHARED_SCOPE =
+            ThreadLocal.withInitial(() -> Context.enter().initStandardObjects());
 
-  private static ScriptableObject get()
-  {
-    return SHARED_SCOPE.get();
-  }
+    private static ScriptableObject get() {
+        return SHARED_SCOPE.get();
+    }
 
-  /**
-   * Static scope applies to a program or class and is analogous to Java's Class scope.  An instance scope is created
-   * when an object is constructed via Context.newObject(), which is called from the manifold generated constructor for
-   * a js class.
-   */
-  static ScriptableObject newStaticScope()
-  {
-    ScriptableObject sharedGlobalScope = SharedScope.get();
-    ScriptableObject programScope = (ScriptableObject)Context.getCurrentContext().newObject( sharedGlobalScope );
-    programScope.setPrototype( sharedGlobalScope );
-    programScope.setParentScope( null );
-    return programScope;
-  }
+    /**
+     * Static scope applies to a program or class and is analogous to Java's Class scope.  An instance scope is created
+     * when an object is constructed via Context.newObject(), which is called from the manifold generated constructor for
+     * a js class.
+     */
+    static ScriptableObject newStaticScope() {
+        ScriptableObject sharedGlobalScope = SharedScope.get();
+        ScriptableObject programScope = (ScriptableObject) Context.getCurrentContext().newObject(sharedGlobalScope);
+        programScope.setPrototype(sharedGlobalScope);
+        programScope.setParentScope(null);
+        return programScope;
+    }
 }

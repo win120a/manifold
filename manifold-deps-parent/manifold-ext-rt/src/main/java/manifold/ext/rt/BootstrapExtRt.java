@@ -19,18 +19,15 @@ package manifold.ext.rt;
 import manifold.rt.api.IBootstrap;
 import manifold.util.NecessaryEvilUtil;
 
-public class BootstrapExtRt implements IBootstrap
-{
-  private boolean _booted;
+public class BootstrapExtRt implements IBootstrap {
+    private boolean _booted;
 
-  @Override
-  public boolean boot()
-  {
-    if( !_booted )
-    {
-      _booted = true;
-      NecessaryEvilUtil.bypassJava9Security( false );
+    @Override
+    public boolean boot() {
+        if (!_booted) {
+            _booted = true;
+            NecessaryEvilUtil.bypassJava9Security(false);
+        }
+        return true;
     }
-    return true;
-  }
 }

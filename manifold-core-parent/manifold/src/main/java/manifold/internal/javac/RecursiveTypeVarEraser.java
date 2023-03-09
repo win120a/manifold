@@ -24,138 +24,114 @@ import com.sun.tools.javac.util.List;
 import javax.lang.model.type.NoType;
 import java.util.ArrayList;
 
-public class RecursiveTypeVarEraser extends Types.UnaryVisitor<Type>
-{
-  private final Types _types;
+public class RecursiveTypeVarEraser extends Types.UnaryVisitor<Type> {
+    private final Types _types;
 
-  public static Type eraseTypeVars( Types types, Type type )
-  {
-    return new RecursiveTypeVarEraser( types ).visit( type );
-  }
-
-  private RecursiveTypeVarEraser( Types types )
-  {
-    _types = types;
-  }
-
-  @Override
-  public Type visitClassType( Type.ClassType t, Void s )
-  {
-    boolean erased = false;
-    Type erasure = _types.erasure( t );
-    Type base = visitType( erasure, s );
-    if( base != erasure )
-    {
-      erased = true;
-    }
-    ArrayList<Type> params = new ArrayList<>();
-    for( Type arg : t.allparams() )
-    {
-      Type.TypeVar typeVar = null;
-      if( arg instanceof Type.TypeVar )
-      {
-        typeVar = (Type.TypeVar)arg;
-      }
-      Type param = visit( arg );
-      if( typeVar != null )
-      {
-        // TypeVar args must be replaced with Wildcards:
-        //
-        // public class Foo<T extends CharSequence> {
-        // ...
-        //   Foo<T> foo = blah;
-        //   auto tuple = (foo, bar);
-        // }
-        //
-        // tuple type for foo must be Foo<? extends CharSequence>, not Foo<CharSequence>
-        //
-        param = makeWildCard( param, typeVar );
-      }
-
-      params.add( param );
-      if( param != arg )
-      {
-        erased = true;
-      }
-    }
-    if( erased )
-    {
-      return new Type.ClassType( t.getEnclosingType(), List.from( params ), base.tsym );
-    }
-    return t;
-  }
-
-  private Type makeWildCard( Type t, Type.TypeVar typeVar )
-  {
-    return typeVar.getUpperBound() == null
-      ? new Type.WildcardType( t, BoundKind.SUPER, t.tsym )
-      : new Type.WildcardType( t, BoundKind.EXTENDS, t.tsym );
-  }
-
-  @Override
-  public Type visitArrayType( Type.ArrayType t, Void aVoid )
-  {
-    Type compType = visit( t.getComponentType() );
-    if( compType == t.getComponentType() )
-    {
-      return t;
-    }
-    return new Type.ArrayType( compType, t.tsym );
-  }
-
-  @Override
-  public Type visitCapturedType( Type.CapturedType t, Void s )
-  {
-    Type w_bound = t.wildcard.type;
-    w_bound = eraseBound( t, w_bound );
-    if( w_bound == t.wildcard.type )
-    {
-      return t;
-    }
-    return new Type.CapturedType( t.tsym.name, t.tsym.owner, w_bound, t.lower, t.wildcard );
-  }
-
-  @Override
-  public Type visitTypeVar( Type.TypeVar t, Void s )
-  {
-    Type bound = eraseBound( t, t.getUpperBound() );
-    Type lower = eraseBound( t, t.lower );
-    return bound == null ? lower : bound;
-  }
-
-  @Override
-  public Type visitWildcardType( Type.WildcardType t, Void s )
-  {
-    Type bound = eraseBound( t, t.type );
-    if( bound == t.type )
-    {
-      return t;
-    }
-    return new Type.WildcardType( bound, t.kind, t.tsym );
-  }
-
-  @Override
-  public Type visitType( Type t, Void o )
-  {
-    return t;
-  }
-
-  private Type eraseBound( Type t, Type bound )
-  {
-    if( bound == null || bound instanceof NoType )
-    {
-      return bound;
+    public static Type eraseTypeVars(Types types, Type type) {
+        return new RecursiveTypeVarEraser(types).visit(type);
     }
 
-    Type erasedBound;
-    if( bound.contains( t ) )
-    {
-      erasedBound = visit( _types.erasure( bound ) );
+    private RecursiveTypeVarEraser(Types types) {
+        _types = types;
     }
-    else
-    {
-      erasedBound = visit( bound );
+
+    @Override
+    public Type visitClassType(Type.ClassType t, Void s) {
+        boolean erased = false;
+        Type erasure = _types.erasure(t);
+        Type base = visitType(erasure, s);
+        if (base != erasure) {
+            erased = true;
+        }
+        ArrayList<Type> params = new ArrayList<>();
+        for (Type arg : t.allparams()) {
+            Type.TypeVar typeVar = null;
+            if (arg instanceof Type.TypeVar) {
+                typeVar = (Type.TypeVar) arg;
+            }
+            Type param = visit(arg);
+            if (typeVar != null) {
+                // TypeVar args must be replaced with Wildcards:
+                //
+                // public class Foo<T extends CharSequence> {
+                // ...
+                //   Foo<T> foo = blah;
+                //   auto tuple = (foo, bar);
+                // }
+                //
+                // tuple type for foo must be Foo<? extends CharSequence>, not Foo<CharSequence>
+                //
+                param = makeWildCard(param, typeVar);
+            }
+
+            params.add(param);
+            if (param != arg) {
+                erased = true;
+            }
+        }
+        if (erased) {
+            return new Type.ClassType(t.getEnclosingType(), List.from(params), base.tsym);
+        }
+        return t;
     }
-    return erasedBound;
-  }
+
+    private Type makeWildCard(Type t, Type.TypeVar typeVar) {
+        return typeVar.getUpperBound() == null
+                ? new Type.WildcardType(t, BoundKind.SUPER, t.tsym)
+                : new Type.WildcardType(t, BoundKind.EXTENDS, t.tsym);
+    }
+
+    @Override
+    public Type visitArrayType(Type.ArrayType t, Void aVoid) {
+        Type compType = visit(t.getComponentType());
+        if (compType == t.getComponentType()) {
+            return t;
+        }
+        return new Type.ArrayType(compType, t.tsym);
+    }
+
+    @Override
+    public Type visitCapturedType(Type.CapturedType t, Void s) {
+        Type w_bound = t.wildcard.type;
+        w_bound = eraseBound(t, w_bound);
+        if (w_bound == t.wildcard.type) {
+            return t;
+        }
+        return new Type.CapturedType(t.tsym.name, t.tsym.owner, w_bound, t.lower, t.wildcard);
+    }
+
+    @Override
+    public Type visitTypeVar(Type.TypeVar t, Void s) {
+        Type bound = eraseBound(t, t.getUpperBound());
+        Type lower = eraseBound(t, t.lower);
+        return bound == null ? lower : bound;
+    }
+
+    @Override
+    public Type visitWildcardType(Type.WildcardType t, Void s) {
+        Type bound = eraseBound(t, t.type);
+        if (bound == t.type) {
+            return t;
+        }
+        return new Type.WildcardType(bound, t.kind, t.tsym);
+    }
+
+    @Override
+    public Type visitType(Type t, Void o) {
+        return t;
+    }
+
+    private Type eraseBound(Type t, Type bound) {
+        if (bound == null || bound instanceof NoType) {
+            return bound;
+        }
+
+        Type erasedBound;
+        if (bound.contains(t)) {
+            erasedBound = visit(_types.erasure(bound));
+        } else {
+            erasedBound = visit(bound);
+        }
+        return erasedBound;
+    }
 }

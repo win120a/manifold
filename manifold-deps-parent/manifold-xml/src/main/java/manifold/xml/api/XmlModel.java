@@ -19,6 +19,7 @@ package manifold.xml.api;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Set;
+
 import manifold.rt.api.Bindings;
 import manifold.api.fs.IFile;
 import manifold.api.host.IManifoldHost;
@@ -32,23 +33,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  *
  */
-class XmlModel extends JsonModel
-{
-  XmlModel( IManifoldHost host, String fqn, Set<IFile> files )
-  {
-    super( host, fqn, files );
-  }
+class XmlModel extends JsonModel {
+    XmlModel(IManifoldHost host, String fqn, Set<IFile> files) {
+        super(host, fqn, files);
+    }
 
-  @Override
-  protected Bindings load()
-  {
-    try
-    {
-      return Xml.fromXml( StreamUtil.getContent( new InputStreamReader( getFile().openInputStream(), UTF_8 ) ), true );
+    @Override
+    protected Bindings load() {
+        try {
+            return Xml.fromXml(StreamUtil.getContent(new InputStreamReader(getFile().openInputStream(), UTF_8)), true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 }

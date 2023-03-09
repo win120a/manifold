@@ -48,23 +48,23 @@ import java.lang.annotation.Target;
  * getter/setter accessor methods. Thus, if there are user-defined getter/setter methods corresponding with the
  * property, they must reflect the modifiers from the property.
  * <p/>
+ *
  * @see var
  * @see get
  * @see set
  */
-@Target( {ElementType.FIELD} )
-@Retention( RetentionPolicy.CLASS )
-public @interface val
-{
-  /**
-   * Access options to override the property field's declared access. Note, favor Java modifiers for properties over
-   * PropOption annotation arguments. As such, the only necessary option is PropOption.Package to override the default
-   * public nature of properties. Otherwise, you don't need to use this argument.
-   */
-  PropOption[] value() default {};
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.CLASS)
+public @interface val {
+    /**
+     * Access options to override the property field's declared access. Note, favor Java modifiers for properties over
+     * PropOption annotation arguments. As such, the only necessary option is PropOption.Package to override the default
+     * public nature of properties. Otherwise, you don't need to use this argument.
+     */
+    PropOption[] value() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the val's generated getter method.
-   */
-  any[] annos() default {};
+    /**
+     * Use this argument to specify annotations to apply to the val's generated getter method.
+     */
+    any[] annos() default {};
 }

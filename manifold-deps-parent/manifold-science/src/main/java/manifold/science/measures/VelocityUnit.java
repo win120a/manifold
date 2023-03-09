@@ -26,62 +26,51 @@ import static manifold.science.measures.LengthUnit.Mile;
 import static manifold.science.measures.TimeUnit.Hour;
 import static manifold.science.measures.TimeUnit.Second;
 
-final public class VelocityUnit extends AbstractQuotientUnit<LengthUnit, TimeUnit, Velocity, VelocityUnit>
-{
-  private static final UnitCache<VelocityUnit> CACHE = new UnitCache<>();
+final public class VelocityUnit extends AbstractQuotientUnit<LengthUnit, TimeUnit, Velocity, VelocityUnit> {
+    private static final UnitCache<VelocityUnit> CACHE = new UnitCache<>();
 
-  public static final VelocityUnit BASE = get( Meter, Second );
-  public static final VelocityUnit mph = get( Mile, Hour, Rational.ONE, "MPH", "mph" );
+    public static final VelocityUnit BASE = get(Meter, Second);
+    public static final VelocityUnit mph = get(Mile, Hour, Rational.ONE, "MPH", "mph");
 
-  public static VelocityUnit get( LengthUnit lengthUnit, TimeUnit timeUnit )
-  {
-    return get( lengthUnit, timeUnit, null, null, null );
-  }
+    public static VelocityUnit get(LengthUnit lengthUnit, TimeUnit timeUnit) {
+        return get(lengthUnit, timeUnit, null, null, null);
+    }
 
-  public static VelocityUnit get( LengthUnit lengthUnit, TimeUnit timeUnit, Rational factor, String name, String symbol )
-  {
-    VelocityUnit unit = new VelocityUnit( lengthUnit, timeUnit, factor, name, symbol );
-    return CACHE.get( unit );
-  }
+    public static VelocityUnit get(LengthUnit lengthUnit, TimeUnit timeUnit, Rational factor, String name, String symbol) {
+        VelocityUnit unit = new VelocityUnit(lengthUnit, timeUnit, factor, name, symbol);
+        return CACHE.get(unit);
+    }
 
-  private VelocityUnit( LengthUnit lengthUnit, TimeUnit timeUnit, Rational factor, String name, String symbol )
-  {
-    super( lengthUnit, timeUnit, factor, name, symbol );
-  }
+    private VelocityUnit(LengthUnit lengthUnit, TimeUnit timeUnit, Rational factor, String name, String symbol) {
+        super(lengthUnit, timeUnit, factor, name, symbol);
+    }
 
-  @Override
-  public Velocity makeDimension( Number amount )
-  {
-    return new Velocity( Rational.get( amount ), this );
-  }
+    @Override
+    public Velocity makeDimension(Number amount) {
+        return new Velocity(Rational.get(amount), this);
+    }
 
-  public LengthUnit getLengthUnit()
-  {
-    return getLeftUnit();
-  }
+    public LengthUnit getLengthUnit() {
+        return getLeftUnit();
+    }
 
-  public TimeUnit getTimeUnit()
-  {
-    return getRightUnit();
-  }
+    public TimeUnit getTimeUnit() {
+        return getRightUnit();
+    }
 
-  public MomentumUnit postfixBind( MassUnit mass )
-  {
-    return times( mass );
-  }
+    public MomentumUnit postfixBind(MassUnit mass) {
+        return times(mass);
+    }
 
-  public AccelerationUnit div( TimeUnit t )
-  {
-    return AccelerationUnit.get( this, t );
-  }
+    public AccelerationUnit div(TimeUnit t) {
+        return AccelerationUnit.get(this, t);
+    }
 
-  public MomentumUnit times( MassUnit t )
-  {
-    return MomentumUnit.get( t, this );
-  }
+    public MomentumUnit times(MassUnit t) {
+        return MomentumUnit.get(t, this);
+    }
 
-  public PowerUnit times( ForceUnit force )
-  {
-    return force * getLengthUnit() / getTimeUnit();
-  }
+    public PowerUnit times(ForceUnit force) {
+        return force * getLengthUnit() / getTimeUnit();
+    }
 }

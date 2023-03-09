@@ -34,6 +34,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.TYPE_USE})
-public @interface Jailbreak
-{
+public @interface Jailbreak {
 }

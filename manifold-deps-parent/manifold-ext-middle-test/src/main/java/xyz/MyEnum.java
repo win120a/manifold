@@ -16,7 +16,6 @@
 
 package xyz;
 
-public enum MyEnum
-{
-  Moe, Larry, Curly
+public enum MyEnum {
+    Moe, Larry, Curly
 }

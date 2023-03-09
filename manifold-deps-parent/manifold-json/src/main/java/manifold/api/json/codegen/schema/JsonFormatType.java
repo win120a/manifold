@@ -30,93 +30,81 @@ import java.util.Map;
  * <p>
  * Implement the {@link IJsonFormatTypeCoercer} service provider to map your own formats with Java types.
  */
-public class JsonFormatType implements IJsonType
-{
-  private static final Map<Pair<String, Class<?>>, JsonFormatType> PROTOTYPES = new ConcurrentWeakValueHashMap<>();
+public class JsonFormatType implements IJsonType {
+    private static final Map<Pair<String, Class<?>>, JsonFormatType> PROTOTYPES = new ConcurrentWeakValueHashMap<>();
 
-  private final String _format;
-  private final Class<?> _javaType;
-  private final TypeAttributes _typeAttributes;
+    private final String _format;
+    private final Class<?> _javaType;
+    private final TypeAttributes _typeAttributes;
 
-  public static JsonFormatType getPrototype( String format, Class<?> javaType )
-  {
-    return PROTOTYPES.computeIfAbsent( new Pair<>( format, javaType ),
-      key -> new JsonFormatType( key.getFirst(), key.getSecond() ) );
-  }
-
-  JsonFormatType( String format, Class<?> javaType )
-  {
-    this( format, javaType, new TypeAttributes() );
-  }
-  private JsonFormatType( String format, Class<?> javaType, TypeAttributes typeAttributes )
-  {
-    _format = format;
-    _javaType = javaType;
-    _typeAttributes = typeAttributes;
-  }
-
-  /**
-   * The type that is generated as part of the JSON Java API.
-   */
-  @SuppressWarnings("WeakerAccess")
-  public Class<?> getJavaType()
-  {
-    return _javaType;
-  }
-
-  public String getFormat()
-  {
-    return _format;
-  }
-
-  @Override
-  public String getName()
-  {
-    return _format;
-  }
-
-  /**
-   * Format types never have a parent.
-   */
-  @Override
-  public IJsonParentType getParent()
-  {
-    return null;
-  }
-
-  @Override
-  public TypeAttributes getTypeAttributes()
-  {
-    return _typeAttributes;
-  }
-  @Override
-  public IJsonType copyWithAttributes( TypeAttributes attributes )
-  {
-    if( getTypeAttributes().equals( attributes ) )
-    {
-      return this;
+    public static JsonFormatType getPrototype(String format, Class<?> javaType) {
+        return PROTOTYPES.computeIfAbsent(new Pair<>(format, javaType),
+                key -> new JsonFormatType(key.getFirst(), key.getSecond()));
     }
-    return new JsonFormatType( _format, _javaType, getTypeAttributes().overrideWith( attributes ) );
-  }
 
-  @Override
-  public JsonFormatType merge( IJsonType type )
-  {
-    if( type instanceof JsonBasicType ||
-        type instanceof JsonFormatType )
-    {
-      //## todo: maybe be smarter about merging two format types?
-      return this;
+    JsonFormatType(String format, Class<?> javaType) {
+        this(format, javaType, new TypeAttributes());
     }
-    return null;
-  }
 
-  /**
-   * The identifier must be the name of the class used in the generated JSON API.
-   */
-  @Override
-  public String getIdentifier()
-  {
-    return getJavaType().getTypeName();
-  }
+    private JsonFormatType(String format, Class<?> javaType, TypeAttributes typeAttributes) {
+        _format = format;
+        _javaType = javaType;
+        _typeAttributes = typeAttributes;
+    }
+
+    /**
+     * The type that is generated as part of the JSON Java API.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public Class<?> getJavaType() {
+        return _javaType;
+    }
+
+    public String getFormat() {
+        return _format;
+    }
+
+    @Override
+    public String getName() {
+        return _format;
+    }
+
+    /**
+     * Format types never have a parent.
+     */
+    @Override
+    public IJsonParentType getParent() {
+        return null;
+    }
+
+    @Override
+    public TypeAttributes getTypeAttributes() {
+        return _typeAttributes;
+    }
+
+    @Override
+    public IJsonType copyWithAttributes(TypeAttributes attributes) {
+        if (getTypeAttributes().equals(attributes)) {
+            return this;
+        }
+        return new JsonFormatType(_format, _javaType, getTypeAttributes().overrideWith(attributes));
+    }
+
+    @Override
+    public JsonFormatType merge(IJsonType type) {
+        if (type instanceof JsonBasicType ||
+                type instanceof JsonFormatType) {
+            //## todo: maybe be smarter about merging two format types?
+            return this;
+        }
+        return null;
+    }
+
+    /**
+     * The identifier must be the name of the class used in the generated JSON API.
+     */
+    @Override
+    public String getIdentifier() {
+        return getJavaType().getTypeName();
+    }
 }

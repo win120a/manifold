@@ -7,29 +7,29 @@ import static org.junit.Assert.assertEquals;
 
 public class JavascriptClassTest {
 
-  @Test
-  public void testBasicClassesWorks() {
-    assertEquals( "hello", Person.staticFunction() );
-    
-    Person x = new Person("Joe", "Blow");
-    Person y = new Person("Joe", "Blow");
+    @Test
+    public void testBasicClassesWorks() {
+        assertEquals("hello", Person.staticFunction());
 
-    assertEquals("Joe", x.getFirstName());
-    assertEquals("Blow", x.getLastName());
-    assertEquals("Joe Blow", x.displayName());
+        Person x = new Person("Joe", "Blow");
+        Person y = new Person("Joe", "Blow");
 
-    x.setFirstName("Henry");
-    x.setLastName("Smith");
+        assertEquals("Joe", x.getFirstName());
+        assertEquals("Blow", x.getLastName());
+        assertEquals("Joe Blow", x.displayName());
 
-    assertEquals("Henry", x.getFirstName());
-    assertEquals("Smith", x.getLastName());
-    assertEquals("Henry Smith", x.displayName());
+        x.setFirstName("Henry");
+        x.setLastName("Smith");
+
+        assertEquals("Henry", x.getFirstName());
+        assertEquals("Smith", x.getLastName());
+        assertEquals("Henry Smith", x.displayName());
 
 
-    assertEquals("Joe", y.getFirstName());
-    assertEquals("Blow", y.getLastName());
-    assertEquals("Joe Blow", y.displayName());
+        assertEquals("Joe", y.getFirstName());
+        assertEquals("Blow", y.getLastName());
+        assertEquals("Joe Blow", y.displayName());
 
-  }
+    }
 
 }

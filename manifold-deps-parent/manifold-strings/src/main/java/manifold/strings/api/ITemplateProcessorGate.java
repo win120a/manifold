@@ -26,12 +26,12 @@ import manifold.rt.api.DisableStringLiteralTemplates;
  * @see DisableStringLiteralTemplates
  */
 @SuppressWarnings("unused")
-public interface ITemplateProcessorGate
-{
-  /**
-   * Return true if the {@code typeName} should be excluded from string template processing
-   * @param typeName A fully qualified type name.
-   * @return {@code true} to exclude {@code typeName} from string template processing, otherwise {@code false}.
-   */
-  boolean exclude( String typeName );
+public interface ITemplateProcessorGate {
+    /**
+     * Return true if the {@code typeName} should be excluded from string template processing
+     *
+     * @param typeName A fully qualified type name.
+     * @return {@code true} to exclude {@code typeName} from string template processing, otherwise {@code false}.
+     */
+    boolean exclude(String typeName);
 }

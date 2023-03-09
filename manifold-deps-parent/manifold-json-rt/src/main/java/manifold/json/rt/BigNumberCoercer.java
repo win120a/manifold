@@ -31,58 +31,49 @@ import static manifold.ext.rt.api.ICallHandler.UNHANDLED;
  * formats, but they fill a void where an API must use "big" numbers instead of {@code "integer"}
  * or {@code "number"}.
  */
-public class BigNumberCoercer implements IJsonFormatTypeCoercer
-{
-  private static final Map<String,Class<?>> ALL = new HashMap<String, Class<?>>() {{
-    put( "big-integer", BigInteger.class );
-    put( "big-decimal", BigDecimal.class );
-  }};
+public class BigNumberCoercer implements IJsonFormatTypeCoercer {
+    private static final Map<String, Class<?>> ALL = new HashMap<String, Class<?>>() {{
+        put("big-integer", BigInteger.class);
+        put("big-decimal", BigDecimal.class);
+    }};
 
-  @Override
-  public Map<String,Class<?>> getFormats()
-  {
-    return ALL;
-  }
-
-  @Override
-  public Object coerce( Object value, Type type )
-  {
-    //
-    // From JSON value to Java value
-    //
-    if( type == BigInteger.class && value instanceof String )
-    {
-      return "0" .equals( value ) ? BigInteger.ZERO : new BigInteger( (String)value );
-    }
-    if( type == BigDecimal.class && value instanceof String )
-    {
-      return "0" .equals( value ) ? BigDecimal.ZERO : new BigDecimal( (String)value );
+    @Override
+    public Map<String, Class<?>> getFormats() {
+        return ALL;
     }
 
-    //
-    // From Java value to JSON value
-    //
-    if( value instanceof BigInteger ||
-        value instanceof BigDecimal )
-    {
-      if( type == String.class )
-      {
-        return value.toString();
-      }
+    @Override
+    public Object coerce(Object value, Type type) {
+        //
+        // From JSON value to Java value
+        //
+        if (type == BigInteger.class && value instanceof String) {
+            return "0".equals(value) ? BigInteger.ZERO : new BigInteger((String) value);
+        }
+        if (type == BigDecimal.class && value instanceof String) {
+            return "0".equals(value) ? BigDecimal.ZERO : new BigDecimal((String) value);
+        }
+
+        //
+        // From Java value to JSON value
+        //
+        if (value instanceof BigInteger ||
+                value instanceof BigDecimal) {
+            if (type == String.class) {
+                return value.toString();
+            }
+        }
+
+        return UNHANDLED;
     }
 
-    return UNHANDLED;
-  }
+    @Override
+    public Object toBindingValue(Object value) {
+        if (value instanceof BigInteger ||
+                value instanceof BigDecimal) {
+            return value.toString();
+        }
 
-  @Override
-  public Object toBindingValue( Object value )
-  {
-    if( value instanceof BigInteger ||
-        value instanceof BigDecimal )
-    {
-      return value.toString();
+        return UNHANDLED;
     }
-
-    return UNHANDLED;
-  }
 }

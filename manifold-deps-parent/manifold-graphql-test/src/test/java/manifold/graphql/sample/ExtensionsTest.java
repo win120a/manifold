@@ -17,20 +17,19 @@
 package manifold.graphql.sample;
 
 import java.time.LocalDate;
+
 import junit.framework.TestCase;
 import org.junit.Test;
 
 import manifold.graphql.sample.movies.Person;
 
-public class ExtensionsTest
-{
-  @Test
-  public void testInnerExtension()
-  {
-    Person STEVE_MCQUEEN = Person.builder("foo", "Steve McQueen", LocalDate.now())
-      .withHeightInt(1)
-      .withNationality("American")
-      .build();
-    TestCase.assertEquals(1.0d, STEVE_MCQUEEN.getHeight());
-  }
+public class ExtensionsTest {
+    @Test
+    public void testInnerExtension() {
+        Person STEVE_MCQUEEN = Person.builder("foo", "Steve McQueen", LocalDate.now())
+                .withHeightInt(1)
+                .withNationality("American")
+                .build();
+        TestCase.assertEquals(1.0d, STEVE_MCQUEEN.getHeight());
+    }
 }

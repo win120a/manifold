@@ -21,8 +21,8 @@ package manifold.collections.api.range;
 import java.util.Iterator;
 
 /**
+ *
  */
-public abstract class AbstractLongIterator implements Iterator<Long>
-{
-  abstract public long nextLong();
+public abstract class AbstractLongIterator implements Iterator<Long> {
+    abstract public long nextLong();
 }

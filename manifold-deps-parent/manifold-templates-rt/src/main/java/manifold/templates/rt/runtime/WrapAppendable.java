@@ -17,6 +17,7 @@
 package manifold.templates.rt.runtime;
 
 import java.io.IOException;
+
 import manifold.util.ManExceptionUtil;
 
 /**
@@ -24,95 +25,70 @@ import manifold.util.ManExceptionUtil;
  * that otherwise are tedious to handle inside lambdas and 2. handle indentation for {@code nest}ing
  */
 @SuppressWarnings("unused")
-public class WrapAppendable implements Appendable
-{
-  private final Appendable _appendable;
-  private final StringBuilder _indentHolder;
-  private final String _indentation;
+public class WrapAppendable implements Appendable {
+    private final Appendable _appendable;
+    private final StringBuilder _indentHolder;
+    private final String _indentation;
 
-  public WrapAppendable( Appendable appendable, String indentation )
-  {
-    _indentation = indentation;
-    _appendable = appendable;
-    _indentHolder = new StringBuilder();
-  }
+    public WrapAppendable(Appendable appendable, String indentation) {
+        _indentation = indentation;
+        _appendable = appendable;
+        _indentHolder = new StringBuilder();
+    }
 
-  @Override
-  public Appendable append( CharSequence csq )
-  {
-    try
-    {
-      return getAppendable().append( csq );
-    }
-    catch( IOException e )
-    {
-      throw ManExceptionUtil.unchecked( e );
-    }
-  }
-
-  @Override
-  public Appendable append( CharSequence csq, int start, int end )
-  {
-    try
-    {
-      return getAppendable().append( csq, start, end );
-    }
-    catch( IOException e )
-    {
-      throw ManExceptionUtil.unchecked( e );
-    }
-  }
-
-  @Override
-  public Appendable append( char c )
-  {
-    try
-    {
-      return getAppendable().append( c );
-    }
-    catch( IOException e )
-    {
-      throw ManExceptionUtil.unchecked( e );
-    }
-  }
-
-  void complete()
-  {
-    if( _indentation.length() > 0 )
-    {
-      indent( _indentHolder );
-    }
-    else if( _indentHolder.length() > 0 )
-    {
-      throw new IllegalStateException( "Indentation state is invalid" );
-    }
-  }
-
-  private Appendable getAppendable()
-  {
-    return _indentation.length() == 0
-           ? _appendable    // append directly to target
-           : _indentHolder; // buffer appends, append to target in `complete()`
-  }
-
-  private void indent( CharSequence csq )
-  {
-    try
-    {
-      _appendable.append( _indentation );
-      for( int i = 0; i < csq.length(); i++ )
-      {
-        char c = csq.charAt( i );
-        _appendable.append( c );
-        if( c == '\n' )
-        {
-          _appendable.append( _indentation );
+    @Override
+    public Appendable append(CharSequence csq) {
+        try {
+            return getAppendable().append(csq);
+        } catch (IOException e) {
+            throw ManExceptionUtil.unchecked(e);
         }
-      }
     }
-    catch( IOException ioe )
-    {
-      throw new RuntimeException( ioe );
+
+    @Override
+    public Appendable append(CharSequence csq, int start, int end) {
+        try {
+            return getAppendable().append(csq, start, end);
+        } catch (IOException e) {
+            throw ManExceptionUtil.unchecked(e);
+        }
     }
-  }
+
+    @Override
+    public Appendable append(char c) {
+        try {
+            return getAppendable().append(c);
+        } catch (IOException e) {
+            throw ManExceptionUtil.unchecked(e);
+        }
+    }
+
+    void complete() {
+        if (_indentation.length() > 0) {
+            indent(_indentHolder);
+        } else if (_indentHolder.length() > 0) {
+            throw new IllegalStateException("Indentation state is invalid");
+        }
+    }
+
+    private Appendable getAppendable() {
+        return _indentation.length() == 0
+                ? _appendable    // append directly to target
+                : _indentHolder; // buffer appends, append to target in `complete()`
+    }
+
+    private void indent(CharSequence csq) {
+        try {
+            _appendable.append(_indentation);
+            for (int i = 0; i < csq.length(); i++) {
+                char c = csq.charAt(i);
+                _appendable.append(c);
+                if (c == '\n') {
+                    _appendable.append(_indentation);
+                }
+            }
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
 }

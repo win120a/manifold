@@ -22,7 +22,7 @@ import manifold.ext.rt.api.This;
 
 @Extension
 public class MySubClassExt {
-  public static String myMethod(@This SubClass thiz) {
-    return "myMethod";
-  }
+    public static String myMethod(@This SubClass thiz) {
+        return "myMethod";
+    }
 }

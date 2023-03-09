@@ -1,5 +1,8 @@
-import java.lang.System;
+import java
 
-function importAndPrint () {
+.
+lang.System;
+
+function importAndPrint() {
     System.out.println("Hello from System.out.println()");
 }

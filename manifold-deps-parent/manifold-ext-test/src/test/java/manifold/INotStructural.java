@@ -1,7 +1,7 @@
 package manifold;
 
 /**
+ *
  */
-public interface INotStructural
-{
+public interface INotStructural {
 }

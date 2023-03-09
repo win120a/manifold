@@ -17,29 +17,25 @@
 package manifold.preprocessor.statement;
 
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.TokenType;
 
-public class EmptyStatement extends Statement
-{
-  public EmptyStatement( TokenType tokenType, int start )
-  {
-    super( tokenType, start, start );
-  }
+public class EmptyStatement extends Statement {
+    public EmptyStatement(TokenType tokenType, int start) {
+        super(tokenType, start, start);
+    }
 
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-  }
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+    }
 
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-  }
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+    }
 
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    return false;
-  }
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        return false;
+    }
 }

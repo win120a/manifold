@@ -4,11 +4,12 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 /**
+ *
  */
 @Extension
-public class MyErrantStringBufferExt
-{
-  public static void thisIsOk( @This StringBuffer thiz ) {}
+public class MyErrantStringBufferExt {
+    public static void thisIsOk(@This StringBuffer thiz) {
+    }
 
 //  // error, overloads method in StringBuffer
 //  public static void append( @This StringBuffer thiz ) {}

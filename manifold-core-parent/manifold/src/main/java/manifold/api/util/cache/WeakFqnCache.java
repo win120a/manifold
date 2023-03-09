@@ -24,106 +24,89 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
+ *
  */
-public class WeakFqnCache<T> implements IFqnCache<T>
-{
-  private FqnCache<Reference<T>> _cache;
+public class WeakFqnCache<T> implements IFqnCache<T> {
+    private FqnCache<Reference<T>> _cache;
 
-  public WeakFqnCache()
-  {
-    _cache = new FqnCache<>();
-  }
+    public WeakFqnCache() {
+        _cache = new FqnCache<>();
+    }
 
-  @Override
-  public void add( String fqn )
-  {
-    add( fqn, null );
-  }
+    @Override
+    public void add(String fqn) {
+        add(fqn, null);
+    }
 
-  @Override
-  public void add( String fqn, T userData )
-  {
-    Reference<T> ref = new SoftReference<>( userData );
-    _cache.add( fqn, ref );
-  }
+    @Override
+    public void add(String fqn, T userData) {
+        Reference<T> ref = new SoftReference<>(userData);
+        _cache.add(fqn, ref);
+    }
 
-  @Override
-  public boolean remove( String fqn )
-  {
-    return _remove( fqn );
-  }
+    @Override
+    public boolean remove(String fqn) {
+        return _remove(fqn);
+    }
 
-  private boolean _remove( String fqn )
-  {
-    return _cache.remove( fqn );
-  }
+    private boolean _remove(String fqn) {
+        return _cache.remove(fqn);
+    }
 
-  @Override
-  public T get( String fqn )
-  {
-    Reference<T> ref = _cache.get( fqn );
-    return ref == null ? null : ref.get();
-  }
+    @Override
+    public T get(String fqn) {
+        Reference<T> ref = _cache.get(fqn);
+        return ref == null ? null : ref.get();
+    }
 
-  @Override
-  public FqnCacheNode<Reference<T>> getNode( String fqn )
-  {
-    return _cache.getNode( fqn );
-  }
+    @Override
+    public FqnCacheNode<Reference<T>> getNode(String fqn) {
+        return _cache.getNode(fqn);
+    }
 
-  @Override
-  public boolean contains( String fqn )
-  {
-    return _cache.contains( fqn );
-  }
+    @Override
+    public boolean contains(String fqn) {
+        return _cache.contains(fqn);
+    }
 
-  @Override
-  public void remove( String[] fqns )
-  {
+    @Override
+    public void remove(String[] fqns) {
 //    removeReleasedEntries();
-    _cache.remove( fqns );
-  }
-
-  @Override
-  public void clear()
-  {
-    _cache.clear();
-  }
-
-  @Override
-  public Set<String> getFqns()
-  {
-    return _cache.getFqns();
-  }
-
-  @Override
-  public boolean visitDepthFirst( final Predicate<T> visitor )
-  {
-    Predicate<Reference<T>> delegate = node -> {
-      T userData = node == null ? null : node.get();
-      return visitor.test( userData );
-    };
-    List<FqnCacheNode<Reference<T>>> copy = new ArrayList<>( _cache.getChildren() );
-    for( FqnCacheNode<Reference<T>> child : copy )
-    {
-      if( !child.visitDepthFirst( delegate ) )
-      {
-        return false;
-      }
+        _cache.remove(fqns);
     }
-    return true;
-  }
 
-  public boolean visitNodeDepthFirst( final Predicate<FqnCacheNode> visitor )
-  {
-    List<FqnCacheNode<Reference<T>>> copy = new ArrayList<>( _cache.getChildren() );
-    for( FqnCacheNode<Reference<T>> child : copy )
-    {
-      if( !child.visitNodeDepthFirst( visitor ) )
-      {
-        return false;
-      }
+    @Override
+    public void clear() {
+        _cache.clear();
     }
-    return true;
-  }
+
+    @Override
+    public Set<String> getFqns() {
+        return _cache.getFqns();
+    }
+
+    @Override
+    public boolean visitDepthFirst(final Predicate<T> visitor) {
+        Predicate<Reference<T>> delegate = node -> {
+            T userData = node == null ? null : node.get();
+            return visitor.test(userData);
+        };
+        List<FqnCacheNode<Reference<T>>> copy = new ArrayList<>(_cache.getChildren());
+        for (FqnCacheNode<Reference<T>> child : copy) {
+            if (!child.visitDepthFirst(delegate)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean visitNodeDepthFirst(final Predicate<FqnCacheNode> visitor) {
+        List<FqnCacheNode<Reference<T>>> copy = new ArrayList<>(_cache.getChildren());
+        for (FqnCacheNode<Reference<T>> child : copy) {
+            if (!child.visitNodeDepthFirst(visitor)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

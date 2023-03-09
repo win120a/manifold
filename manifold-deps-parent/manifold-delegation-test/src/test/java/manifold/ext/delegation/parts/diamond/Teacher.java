@@ -16,9 +16,8 @@
 
 package manifold.ext.delegation.parts.diamond;
 
-public interface Teacher extends Person
-{
-  enum Department {Math, Science, Engineering}
+public interface Teacher extends Person {
+    enum Department {Math, Science, Engineering}
 
-  Department getDepartment();
+    Department getDepartment();
 }

@@ -1,14 +1,14 @@
-
 function bar() {
-  return "Yay"
+    return "Yay"
 }
 
 var x = 0;
+
 function incrementAndGet() {
-  x = x + 1;
-  return x;
+    x = x + 1;
+    return x;
 }
 
 function identity(x) {
-  return x
+    return x
 }

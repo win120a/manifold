@@ -18,39 +18,34 @@ package manifold.json.rt.parser;
 
 import java.io.StringReader;
 import java.util.List;
+
 import manifold.rt.api.ScriptException;
 
 import manifold.json.rt.api.IJsonParser;
 import manifold.rt.api.util.Pair;
 
-public class DefaultParser implements IJsonParser
-{
-  private static final DefaultParser INSTANCE = new DefaultParser();
+public class DefaultParser implements IJsonParser {
+    private static final DefaultParser INSTANCE = new DefaultParser();
 
-  public static IJsonParser instance()
-  {
-    return INSTANCE;
-  }
+    public static IJsonParser instance() {
+        return INSTANCE;
+    }
 
-  @Override
-  public Object parseJson( String jsonText, boolean withBigNumbers, boolean withTokens ) throws ScriptException
-  {
-    SimpleParserImpl parser = new SimpleParserImpl( new Tokenizer( new StringReader( jsonText ) ), withBigNumbers );
-    Object result = parser.parse( withTokens );
-    List<String> errors = parser.getErrors();
-    if( errors.size() != 0 )
-    {
-      StringBuilder sb = new StringBuilder( "Found errors:\n" );
-      for( String err: errors )
-      {
-        sb.append( err ).append( "\n" );
-      }
-      throw new ScriptException( sb.toString() );
+    @Override
+    public Object parseJson(String jsonText, boolean withBigNumbers, boolean withTokens) throws ScriptException {
+        SimpleParserImpl parser = new SimpleParserImpl(new Tokenizer(new StringReader(jsonText)), withBigNumbers);
+        Object result = parser.parse(withTokens);
+        List<String> errors = parser.getErrors();
+        if (errors.size() != 0) {
+            StringBuilder sb = new StringBuilder("Found errors:\n");
+            for (String err : errors) {
+                sb.append(err).append("\n");
+            }
+            throw new ScriptException(sb.toString());
+        }
+        if (result instanceof Pair) {
+            result = ((Pair) result).getSecond();
+        }
+        return result;
     }
-    if( result instanceof Pair )
-    {
-      result = ((Pair)result).getSecond();
-    }
-    return result;
-  }
 }

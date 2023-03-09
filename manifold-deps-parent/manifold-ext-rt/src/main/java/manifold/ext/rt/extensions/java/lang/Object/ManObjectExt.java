@@ -23,27 +23,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Extension
-public class ManObjectExt
-{
-  private static final Map<Class,Object> classToEmptyArray = new ConcurrentHashMap<>();
+public class ManObjectExt {
+    private static final Map<Class, Object> classToEmptyArray = new ConcurrentHashMap<>();
 
-  /**
-   * Use this method to type-safely access private and other inaccessible members of the receiver of the call.
-   * @see Jailbreak
-   */
-  public static @Jailbreak @Self Object jailbreak( @This Object thiz )
-  {
-    return thiz;
-  }
+    /**
+     * Use this method to type-safely access private and other inaccessible members of the receiver of the call.
+     *
+     * @see Jailbreak
+     */
+    public static @Jailbreak
+    @Self Object jailbreak(@This Object thiz) {
+        return thiz;
+    }
 
-  /**
-   * Get a cached empty array value for this class. Use this method to avoid calling {@code new Foobar[0]} in your code.
-   * <pre><code>
-   * Foobar[] empty = Foobar.emptyArray();
-   * </code></pre>
-   */
-  public static <E> E[] emptyArray( @ThisClass Class<E> callingClass )
-  {
-    return (E[])classToEmptyArray.computeIfAbsent( callingClass, key -> Array.newInstance( key, 0 ) );
-  }
+    /**
+     * Get a cached empty array value for this class. Use this method to avoid calling {@code new Foobar[0]} in your code.
+     * <pre><code>
+     * Foobar[] empty = Foobar.emptyArray();
+     * </code></pre>
+     */
+    public static <E> E[] emptyArray(@ThisClass Class<E> callingClass) {
+        return (E[]) classToEmptyArray.computeIfAbsent(callingClass, key -> Array.newInstance(key, 0));
+    }
 }

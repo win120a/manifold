@@ -20,10 +20,12 @@ import manifold.ext.rt.api.auto;
 
 import java.util.ArrayList;
 
-public class FieldAutos
-{
-  Object circularRef = new BasicTest();
+public class FieldAutos {
+    Object circularRef = new BasicTest();
 
-  auto _myTuple = (foo: "foo", bar: "bar");
-  auto _myList = new ArrayList<String>() {{add("hi"); add("bye");}};
+    auto _myTuple = (foo:"foo",bar:"bar");
+    auto _myList = new ArrayList<String>() {{
+        add("hi");
+        add("bye");
+    }};
 }

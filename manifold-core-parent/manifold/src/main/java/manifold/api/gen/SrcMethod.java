@@ -17,29 +17,24 @@
 package manifold.api.gen;
 
 /**
+ *
  */
-public class SrcMethod extends AbstractSrcMethod<SrcMethod>
-{
-  public SrcMethod()
-  {
-    this( null );
-  }
+public class SrcMethod extends AbstractSrcMethod<SrcMethod> {
+    public SrcMethod() {
+        this(null);
+    }
 
-  public SrcMethod( AbstractSrcClass srcClass )
-  {
-    this( srcClass, false );
-  }
-  public SrcMethod( AbstractSrcClass srcClass, boolean isCtor )
-  {
-    super( srcClass );
-    setConstructor( isCtor );
-    if( !isCtor )
-    {
-      returns( "void" );
+    public SrcMethod(AbstractSrcClass srcClass) {
+        this(srcClass, false);
     }
-    else
-    {
-      name( srcClass.getSimpleName() );
+
+    public SrcMethod(AbstractSrcClass srcClass, boolean isCtor) {
+        super(srcClass);
+        setConstructor(isCtor);
+        if (!isCtor) {
+            returns("void");
+        } else {
+            name(srcClass.getSimpleName());
+        }
     }
-  }
 }

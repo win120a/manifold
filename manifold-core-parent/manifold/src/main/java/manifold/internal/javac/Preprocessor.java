@@ -18,6 +18,7 @@ package manifold.internal.javac;
 
 import com.sun.tools.javac.parser.ParserFactory;
 import com.sun.tools.javac.util.Context;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.tools.JavaFileObject;
+
 import manifold.api.type.IPreprocessor;
 import manifold.rt.api.util.ServiceUtil;
 import manifold.util.JreUtil;
@@ -32,45 +34,39 @@ import manifold.util.ReflectUtil;
 import manifold.util.concurrent.LocklessLazyVar;
 
 
-public class Preprocessor
-{
-  private static final Context.Key<Preprocessor> preprocessorKey = new Context.Key<>();
-  private static final LocklessLazyVar<List<IPreprocessor>> _registeredPreprocessors =
-    LocklessLazyVar.make( () -> {
-      Set<IPreprocessor> registered = new HashSet<>();
-      ServiceUtil.loadRegisteredServices( registered, IPreprocessor.class, Preprocessor.class.getClassLoader() );
-      // sort according to preferred order
-      ArrayList<IPreprocessor> processors = new ArrayList<>( registered );
-      processors.sort( Comparator.comparingInt( p -> p.getPreferredOrder().ordinal() ) );
-      return processors;
-    } );
+public class Preprocessor {
+    private static final Context.Key<Preprocessor> preprocessorKey = new Context.Key<>();
+    private static final LocklessLazyVar<List<IPreprocessor>> _registeredPreprocessors =
+            LocklessLazyVar.make(() -> {
+                Set<IPreprocessor> registered = new HashSet<>();
+                ServiceUtil.loadRegisteredServices(registered, IPreprocessor.class, Preprocessor.class.getClassLoader());
+                // sort according to preferred order
+                ArrayList<IPreprocessor> processors = new ArrayList<>(registered);
+                processors.sort(Comparator.comparingInt(p -> p.getPreferredOrder().ordinal()));
+                return processors;
+            });
 
-  private final ParserFactory _parserFactory;
+    private final ParserFactory _parserFactory;
 
-  public static Preprocessor instance( Context context )
-  {
-    Preprocessor instance = context.get( preprocessorKey );
-    if( instance == null )
-    {
-      instance = new Preprocessor( context );
+    public static Preprocessor instance(Context context) {
+        Preprocessor instance = context.get(preprocessorKey);
+        if (instance == null) {
+            instance = new Preprocessor(context);
+        }
+        return instance;
     }
-    return instance;
-  }
 
-  private Preprocessor( Context context )
-  {
-    // override the ParserFactory to support fragments in comments and string literals
-    _parserFactory = (ParserFactory)ReflectUtil.method(
-      "manifold.internal.javac.ManParserFactory_" + (JreUtil.isJava17orLater() ? 17 : 8),
-      "instance", Context.class ).invokeStatic( context );
-  }
-
-  public CharSequence process( JavaFileObject sourceFile, CharSequence input )
-  {
-    for( IPreprocessor preprocessor: Objects.requireNonNull( _registeredPreprocessors.get() ) )
-    {
-      input = preprocessor.process( sourceFile.toUri(), input );
+    private Preprocessor(Context context) {
+        // override the ParserFactory to support fragments in comments and string literals
+        _parserFactory = (ParserFactory) ReflectUtil.method(
+                "manifold.internal.javac.ManParserFactory_" + (JreUtil.isJava17orLater() ? 17 : 8),
+                "instance", Context.class).invokeStatic(context);
     }
-    return input;
-  }
+
+    public CharSequence process(JavaFileObject sourceFile, CharSequence input) {
+        for (IPreprocessor preprocessor : Objects.requireNonNull(_registeredPreprocessors.get())) {
+            input = preprocessor.process(sourceFile.toUri(), input);
+        }
+        return input;
+    }
 }

@@ -4,6 +4,8 @@
   "$comment": "Tests referencing a subschema from a subpath",
   "type": "object",
   "properties": {
-    "subTest": { "$ref": "sub/SubTest1.json" }
+    "subTest": {
+      "$ref": "sub/SubTest1.json"
+    }
   }
 }

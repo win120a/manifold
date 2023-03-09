@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.fs.IDirectory;
 import manifold.api.fs.IFile;
 import manifold.api.fs.IFileSystem;
@@ -49,151 +50,135 @@ import manifold.rt.api.util.ServiceUtil;
  * Otherwise, because compilation is not intermodular and because runtime is flattened, modules consist
  * of a single "default" module.
  */
-public interface IModule
-{
-  IManifoldHost getHost();
+public interface IModule {
+    IManifoldHost getHost();
 
-  String getName();
+    String getName();
 
-  /**
-   * The path[s] having source files that should be exposed to this module.
-   */
-  List<IDirectory> getSourcePath();
+    /**
+     * The path[s] having source files that should be exposed to this module.
+     */
+    List<IDirectory> getSourcePath();
 
-  List<IDirectory> getJavaClassPath();
+    List<IDirectory> getJavaClassPath();
 
-  List<IDirectory> getOutputPath();
+    List<IDirectory> getOutputPath();
 
-  IDirectory[] getExcludedPath();
+    IDirectory[] getExcludedPath();
 
-  List<IDirectory> getCollectiveSourcePath();
+    List<IDirectory> getCollectiveSourcePath();
 
-  List<IDirectory> getCollectiveJavaClassPath();
+    List<IDirectory> getCollectiveJavaClassPath();
 
-  default IFileSystem getFileSystem()
-  {
-    return getHost().getFileSystem();
-  }
-
-  /**
-   * @return A list of dependency modules.
-   * The dependency graph must not have cycles.
-   */
-  List<Dependency> getDependencies();
-
-  PathCache getPathCache();
-
-  Set<ITypeManifold> getTypeManifolds();
-
-  JavaFileObject produceFile( String fqn, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler );
-
-  default Set<ITypeManifold> findTypeManifoldsFor( String fqn )
-  {
-    return findTypeManifoldsFor( fqn, null );
-  }
-  /**
-   * Finds the set of type manifolds that contribute toward the definition of a given type.
-   *
-   * @param fqn       A fully qualified type name
-   * @param predicate A predicate to filter the set of type manifolds available
-   *
-   * @return The set of type manifolds that contribute toward the definition of {@code fqn}
-   */
-  default Set<ITypeManifold> findTypeManifoldsFor( String fqn, Predicate<ITypeManifold> predicate )
-  {
-    Set<ITypeManifold> tms = null;
-    Set<ITypeManifold> typeManifolds = getTypeManifolds();
-    for( ITypeManifold tm : typeManifolds )
-    {
-      if( (predicate == null || predicate.test( tm )) &&
-          tm.isType( fqn ) )
-      {
-        tms = tms == null ? new HashSet<>( 2 ) : tms;
-        tms.add( tm );
-      }
+    default IFileSystem getFileSystem() {
+        return getHost().getFileSystem();
     }
-    return tms == null ? Collections.emptySet() : tms;
-  }
 
-  default Set<ITypeManifold> findTypeManifoldsFor( IFile file )
-  {
-    return findTypeManifoldsFor( file, null );
-  }
-  /**
-   * Finds the set of type manifolds that handle a given resource file.
-   *
-   * @param file A resource file
-   * @param predicate A predicate to filter the set of type manifolds available
-   *
-   * @return The set of type manifolds that handle {@code file}
-   */
-  default Set<ITypeManifold> findTypeManifoldsFor( IFile file, Predicate<ITypeManifold> predicate )
-  {
-    Set<ITypeManifold> tms = null;
-    Set<ITypeManifold> typeManifolds = getTypeManifolds();
-    for( ITypeManifold tm : typeManifolds )
-    {
-      if( (predicate == null || predicate.test( tm )) &&
-          tm.handlesFile( file ) )
-      {
-        tms = tms == null ? new HashSet<>( 2 ) : tms;
-        tms.add( tm );
-      }
+    /**
+     * @return A list of dependency modules.
+     * The dependency graph must not have cycles.
+     */
+    List<Dependency> getDependencies();
+
+    PathCache getPathCache();
+
+    Set<ITypeManifold> getTypeManifolds();
+
+    JavaFileObject produceFile(String fqn, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler);
+
+    default Set<ITypeManifold> findTypeManifoldsFor(String fqn) {
+        return findTypeManifoldsFor(fqn, null);
     }
-    return tms == null ? Collections.emptySet() : tms;
-  }
 
-  /**
-   * Loads, but does not initialize, all type manifolds managed by this module.
-   *
-   * @return The complete set of type manifolds this module manages.
-   */
-  default SortedSet<ITypeManifold> loadTypeManifolds()
-  {
-    // note type manifolds are sorted via getTypeManifoldSorter(), hence the use of TreeSet
-    SortedSet<ITypeManifold> typeManifolds = new TreeSet<>( getTypeManifoldSorter() );
-    loadRegistered( typeManifolds );
-    return typeManifolds;
-  }
-
-  /**
-   * Supplemental type manifolds must follow others, this is so that a Supplemental
-   * manifold in response to changes can be sure that side effects stemming from
-   * Primary or Partial manifolds are deterministic and complete beforehand.
-   * <p/>
-   * Implementors <b>must</b> maintain this as the primary sort.
-   */
-  default Comparator<ITypeManifold> getTypeManifoldSorter()
-  {
-    //noinspection ComparatorMethodParameterNotUsed
-    return (tm1, tm2) -> tm1.getContributorKind() == ContributorKind.Supplemental ? 1 : -1;
-  }
-
-  default List<String> getExcludedTypeManifolds()
-  {
-    String exclude = System.getProperty( "manifold.exclude" );
-    if( exclude != null && !exclude.isEmpty() )
-    {
-      List<String> excluded = new ArrayList<>();
-      for( StringTokenizer tokenizer = new StringTokenizer( exclude, "," ); tokenizer.hasMoreTokens(); )
-      {
-        String excludedTypeManifold = tokenizer.nextToken().trim();
-        excluded.add( excludedTypeManifold );
-      }
-      return excluded;
+    /**
+     * Finds the set of type manifolds that contribute toward the definition of a given type.
+     *
+     * @param fqn       A fully qualified type name
+     * @param predicate A predicate to filter the set of type manifolds available
+     * @return The set of type manifolds that contribute toward the definition of {@code fqn}
+     */
+    default Set<ITypeManifold> findTypeManifoldsFor(String fqn, Predicate<ITypeManifold> predicate) {
+        Set<ITypeManifold> tms = null;
+        Set<ITypeManifold> typeManifolds = getTypeManifolds();
+        for (ITypeManifold tm : typeManifolds) {
+            if ((predicate == null || predicate.test(tm)) &&
+                    tm.isType(fqn)) {
+                tms = tms == null ? new HashSet<>(2) : tms;
+                tms.add(tm);
+            }
+        }
+        return tms == null ? Collections.emptySet() : tms;
     }
-    return Collections.emptyList();
-  }
 
-  default void loadRegistered( Set<ITypeManifold> tms )
-  {
-    Set<ITypeManifold> registeredTms = new HashSet<>();
-    ServiceUtil.loadRegisteredServices( registeredTms, ITypeManifold.class, getClass().getClassLoader() );
+    default Set<ITypeManifold> findTypeManifoldsFor(IFile file) {
+        return findTypeManifoldsFor(file, null);
+    }
 
-    // Exclude type manifolds listed in the "manifold.exclude" sys property
-    List<String> excludedTypeManifolds = getExcludedTypeManifolds();
-    tms.addAll( registeredTms.stream()
-      .filter( tm -> tm.accept( this ) && !excludedTypeManifolds.contains( tm.getClass().getTypeName() ) )
-      .collect( Collectors.toSet() ) );
-  }
+    /**
+     * Finds the set of type manifolds that handle a given resource file.
+     *
+     * @param file      A resource file
+     * @param predicate A predicate to filter the set of type manifolds available
+     * @return The set of type manifolds that handle {@code file}
+     */
+    default Set<ITypeManifold> findTypeManifoldsFor(IFile file, Predicate<ITypeManifold> predicate) {
+        Set<ITypeManifold> tms = null;
+        Set<ITypeManifold> typeManifolds = getTypeManifolds();
+        for (ITypeManifold tm : typeManifolds) {
+            if ((predicate == null || predicate.test(tm)) &&
+                    tm.handlesFile(file)) {
+                tms = tms == null ? new HashSet<>(2) : tms;
+                tms.add(tm);
+            }
+        }
+        return tms == null ? Collections.emptySet() : tms;
+    }
+
+    /**
+     * Loads, but does not initialize, all type manifolds managed by this module.
+     *
+     * @return The complete set of type manifolds this module manages.
+     */
+    default SortedSet<ITypeManifold> loadTypeManifolds() {
+        // note type manifolds are sorted via getTypeManifoldSorter(), hence the use of TreeSet
+        SortedSet<ITypeManifold> typeManifolds = new TreeSet<>(getTypeManifoldSorter());
+        loadRegistered(typeManifolds);
+        return typeManifolds;
+    }
+
+    /**
+     * Supplemental type manifolds must follow others, this is so that a Supplemental
+     * manifold in response to changes can be sure that side effects stemming from
+     * Primary or Partial manifolds are deterministic and complete beforehand.
+     * <p/>
+     * Implementors <b>must</b> maintain this as the primary sort.
+     */
+    default Comparator<ITypeManifold> getTypeManifoldSorter() {
+        //noinspection ComparatorMethodParameterNotUsed
+        return (tm1, tm2) -> tm1.getContributorKind() == ContributorKind.Supplemental ? 1 : -1;
+    }
+
+    default List<String> getExcludedTypeManifolds() {
+        String exclude = System.getProperty("manifold.exclude");
+        if (exclude != null && !exclude.isEmpty()) {
+            List<String> excluded = new ArrayList<>();
+            for (StringTokenizer tokenizer = new StringTokenizer(exclude, ","); tokenizer.hasMoreTokens(); ) {
+                String excludedTypeManifold = tokenizer.nextToken().trim();
+                excluded.add(excludedTypeManifold);
+            }
+            return excluded;
+        }
+        return Collections.emptyList();
+    }
+
+    default void loadRegistered(Set<ITypeManifold> tms) {
+        Set<ITypeManifold> registeredTms = new HashSet<>();
+        ServiceUtil.loadRegisteredServices(registeredTms, ITypeManifold.class, getClass().getClassLoader());
+
+        // Exclude type manifolds listed in the "manifold.exclude" sys property
+        List<String> excludedTypeManifolds = getExcludedTypeManifolds();
+        tms.addAll(registeredTms.stream()
+                .filter(tm -> tm.accept(this) && !excludedTypeManifolds.contains(tm.getClass().getTypeName()))
+                .collect(Collectors.toSet()));
+    }
 }

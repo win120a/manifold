@@ -16,10 +16,13 @@
 
 package manifold.api.type;
 
-/** Delegates behavior to {@link manifold.api.type.ISelfCompiled} */
-public interface ISelfCompiledFile
-{
-  boolean isSelfCompile( String fqn );
-  void parse( String fqn );
-  byte[] compile( String fqn );
+/**
+ * Delegates behavior to {@link manifold.api.type.ISelfCompiled}
+ */
+public interface ISelfCompiledFile {
+    boolean isSelfCompile(String fqn);
+
+    void parse(String fqn);
+
+    byte[] compile(String fqn);
 }

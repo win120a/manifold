@@ -18,31 +18,26 @@ package manifold.csv.rt.parser;
 
 import java.util.List;
 
-public class CsvDataSet
-{
-  private final CsvHeader _header;
-  private final List<Class> _types;
-  private List<CsvRecord> _records;
+public class CsvDataSet {
+    private final CsvHeader _header;
+    private final List<Class> _types;
+    private List<CsvRecord> _records;
 
-  public CsvDataSet( CsvHeader header, List<CsvRecord> records, List<Class> types )
-  {
-    _header = header;
-    _records = records;
-    _types = types;
-  }
+    public CsvDataSet(CsvHeader header, List<CsvRecord> records, List<Class> types) {
+        _header = header;
+        _records = records;
+        _types = types;
+    }
 
-  public CsvHeader getHeader()
-  {
-    return _header;
-  }
+    public CsvHeader getHeader() {
+        return _header;
+    }
 
-  public List<CsvRecord> getRecords()
-  {
-    return _records;
-  }
+    public List<CsvRecord> getRecords() {
+        return _records;
+    }
 
-  public List<Class> getTypes()
-  {
-    return _types;
-  }
+    public List<Class> getTypes() {
+        return _types;
+    }
 }

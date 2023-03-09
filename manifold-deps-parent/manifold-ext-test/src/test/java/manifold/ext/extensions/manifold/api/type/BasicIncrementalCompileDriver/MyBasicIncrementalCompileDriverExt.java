@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyBasicIncrementalCompileDriverExt
-{
-  public static String hiBasic( @This BasicIncrementalCompileDriver thiz )
-  {
-    return "hiBasic";
-  }
+public class MyBasicIncrementalCompileDriverExt {
+    public static String hiBasic(@This BasicIncrementalCompileDriver thiz) {
+        return "hiBasic";
+    }
 }

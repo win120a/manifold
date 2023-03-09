@@ -25,70 +25,68 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Extension
-public class ManMapExt
-{
-  /**
-   * Implements the indexed assignment operator for Map to enable the syntax: {@code map[key] = value}
-   * <p>
-   * @see Map#put(Object, Object)
-   * <p>
-   * @param key key with which the specified value is to be associated
-   * @param value value to be associated with the specified key
-   * @return the previous value associated with <tt>key</tt>, or
-   *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
-   *         (A <tt>null</tt> return can also indicate that the map
-   *         previously associated <tt>null</tt> with <tt>key</tt>,
-   *         if the implementation supports <tt>null</tt> values.)
-   * @throws UnsupportedOperationException if the <tt>put</tt> operation
-   *         is not supported by this map
-   * @throws ClassCastException if the class of the specified key or value
-   *         prevents it from being stored in this map
-   * @throws NullPointerException if the specified key or value is null
-   *         and this map does not permit null keys or values
-   * @throws IllegalArgumentException if some property of the specified key
-   *         or value prevents it from being stored in this map
-   */
-  public static <K,V> V set( @This Map<K,V> thiz, K key, V value )
-  {
-    return thiz.put( key, value );
-  }
-
-  /**
-   * For use with the {@code key and value} binding expression syntax using {@link Pair#and}.
-   * <br>
-   * <pre><code>
-   * import static manifold.rt.api.util.Pair.and;
-   * Map&lt;String, Integer&gt; scores =
-   *   mapOf("Moe" and 100, "Larry" and 107, "Curly" and 111);
-   * </code></pre>
-   * Returns a new read-only map with the specified contents, given as a list of pairs where the first value is the key and the second is the value.
-   * <p/>
-   * If multiple pairs have the same key, the resulting map will contain the value from the last of those pairs.
-   * <p/>
-   * Entries of the map are iterated in the order they were specified.
-   * <p>
-   * @see Map#put(Object, Object)
-   * <p>
-   * @param entries key/value pairs, for use with the {@code key and value} binding expression syntax via {@link Pair#and}.
-   * @return a new read-only, ordered map with the specified contents.
-   * @throws UnsupportedOperationException if the <tt>put</tt> operation
-   *         is not supported by this map
-   * @throws ClassCastException if the class of the specified key or value
-   *         prevents it from being stored in this map
-   * @throws NullPointerException if the specified key or value is null
-   *         and this map does not permit null keys or values
-   * @throws IllegalArgumentException if some property of the specified key
-   *         or value prevents it from being stored in this map
-   */
-  @SafeVarargs
-  @Extension
-  public static <K,V> Map<K,V> mapOf( Pair<K,V>... entries )
-  {
-    LinkedHashMap<K,V> map = new LinkedHashMap<>( entries.length );
-    for( Pair<K,V> pair : entries )
-    {
-      map.put( pair.getFirst(), pair.getSecond() );
+public class ManMapExt {
+    /**
+     * Implements the indexed assignment operator for Map to enable the syntax: {@code map[key] = value}
+     * <p>
+     *
+     * @param key   key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with <tt>key</tt>, or
+     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
+     * (A <tt>null</tt> return can also indicate that the map
+     * previously associated <tt>null</tt> with <tt>key</tt>,
+     * if the implementation supports <tt>null</tt> values.)
+     * @throws UnsupportedOperationException if the <tt>put</tt> operation
+     *                                       is not supported by this map
+     * @throws ClassCastException            if the class of the specified key or value
+     *                                       prevents it from being stored in this map
+     * @throws NullPointerException          if the specified key or value is null
+     *                                       and this map does not permit null keys or values
+     * @throws IllegalArgumentException      if some property of the specified key
+     *                                       or value prevents it from being stored in this map
+     * @see Map#put(Object, Object)
+     * <p>
+     */
+    public static <K, V> V set(@This Map<K, V> thiz, K key, V value) {
+        return thiz.put(key, value);
     }
-    return Collections.unmodifiableMap( map );
-  }
+
+    /**
+     * For use with the {@code key and value} binding expression syntax using {@link Pair#and}.
+     * <br>
+     * <pre><code>
+     * import static manifold.rt.api.util.Pair.and;
+     * Map&lt;String, Integer&gt; scores =
+     *   mapOf("Moe" and 100, "Larry" and 107, "Curly" and 111);
+     * </code></pre>
+     * Returns a new read-only map with the specified contents, given as a list of pairs where the first value is the key and the second is the value.
+     * <p/>
+     * If multiple pairs have the same key, the resulting map will contain the value from the last of those pairs.
+     * <p/>
+     * Entries of the map are iterated in the order they were specified.
+     * <p>
+     *
+     * @param entries key/value pairs, for use with the {@code key and value} binding expression syntax via {@link Pair#and}.
+     * @return a new read-only, ordered map with the specified contents.
+     * @throws UnsupportedOperationException if the <tt>put</tt> operation
+     *                                       is not supported by this map
+     * @throws ClassCastException            if the class of the specified key or value
+     *                                       prevents it from being stored in this map
+     * @throws NullPointerException          if the specified key or value is null
+     *                                       and this map does not permit null keys or values
+     * @throws IllegalArgumentException      if some property of the specified key
+     *                                       or value prevents it from being stored in this map
+     * @see Map#put(Object, Object)
+     * <p>
+     */
+    @SafeVarargs
+    @Extension
+    public static <K, V> Map<K, V> mapOf(Pair<K, V>... entries) {
+        LinkedHashMap<K, V> map = new LinkedHashMap<>(entries.length);
+        for (Pair<K, V> pair : entries) {
+            map.put(pair.getFirst(), pair.getSecond());
+        }
+        return Collections.unmodifiableMap(map);
+    }
 }

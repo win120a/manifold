@@ -16,42 +16,41 @@
 
 package manifold.graphql.rt.api;
 
-public class Config
-{
-  private static final Config INSTANCE = new Config();
-  public static Config instance()
-  {
-    return INSTANCE;
-  }
+public class Config {
+    private static final Config INSTANCE = new Config();
 
-  private boolean _removeNullConstraintValues;
+    public static Config instance() {
+        return INSTANCE;
+    }
 
-  /**
-   * If true, recursively removes all {@code null} values from the <i>variables</i> component
-   * of the GraphQL request payload, otherwise {@code null} are retained. Note the treatment
-   * of {@code null} variable values is not well established by the GraphQL specification. It
-   * states that:
-   * <p/>
-   * <i>null <b>may be</b> interpreted differently</i>
-   * <p/>
-   * while also stating:<p/>
-   * <i>
-   *   The same two methods of representing the lack of a value are possible via variables by
-   *   either providing the a variable value as null and not providing a variable value at all.
-   * </i>
-   * <p/>
-   * See https://spec.graphql.org/October2016/#sec-Null-Value.
-   * <p/>
-   * Note, the default setting is {@code false}, which does <i>not</i> remove {@code null} variable/input values.
-   */
-  public boolean isRemoveNullConstraintValues()
-  {
-    return _removeNullConstraintValues;
-  }
-  public void setRemoveNullConstraintValues( boolean value )
-  {
-    _removeNullConstraintValues = value;
-  }
+    private boolean _removeNullConstraintValues;
 
-  private Config() {}
+    /**
+     * If true, recursively removes all {@code null} values from the <i>variables</i> component
+     * of the GraphQL request payload, otherwise {@code null} are retained. Note the treatment
+     * of {@code null} variable values is not well established by the GraphQL specification. It
+     * states that:
+     * <p/>
+     * <i>null <b>may be</b> interpreted differently</i>
+     * <p/>
+     * while also stating:<p/>
+     * <i>
+     * The same two methods of representing the lack of a value are possible via variables by
+     * either providing the a variable value as null and not providing a variable value at all.
+     * </i>
+     * <p/>
+     * See https://spec.graphql.org/October2016/#sec-Null-Value.
+     * <p/>
+     * Note, the default setting is {@code false}, which does <i>not</i> remove {@code null} variable/input values.
+     */
+    public boolean isRemoveNullConstraintValues() {
+        return _removeNullConstraintValues;
+    }
+
+    public void setRemoveNullConstraintValues(boolean value) {
+        _removeNullConstraintValues = value;
+    }
+
+    private Config() {
+    }
 }

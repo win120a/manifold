@@ -28,73 +28,62 @@ import static manifold.science.util.Rational.ONE;
  * Represents a binary quotient of unit types of measure such as {@link VelocityUnit} which is the quotient of
  * {@link LengthUnit} and {@link TimeUnit}.
  * <p/>
+ *
  * @param <A> The unit type on the left hand side
  * @param <B> The unit type on the right hand side
  * @param <D> The {@link Dimension} type expressed using this binary unit type
  * @param <U> This type (recursive to enforce type-safety).
  */
 public abstract class AbstractQuotientUnit<A extends Unit,
-  B extends Unit,
-  D extends Dimension<D>,
-  U extends AbstractQuotientUnit<A, B, D, U>> extends AbstractBinaryUnit<A, B, D, U>
-{
+        B extends Unit,
+        D extends Dimension<D>,
+        U extends AbstractQuotientUnit<A, B, D, U>> extends AbstractBinaryUnit<A, B, D, U> {
 
-  protected AbstractQuotientUnit( A leftUnit, B rightUnit )
-  {
-    this( leftUnit, rightUnit, null, null, null );
-  }
+    protected AbstractQuotientUnit(A leftUnit, B rightUnit) {
+        this(leftUnit, rightUnit, null, null, null);
+    }
 
-  protected AbstractQuotientUnit( A leftUnit, B rightUnit, Rational factor )
-  {
-    this( leftUnit, rightUnit, factor, null, null );
-  }
+    protected AbstractQuotientUnit(A leftUnit, B rightUnit, Rational factor) {
+        this(leftUnit, rightUnit, factor, null, null);
+    }
 
-  protected AbstractQuotientUnit( A leftUnit, B rightUnit, Rational factor, String name )
-  {
-    this( leftUnit, rightUnit, factor, name, null );
-  }
+    protected AbstractQuotientUnit(A leftUnit, B rightUnit, Rational factor, String name) {
+        this(leftUnit, rightUnit, factor, name, null);
+    }
 
-  protected AbstractQuotientUnit( A leftUnit, B rightUnit, Rational factor, String name, String symbol )
-  {
-    super( leftUnit, rightUnit, factor, name, symbol );
-  }
+    protected AbstractQuotientUnit(A leftUnit, B rightUnit, Rational factor, String name, String symbol) {
+        super(leftUnit, rightUnit, factor, name, symbol);
+    }
 
-  public String getName()
-  {
-    return super.getName() == null
-           ? getLeftUnit().getName() + "/" + getRightUnit().getName()
-           : super.getName();
-  }
+    public String getName() {
+        return super.getName() == null
+                ? getLeftUnit().getName() + "/" + getRightUnit().getName()
+                : super.getName();
+    }
 
-  public String getSymbol()
-  {
-    return super.getSymbol() == null
-           ? getLeftUnit().getSymbol() + "/" + getRightUnit().getSymbol()
-           : super.getSymbol();
-  }
+    public String getSymbol() {
+        return super.getSymbol() == null
+                ? getLeftUnit().getSymbol() + "/" + getRightUnit().getSymbol()
+                : super.getSymbol();
+    }
 
-  public String getFullName()
-  {
-    return getLeftUnit().getFullName() + "/" + getRightUnit().getFullName();
-  }
+    public String getFullName() {
+        return getLeftUnit().getFullName() + "/" + getRightUnit().getFullName();
+    }
 
-  public String getFullSymbol()
-  {
-    return getLeftUnit().getFullSymbol() + "/" + getRightUnit().getFullSymbol();
-  }
+    public String getFullSymbol() {
+        return getLeftUnit().getFullSymbol() + "/" + getRightUnit().getFullSymbol();
+    }
 
-  public Rational toBaseUnits( Rational myUnits )
-  {
-    return (getLeftUnit().toBaseUnits( ONE ) / getRightUnit().toBaseUnits( ONE )) * myUnits * getFactor();
-  }
+    public Rational toBaseUnits(Rational myUnits) {
+        return (getLeftUnit().toBaseUnits(ONE) / getRightUnit().toBaseUnits(ONE)) * myUnits * getFactor();
+    }
 
-  public Rational toNumber()
-  {
-    return getLeftUnit().toNumber() / getRightUnit().toNumber();
-  }
+    public Rational toNumber() {
+        return getLeftUnit().toNumber() / getRightUnit().toNumber();
+    }
 
-  public A times( B a )
-  {
-    return getLeftUnit();
-  }
+    public A times(B a) {
+        return getLeftUnit();
+    }
 }

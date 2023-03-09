@@ -18,37 +18,33 @@ package manifold.preprocessor.expression;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 
-public class AndExpression extends Expression
-{
-  private final Expression _lhs;
-  private final Expression _rhs;
+public class AndExpression extends Expression {
+    private final Expression _lhs;
+    private final Expression _rhs;
 
-  AndExpression( Expression lhs, Expression rhs, int start, int end )
-  {
-    super( start, end );
-    _lhs = lhs;
-    _rhs = rhs;
-  }
+    AndExpression(Expression lhs, Expression rhs, int start, int end) {
+        super(start, end);
+        _lhs = lhs;
+        _rhs = rhs;
+    }
 
-  @Override
-  public List<Expression> getChildren()
-  {
-    ArrayList<Expression> children = new ArrayList<>();
-    children.add( _lhs );
-    children.add( _rhs );
-    return children;
-  }
+    @Override
+    public List<Expression> getChildren() {
+        ArrayList<Expression> children = new ArrayList<>();
+        children.add(_lhs);
+        children.add(_rhs);
+        return children;
+    }
 
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return _lhs.evaluate( definitions ) && _rhs.evaluate( definitions );
-  }
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return _lhs.evaluate(definitions) && _rhs.evaluate(definitions);
+    }
 
-  public String toString()
-  {
-    return _lhs + " && " + _rhs;
-  }
+    public String toString() {
+        return _lhs + " && " + _rhs;
+    }
 }

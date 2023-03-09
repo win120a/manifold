@@ -49,8 +49,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
-public @interface FragmentValue
-{
-  String methodName();
-  String type();
+public @interface FragmentValue {
+    String methodName();
+
+    String type();
 }

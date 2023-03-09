@@ -26,15 +26,15 @@ import manifold.ext.rt.api.This;
  */
 @Extension
 public class MyMoviesExt {
-  public static class Person {
-    public static String blahblahblah(@This movies.Person thiz) {
-      return "blahblahblah";
-    }
+    public static class Person {
+        public static String blahblahblah(@This movies.Person thiz) {
+            return "blahblahblah";
+        }
 
-    public static class Builder {
-      public static movies.Person.Builder withHeightInt(@This movies.Person.Builder thiz, int height) {
-        return thiz.withHeight(height);
-      }
+        public static class Builder {
+            public static movies.Person.Builder withHeightInt(@This movies.Person.Builder thiz, int height) {
+                return thiz.withHeight(height);
+            }
+        }
     }
-  }
 }

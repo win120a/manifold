@@ -30,12 +30,10 @@
       "type": "integer",
       "exclusiveMinimum": 0
     },
-
     "sub_object": {
-      "type" : "object",
+      "type": "object",
       "$ref": "#/definitions/SubObject"
     },
-
     "array_strings": {
       "type": "array",
       "items": {

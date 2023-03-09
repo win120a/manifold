@@ -25,42 +25,35 @@ import manifold.ext.rt.api.Structural;
 import manifold.internal.javac.TypeProcessor;
 
 /**
+ *
  */
-public class TypeUtil
-{
-  public static boolean isStructuralInterface( TypeProcessor tp, Symbol sym )
-  {
-    if( sym == null )
-    {
-      return false;
+public class TypeUtil {
+    public static boolean isStructuralInterface(TypeProcessor tp, Symbol sym) {
+        if (sym == null) {
+            return false;
+        }
+
+        if ((!sym.isInterface() || !sym.hasAnnotations()) && !(sym instanceof Symbol.TypeVariableSymbol)) {
+            return false;
+        }
+
+        // use the raw type
+        Type type = tp.getTypes().erasure(sym.type);
+        sym = type.tsym;
+        if (!sym.isInterface() || !sym.hasAnnotations()) {
+            return false;
+        }
+
+        for (Attribute.Compound annotation : sym.getAnnotationMirrors()) {
+            if (annotation.type.toString().equals(Structural.class.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    if( (!sym.isInterface() || !sym.hasAnnotations()) && !(sym instanceof Symbol.TypeVariableSymbol) )
-    {
-      return false;
+    public static boolean isAssignableFromErased(Context ctx, Symbol.ClassSymbol to, Symbol.TypeSymbol from) {
+        Types types = Types.instance(ctx);
+        return types.isAssignable(types.erasure(to.asType()), types.erasure(from.asType()));
     }
-
-    // use the raw type
-    Type type = tp.getTypes().erasure( sym.type );
-    sym = type.tsym;
-    if( !sym.isInterface() || !sym.hasAnnotations() )
-    {
-      return false;
-    }
-
-    for( Attribute.Compound annotation : sym.getAnnotationMirrors() )
-    {
-      if( annotation.type.toString().equals( Structural.class.getName() ) )
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static boolean isAssignableFromErased( Context ctx, Symbol.ClassSymbol to, Symbol.TypeSymbol from )
-  {
-    Types types = Types.instance( ctx );
-    return types.isAssignable( types.erasure( to.asType() ), types.erasure( from.asType() ) );
-  }
 }

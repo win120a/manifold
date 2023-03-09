@@ -19,51 +19,46 @@ package manifold.science.measures;
 import manifold.science.util.DimensionlessConstants;
 import manifold.science.util.Rational;
 
-public enum CommonDimensionlessUnit implements DimensionlessUnit
-{
-  /**
-   * Pi is the ratio: Circumference/Diameter.
-   */
-  pi( DimensionlessConstants.pi, "pi", "\u03C0" ),
+public enum CommonDimensionlessUnit implements DimensionlessUnit {
+    /**
+     * Pi is the ratio: Circumference/Diameter.
+     */
+    pi(DimensionlessConstants.pi, "pi", "\u03C0"),
 
-  /**
-   * Phi is the ratio: A/B = B/C where A = B + C
-   */
-  phi( DimensionlessConstants.phi, "phi", "\u03A6" ),
+    /**
+     * Phi is the ratio: A/B = B/C where A = B + C
+     */
+    phi(DimensionlessConstants.phi, "phi", "\u03A6"),
 
-  /**
-   * Fine-structure constant, the coupling constant for the electromagnetic force.
-   */
-  kA( DimensionlessConstants.kA, "kA", "\u03B1" ),
+    /**
+     * Fine-structure constant, the coupling constant for the electromagnetic force.
+     */
+    kA(DimensionlessConstants.kA, "kA", "\u03B1"),
 
-  /**
-   * The mole is a unit which measures the number of particles in a substance.
-   */
-  mol( DimensionlessConstants.mol, "mol", "mol" );
+    /**
+     * The mole is a unit which measures the number of particles in a substance.
+     */
+    mol(DimensionlessConstants.mol, "mol", "mol");
 
-  private final Rational _amount;
-  private final String _name;
-  private final String _symbol;
+    private final Rational _amount;
+    private final String _name;
+    private final String _symbol;
 
-  CommonDimensionlessUnit( Rational amount, String name, String symbol )
-  {
-    _amount = amount;
-    _name = name;
-    _symbol = symbol;
-  }
+    CommonDimensionlessUnit(Rational amount, String name, String symbol) {
+        _amount = amount;
+        _name = name;
+        _symbol = symbol;
+    }
 
-  public Rational getAmount()
-  {
-    return _amount;
-  }
+    public Rational getAmount() {
+        return _amount;
+    }
 
-  public String getUnitName()
-  {
-    return _name;
-  }
+    public String getUnitName() {
+        return _name;
+    }
 
-  public String getUnitSymbol()
-  {
-    return _symbol;
-  }
+    public String getUnitSymbol() {
+        return _symbol;
+    }
 }

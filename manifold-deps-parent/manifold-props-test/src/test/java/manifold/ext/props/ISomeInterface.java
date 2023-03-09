@@ -20,22 +20,28 @@ import manifold.ext.props.rt.api.var;
 import manifold.ext.props.rt.api.val;
 
 public interface ISomeInterface {
-  // inferred val
-  int getFoo();
+    // inferred val
+    int getFoo();
 
-  // explicit var
-  @var int varFoo;
+    // explicit var
+    @var
+    int varFoo;
 
-  // inferred static val
-  static int getStaticFoo() { return 2; }
+    // inferred static val
+    static int getStaticFoo() {
+        return 2;
+    }
 
-  // explicit static val
-  static @val int staticValFoo;
-  static int getStaticValFoo() { return 0; }
+    // explicit static val
+    static @val int staticValFoo;
 
-  // use iterface props directly
-  default int useProps() {
-    varFoo = 3;
-    return getFoo() + varFoo + getStaticFoo() + staticFoo + staticValFoo;
-  }
+    static int getStaticValFoo() {
+        return 0;
+    }
+
+    // use iterface props directly
+    default int useProps() {
+        varFoo = 3;
+        return getFoo() + varFoo + getStaticFoo() + staticFoo + staticValFoo;
+    }
 }

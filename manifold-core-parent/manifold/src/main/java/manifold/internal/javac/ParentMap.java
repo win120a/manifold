@@ -27,29 +27,25 @@ import java.util.function.Supplier;
  * A mapping of child to parent for every child tree in a CompilationUnitTree. The tree node in the Java AST does not
  * maintain a reference to its parent, hence the need for this mapping.
  */
-public class ParentMap
-{
-  private final Supplier<CompilationUnitTree> _compilationUnitSupplier;
-  private final Map<CompilationUnitTree, Map<Tree, Tree>> _parents;
+public class ParentMap {
+    private final Supplier<CompilationUnitTree> _compilationUnitSupplier;
+    private final Map<CompilationUnitTree, Map<Tree, Tree>> _parents;
 
-  public ParentMap( Supplier<CompilationUnitTree> compilationUnitSupplier )
-  {
-    _compilationUnitSupplier = compilationUnitSupplier;
-    _parents = new HashMap<>();
-  }
+    public ParentMap(Supplier<CompilationUnitTree> compilationUnitSupplier) {
+        _compilationUnitSupplier = compilationUnitSupplier;
+        _parents = new HashMap<>();
+    }
 
-  public Tree getParent( Tree child )
-  {
-    return getParent( child, _compilationUnitSupplier.get() );
-  }
+    public Tree getParent(Tree child) {
+        return getParent(child, _compilationUnitSupplier.get());
+    }
 
-  public Tree getParent( Tree child, CompilationUnitTree compilationUnitTree )
-  {
-    Map<Tree, Tree> parents = _parents.computeIfAbsent( compilationUnitTree, cu -> {
-      Map<Tree, Tree> map = new HashMap<>();
-      new ParentTreePathScanner( map ).scan( cu, null );
-      return map;
-    } );
-    return parents.get( child );
-  }
+    public Tree getParent(Tree child, CompilationUnitTree compilationUnitTree) {
+        Map<Tree, Tree> parents = _parents.computeIfAbsent(compilationUnitTree, cu -> {
+            Map<Tree, Tree> map = new HashMap<>();
+            new ParentTreePathScanner(map).scan(cu, null);
+            return map;
+        });
+        return parents.get(child);
+    }
 }

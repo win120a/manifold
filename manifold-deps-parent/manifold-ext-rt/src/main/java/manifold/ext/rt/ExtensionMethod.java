@@ -32,14 +32,16 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface ExtensionMethod
-{
-  String extensionClass = "extensionClass";
-  String extensionClass();
+public @interface ExtensionMethod {
+    String extensionClass = "extensionClass";
 
-  String isStatic = "isStatic";
-  boolean isStatic();
+    String extensionClass();
 
-  String isSmartStatic = "isSmartStatic";
-  boolean isSmartStatic();
+    String isStatic = "isStatic";
+
+    boolean isStatic();
+
+    String isSmartStatic = "isSmartStatic";
+
+    boolean isSmartStatic();
 }

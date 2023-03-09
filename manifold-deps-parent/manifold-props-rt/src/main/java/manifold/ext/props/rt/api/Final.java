@@ -23,6 +23,5 @@ package manifold.ext.props.rt.api;
  * are final. Manifold rewrites the property fields's modifiers during compilation and replace {@code final} with
  * {@code @Final}.
  */
-public @interface Final
-{
+public @interface Final {
 }

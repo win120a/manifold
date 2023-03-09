@@ -23,11 +23,9 @@ import static org.junit.Assert.assertNotEquals;
 
 // Note the MyTemplateProcessorGate class from the manifold-strings-test-excl dependency
 // excludes this class from string template processing. This is what makes the test work.
-public class TemplateProcessorGateTest extends TestCase
-{
-  public void testExclusionSpi()
-  {
-    int num = 5;
-    assertNotEquals( "hi 5",  "hi $num" );
-  }
+public class TemplateProcessorGateTest extends TestCase {
+    public void testExclusionSpi() {
+        int num = 5;
+        assertNotEquals("hi 5", "hi $num");
+    }
 }

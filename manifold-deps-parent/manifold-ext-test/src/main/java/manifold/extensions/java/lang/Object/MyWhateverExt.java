@@ -22,14 +22,12 @@ import manifold.ext.rt.api.Self;
 import java.util.function.Predicate;
 
 @Extension
-public class MyWhateverExt
-{
-  @Extension
-  public static @Self Object foobar( Predicate<@Self Object> constraints )
-  {
-    // todo test thisClass
-    System.out.println("hi");
-    return null;
-  }
+public class MyWhateverExt {
+    @Extension
+    public static @Self Object foobar(Predicate<@Self Object> constraints) {
+        // todo test thisClass
+        System.out.println("hi");
+        return null;
+    }
 }
 

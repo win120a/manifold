@@ -22,37 +22,33 @@ import java.util.Set;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.gen.SrcClass;
 import manifold.api.host.IModule;
 import manifold.api.type.JavaTypeManifold;
 
-public class JavascriptTypeManifold extends JavaTypeManifold<JavascriptModel>
-{
-  public static final String JS = "js";
-  public static final String JST = "jst";
-  private static final Set<String> FILE_EXTENSIONS = new HashSet<>( Arrays.asList( JS, JST ) );
+public class JavascriptTypeManifold extends JavaTypeManifold<JavascriptModel> {
+    public static final String JS = "js";
+    public static final String JST = "jst";
+    private static final Set<String> FILE_EXTENSIONS = new HashSet<>(Arrays.asList(JS, JST));
 
-  public void init( IModule module )
-  {
-    init( module, (fqn, files) -> new JavascriptModel( getModule(), fqn, files ) );
-  }
+    public void init(IModule module) {
+        init(module, (fqn, files) -> new JavascriptModel(getModule(), fqn, files));
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return FILE_EXTENSIONS.contains( fileExtension.toLowerCase() );
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return FILE_EXTENSIONS.contains(fileExtension.toLowerCase());
+    }
 
-  @Override
-  public boolean isInnerType( String topLevel, String relativeInner )
-  {
-    return false;
-  }
+    @Override
+    public boolean isInnerType(String topLevel, String relativeInner) {
+        return false;
+    }
 
-  @Override
-  protected String contribute( JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, JavascriptModel model, DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    SrcClass srcClass = new JavascriptCodeGen( model, topLevelFqn ).make( errorHandler );
-    return srcClass.render( new StringBuilder(), 0).toString();
-  }
+    @Override
+    protected String contribute(JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, JavascriptModel model, DiagnosticListener<JavaFileObject> errorHandler) {
+        SrcClass srcClass = new JavascriptCodeGen(model, topLevelFqn).make(errorHandler);
+        return srcClass.render(new StringBuilder(), 0).toString();
+    }
 }

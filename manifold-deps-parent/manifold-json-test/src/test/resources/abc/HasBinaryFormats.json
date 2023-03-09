@@ -14,10 +14,10 @@
     }
   },
   "properties": {
-    "binaryFormat" : {
+    "binaryFormat": {
       "$ref": "#/definitions/BinaryFormat"
     },
-    "byteFormat" : {
+    "byteFormat": {
       "$ref": "#/definitions/ByteFormat"
     }
   }

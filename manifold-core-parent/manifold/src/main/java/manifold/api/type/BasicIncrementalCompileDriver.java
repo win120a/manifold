@@ -25,35 +25,29 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class BasicIncrementalCompileDriver implements IIncrementalCompileDriver
-{
-  private final boolean _incremental;
+public class BasicIncrementalCompileDriver implements IIncrementalCompileDriver {
+    private final boolean _incremental;
 
-  public BasicIncrementalCompileDriver( boolean incremental )
-  {
-    _incremental = incremental;
-  }
-
-  @Override
-  public boolean isIncremental()
-  {
-    return _incremental;
-  }
-
-  @Override
-  public Collection<File> getChangedFiles()
-  {
-    String manFilesProp = System.getProperty( "manifold.source.files" );
-    if( manFilesProp == null )
-    {
-      return Collections.emptySet();
+    public BasicIncrementalCompileDriver(boolean incremental) {
+        _incremental = incremental;
     }
 
-    List<String> paths = new ArrayList<>();
-    for( StringTokenizer tokenizer = new StringTokenizer( manFilesProp, File.pathSeparator ); tokenizer.hasMoreTokens(); )
-    {
-      paths.add( tokenizer.nextToken() );
+    @Override
+    public boolean isIncremental() {
+        return _incremental;
     }
-    return paths.stream().map( File::new ).collect( Collectors.toList() );
-  }
+
+    @Override
+    public Collection<File> getChangedFiles() {
+        String manFilesProp = System.getProperty("manifold.source.files");
+        if (manFilesProp == null) {
+            return Collections.emptySet();
+        }
+
+        List<String> paths = new ArrayList<>();
+        for (StringTokenizer tokenizer = new StringTokenizer(manFilesProp, File.pathSeparator); tokenizer.hasMoreTokens(); ) {
+            paths.add(tokenizer.nextToken());
+        }
+        return paths.stream().map(File::new).collect(Collectors.toList());
+    }
 }

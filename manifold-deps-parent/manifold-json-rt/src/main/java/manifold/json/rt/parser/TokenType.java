@@ -16,20 +16,19 @@
 
 package manifold.json.rt.parser;
 
-public enum TokenType
-{
-  LCURLY,
-  RCURLY,
-  LSQUARE,
-  RSQUARE,
-  COMMA,
-  COLON,
-  STRING,
-  INTEGER,
-  DOUBLE,
-  TRUE,
-  FALSE,
-  NULL,
-  ERROR,
-  EOF
+public enum TokenType {
+    LCURLY,
+    RCURLY,
+    LSQUARE,
+    RSQUARE,
+    COMMA,
+    COLON,
+    STRING,
+    INTEGER,
+    DOUBLE,
+    TRUE,
+    FALSE,
+    NULL,
+    ERROR,
+    EOF
 }

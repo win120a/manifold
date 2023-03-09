@@ -18,8 +18,7 @@ package manifold.ext.props.middle;
 
 import manifold.ext.props.rt.api.var;
 
-public interface IFromClassFile
-{
+public interface IFromClassFile {
 // interfaces prohibit writable static property; cannot have initializer
 //     java.lang.ClassFormatError: Illegal field modifiers in class manifold/ext/props/middle/IFromClassFile: 0xA
 //  can't do this:
@@ -27,15 +26,15 @@ public interface IFromClassFile
 
 // writable abstract property cannot have initializer
 //  @var String defaultGetter = "hi";
-  
-  @var static int staticNonbackingProp;
 
-  static int getStaticNonbackingProp()
-  {
-    return 5;
-  }
-  static void setStaticNonbackingProp( int value )
-  {
-    throw new UnsupportedOperationException( String.valueOf( value ) );
-  }
+    @var
+    static int staticNonbackingProp;
+
+    static int getStaticNonbackingProp() {
+        return 5;
+    }
+
+    static void setStaticNonbackingProp(int value) {
+        throw new UnsupportedOperationException(String.valueOf(value));
+    }
 }

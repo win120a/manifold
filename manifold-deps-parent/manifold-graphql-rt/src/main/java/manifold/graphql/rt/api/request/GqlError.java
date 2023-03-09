@@ -31,78 +31,73 @@ import manifold.ext.rt.api.Structural;
  * Reflects the {@link graphql.GraphQLError} values encoded in the @{@code "errors"} response of a GraphQL request.
  */
 @Structural(factoryClass = GqlError.ProxyFactory.class)
-public interface GqlError extends IJsonBindingsBacked
-{
-  default String getMessage()
-  {
-    return (String)getBindings().get( "message" );
-  }
-
-  default String getType()
-  {
-    return String.valueOf( getBindings().get( "type" ) );
-  }
-
-  default String getClassification()
-  {
-    Map extensions = (Map)getBindings().get( "extensions" );
-    return extensions == null ? null : String.valueOf( extensions.get( "classification" ) );
-  }
-
-  default List<String> getPath()
-  {
-    Object path = getBindings().get( "path" );
-    if( path instanceof List )
-    {
-      return ((List<?>)path).stream().map( e -> String.valueOf( e ) ).collect( Collectors.toList() );
-    }
-    return null;
-  }
-
-  default List<Location> getLocations()
-  {
-    //noinspection unchecked
-    return new JsonList<>( (List<Location>)getBindings().get( "locations" ), Location.class );
-  }
-
-  @Structural(factoryClass = GqlError.Location.ProxyFactory.class)
-  interface Location extends IJsonBindingsBacked
-  {
-    default int getLine()
-    {
-      return (int)getBindings().get( "line" );
-    }
-    default int getColumn()
-    {
-      return (int)getBindings().get( "column" );
+public interface GqlError extends IJsonBindingsBacked {
+    default String getMessage() {
+        return (String) getBindings().get("message");
     }
 
-    class ProxyFactory implements IProxyFactory<Map, Location>
-    {
-      @Override
-      public Location proxy( Map map, Class<Location> iface )
-      {
+    default String getType() {
+        return String.valueOf(getBindings().get("type"));
+    }
+
+    default String getClassification() {
+        Map extensions = (Map) getBindings().get("extensions");
+        return extensions == null ? null : String.valueOf(extensions.get("classification"));
+    }
+
+    default List<String> getPath() {
+        Object path = getBindings().get("path");
+        if (path instanceof List) {
+            return ((List<?>) path).stream().map(e -> String.valueOf(e)).collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    default List<Location> getLocations() {
         //noinspection unchecked
-        DataBindings bindings = map instanceof Bindings ? (DataBindings)map : new DataBindings( map );
-
-        // DO NOT CHANGE THIS TO A LAMBDA, YOU WILL HAVE BAD LUCK FOR 9 YEARS
-        //noinspection Convert2Lambda
-        return new Location() {public DataBindings getBindings() {return bindings;}};
-      }
+        return new JsonList<>((List<Location>) getBindings().get("locations"), Location.class);
     }
-  }
 
-  class ProxyFactory implements IProxyFactory<Map, GqlError>
-  {
-    @Override
-    public GqlError proxy( Map map, Class<GqlError> iface )
-    {
-      //noinspection unchecked
-      DataBindings bindings = map instanceof Bindings ? (DataBindings)map : new DataBindings( map );
+    @Structural(factoryClass = GqlError.Location.ProxyFactory.class)
+    interface Location extends IJsonBindingsBacked {
+        default int getLine() {
+            return (int) getBindings().get("line");
+        }
 
-      // DO NOT CHANGE THIS TO A LAMBDA, YOU WILL HAVE BAD LUCK FOR 9 YEARS
-      //noinspection Convert2Lambda
-      return new GqlError() {public DataBindings getBindings() {return bindings;}};
+        default int getColumn() {
+            return (int) getBindings().get("column");
+        }
+
+        class ProxyFactory implements IProxyFactory<Map, Location> {
+            @Override
+            public Location proxy(Map map, Class<Location> iface) {
+                //noinspection unchecked
+                DataBindings bindings = map instanceof Bindings ? (DataBindings) map : new DataBindings(map);
+
+                // DO NOT CHANGE THIS TO A LAMBDA, YOU WILL HAVE BAD LUCK FOR 9 YEARS
+                //noinspection Convert2Lambda
+                return new Location() {
+                    public DataBindings getBindings() {
+                        return bindings;
+                    }
+                };
+            }
+        }
     }
-  }
+
+    class ProxyFactory implements IProxyFactory<Map, GqlError> {
+        @Override
+        public GqlError proxy(Map map, Class<GqlError> iface) {
+            //noinspection unchecked
+            DataBindings bindings = map instanceof Bindings ? (DataBindings) map : new DataBindings(map);
+
+            // DO NOT CHANGE THIS TO A LAMBDA, YOU WILL HAVE BAD LUCK FOR 9 YEARS
+            //noinspection Convert2Lambda
+            return new GqlError() {
+                public DataBindings getBindings() {
+                    return bindings;
+                }
+            };
+        }
+    }
 }

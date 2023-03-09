@@ -18,15 +18,12 @@
 
 package manifold.collections.api.range;
 
-public final class ComparableRange<E extends Comparable<E>> extends AbstractRange<E, ComparableRange<E>>
-{
-  public ComparableRange( E left, E right )
-  {
-    this( left, right, true, true, false );
-  }
+public final class ComparableRange<E extends Comparable<E>> extends AbstractRange<E, ComparableRange<E>> {
+    public ComparableRange(E left, E right) {
+        this(left, right, true, true, false);
+    }
 
-  public ComparableRange( E left, E right, boolean leftClosed, boolean rightClosed, boolean reverse )
-  {
-    super( left, right, leftClosed, rightClosed, reverse );
-  }
+    public ComparableRange(E left, E right, boolean leftClosed, boolean rightClosed, boolean reverse) {
+        super(left, right, leftClosed, rightClosed, reverse);
+    }
 }

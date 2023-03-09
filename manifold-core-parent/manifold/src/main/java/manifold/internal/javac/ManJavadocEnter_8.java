@@ -24,41 +24,34 @@ import com.sun.tools.javac.util.List;
 import com.sun.tools.javadoc.JavadocEnter;
 
 // Override JavadocEnter so that JavacPlugin#initialize() is called before Enter starts
-class ManJavadocEnter_8 extends JavadocEnter
-{
-  private final MultiTaskListener _taskListener;
+class ManJavadocEnter_8 extends JavadocEnter {
+    private final MultiTaskListener _taskListener;
 
-  public static ManJavadocEnter_8 instance( Context context )
-  {
-    JavadocEnter enter = (JavadocEnter)context.get( enterKey );
-    if( !(enter instanceof ManJavadocEnter_8) )
-    {
-      context.put( enterKey, (JavadocEnter)null );
-      enter = new ManJavadocEnter_8( context );
+    public static ManJavadocEnter_8 instance(Context context) {
+        JavadocEnter enter = (JavadocEnter) context.get(enterKey);
+        if (!(enter instanceof ManJavadocEnter_8)) {
+            context.put(enterKey, (JavadocEnter) null);
+            enter = new ManJavadocEnter_8(context);
+        }
+
+        return (ManJavadocEnter_8) enter;
     }
 
-    return (ManJavadocEnter_8)enter;
-  }
-
-  protected ManJavadocEnter_8( Context context )
-  {
-    super( context );
-    _taskListener = MultiTaskListener.instance( context );
-  }
-
-  @Override
-  public void main( List<JCTree.JCCompilationUnit> trees )
-  {
-    if( !_taskListener.isEmpty() )
-    {
-      // we only need to call this once so that JavacPlugin#initialize() is called
-      for( JCTree.JCCompilationUnit tree: trees )
-      {
-        TaskEvent e = new TaskEvent( TaskEvent.Kind.ENTER, tree );
-        _taskListener.started( e );
-      }
+    protected ManJavadocEnter_8(Context context) {
+        super(context);
+        _taskListener = MultiTaskListener.instance(context);
     }
 
-    super.main( trees );
-  }
+    @Override
+    public void main(List<JCTree.JCCompilationUnit> trees) {
+        if (!_taskListener.isEmpty()) {
+            // we only need to call this once so that JavacPlugin#initialize() is called
+            for (JCTree.JCCompilationUnit tree : trees) {
+                TaskEvent e = new TaskEvent(TaskEvent.Kind.ENTER, tree);
+                _taskListener.started(e);
+            }
+        }
+
+        super.main(trees);
+    }
 }

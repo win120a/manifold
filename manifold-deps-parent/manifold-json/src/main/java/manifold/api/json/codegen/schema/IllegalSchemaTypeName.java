@@ -19,26 +19,23 @@ package manifold.api.json.codegen.schema;
 import manifold.json.rt.parser.Token;
 
 /**
+ *
  */
-public class IllegalSchemaTypeName extends IllegalArgumentException
-{
-  private final String _typeName;
-  private Token _token;
+public class IllegalSchemaTypeName extends IllegalArgumentException {
+    private final String _typeName;
+    private Token _token;
 
-  IllegalSchemaTypeName( String typeName, Token token )
-  {
-    super( "Unrecognized type: " + typeName );
-    _typeName = typeName;
-    _token = token;
-  }
+    IllegalSchemaTypeName(String typeName, Token token) {
+        super("Unrecognized type: " + typeName);
+        _typeName = typeName;
+        _token = token;
+    }
 
-  public String getTypeName()
-  {
-    return _typeName;
-  }
+    public String getTypeName() {
+        return _typeName;
+    }
 
-  public Token getToken()
-  {
-    return _token;
-  }
+    public Token getToken() {
+        return _token;
+    }
 }

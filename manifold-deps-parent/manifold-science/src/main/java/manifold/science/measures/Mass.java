@@ -32,63 +32,51 @@ import manifold.science.util.Rational;
  *   Force f = 2120 kg * 9.807 m/s/s;
  * </code></pre>
  */
-public final class Mass extends AbstractMeasure<MassUnit, Mass>
-{
-  public Mass( Rational value, MassUnit unit, MassUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+public final class Mass extends AbstractMeasure<MassUnit, Mass> {
+    public Mass(Rational value, MassUnit unit, MassUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public Mass( Rational value, MassUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public Mass(Rational value, MassUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public MassUnit getBaseUnit()
-  {
-    return MassUnit.BASE;
-  }
+    @Override
+    public MassUnit getBaseUnit() {
+        return MassUnit.BASE;
+    }
 
-  @Override
-  public Mass make( Rational value, MassUnit unit, MassUnit displayUnit )
-  {
-    return new Mass( value, unit, displayUnit );
-  }
+    @Override
+    public Mass make(Rational value, MassUnit unit, MassUnit displayUnit) {
+        return new Mass(value, unit, displayUnit);
+    }
 
-  @Override
-  public Mass make( Rational value, MassUnit unit )
-  {
-    return new Mass( value, unit );
-  }
+    @Override
+    public Mass make(Rational value, MassUnit unit) {
+        return new Mass(value, unit);
+    }
 
-  public Force times( Acceleration a )
-  {
-    return new Force( toBaseNumber() * a.toBaseNumber(), ForceUnit.BASE, ForceUnit.get( getDisplayUnit(), a.getDisplayUnit() ) );
-  }
+    public Force times(Acceleration a) {
+        return new Force(toBaseNumber() * a.toBaseNumber(), ForceUnit.BASE, ForceUnit.get(getDisplayUnit(), a.getDisplayUnit()));
+    }
 
-  public Momentum times( Velocity v )
-  {
-    return new Momentum( toBaseNumber() * v.toBaseNumber(), MomentumUnit.BASE, MomentumUnit.get( getDisplayUnit(), v.getDisplayUnit() ) );
-  }
+    public Momentum times(Velocity v) {
+        return new Momentum(toBaseNumber() * v.toBaseNumber(), MomentumUnit.BASE, MomentumUnit.get(getDisplayUnit(), v.getDisplayUnit()));
+    }
 
-  public Pressure div( Area area )
-  {
-    return new Pressure( toBaseNumber() / area.toBaseNumber(), PressureUnit.BASE, PressureUnit.get( getDisplayUnit(), area.getDisplayUnit() ) );
-  }
+    public Pressure div(Area area) {
+        return new Pressure(toBaseNumber() / area.toBaseNumber(), PressureUnit.BASE, PressureUnit.get(getDisplayUnit(), area.getDisplayUnit()));
+    }
 
-  public Area div( Pressure p )
-  {
-    return new Area( toBaseNumber() / p.toBaseNumber(), AreaUnit.BASE, p.getDisplayUnit().getAreaUnit() );
-  }
+    public Area div(Pressure p) {
+        return new Area(toBaseNumber() / p.toBaseNumber(), AreaUnit.BASE, p.getDisplayUnit().getAreaUnit());
+    }
 
-  public Density div( Volume volume )
-  {
-    return new Density( toBaseNumber() / volume.toBaseNumber(), DensityUnit.BASE, DensityUnit.get( getDisplayUnit(), volume.getDisplayUnit() ) );
-  }
+    public Density div(Volume volume) {
+        return new Density(toBaseNumber() / volume.toBaseNumber(), DensityUnit.BASE, DensityUnit.get(getDisplayUnit(), volume.getDisplayUnit()));
+    }
 
-  public Volume div( Density d )
-  {
-    return new Volume( toBaseNumber() / d.toBaseNumber(), VolumeUnit.BASE, d.getDisplayUnit().getVolumeUnit() );
-  }
+    public Volume div(Density d) {
+        return new Volume(toBaseNumber() / d.toBaseNumber(), VolumeUnit.BASE, d.getDisplayUnit().getVolumeUnit());
+    }
 }

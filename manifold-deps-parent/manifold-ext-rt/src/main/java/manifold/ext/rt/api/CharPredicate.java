@@ -25,6 +25,7 @@ import java.util.Objects;
  *
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #test(char)}.
+ *
  * @see java.util.function.Predicate
  */
 @FunctionalInterface
@@ -56,7 +57,7 @@ public interface CharPredicate {
      * @throws NullPointerException if other is null
      */
     default CharPredicate and(CharPredicate other) {
-        Objects.requireNonNull( other);
+        Objects.requireNonNull(other);
         return (value) -> test(value) && other.test(value);
     }
 

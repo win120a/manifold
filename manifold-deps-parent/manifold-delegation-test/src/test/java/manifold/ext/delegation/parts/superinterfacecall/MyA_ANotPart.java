@@ -18,13 +18,12 @@ package manifold.ext.delegation.parts.superinterfacecall;
 
 import manifold.ext.delegation.rt.api.link;
 
-public class MyA_ANotPart implements A
-{
-  @link A _a = new ANotPart();
+public class MyA_ANotPart implements A {
+    @link
+    A _a = new ANotPart();
 
-  @Override
-  public String getName( String name )
-  {
-    return "MyA" + name;
-  }
+    @Override
+    public String getName(String name) {
+        return "MyA" + name;
+    }
 }

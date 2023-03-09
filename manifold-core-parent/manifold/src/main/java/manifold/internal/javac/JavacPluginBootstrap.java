@@ -27,25 +27,21 @@ import manifold.util.NecessaryEvilUtil;
  * JavacPlugin} is constructed, which is the purpose of this bootstrap plugin; it makes dynamic module changes before
  * constructing and delegating to {@code JavacPlugin}.
  */
-public class JavacPluginBootstrap implements Plugin
-{
-  private final Plugin _delegate;
+public class JavacPluginBootstrap implements Plugin {
+    private final Plugin _delegate;
 
-  public JavacPluginBootstrap()
-  {
-    NecessaryEvilUtil.bypassJava9Security();
-    _delegate = new JavacPlugin();
-  }
+    public JavacPluginBootstrap() {
+        NecessaryEvilUtil.bypassJava9Security();
+        _delegate = new JavacPlugin();
+    }
 
-  @Override
-  public String getName()
-  {
-    return "Manifold";
-  }
+    @Override
+    public String getName() {
+        return "Manifold";
+    }
 
-  @Override
-  public void init( JavacTask task, String... args )
-  {
-    _delegate.init( task, args );
-  }
+    @Override
+    public void init(JavacTask task, String... args) {
+        _delegate.init(task, args);
+    }
 }

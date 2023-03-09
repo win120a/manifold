@@ -21,6 +21,7 @@ import java.util.Objects;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
+
 import manifold.api.fs.IFile;
 import manifold.api.gen.SrcClass;
 import manifold.api.type.ResourceFileTypeManifold;
@@ -36,76 +37,58 @@ import manifold.js.rt.parser.tree.template.JSTNode;
 import manifold.api.util.JavacDiagnostic;
 
 
-class JavascriptCodeGen
-{
-  private final JavascriptModel _model;
-  private final IFile _file;
-  private final String _fqn;
+class JavascriptCodeGen {
+    private final JavascriptModel _model;
+    private final IFile _file;
+    private final String _fqn;
 
-  JavascriptCodeGen( JavascriptModel model, String topLevelFqn )
-  {
-    _model = model;
-    _file = model.getFiles().iterator().next();
-    _fqn = topLevelFqn;
-  }
-
-  SrcClass make( DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    String url;
-    try
-    {
-      url = _file.toURI().toURL().toString();
-    }
-    catch( MalformedURLException e )
-    {
-      throw new RuntimeException( e );
+    JavascriptCodeGen(JavascriptModel model, String topLevelFqn) {
+        _model = model;
+        _file = model.getFiles().iterator().next();
+        _fqn = topLevelFqn;
     }
 
-    String content = ResourceFileTypeManifold.getContent( _file );
+    SrcClass make(DiagnosticListener<JavaFileObject> errorHandler) {
+        String url;
+        try {
+            url = _file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
 
-    if( Objects.equals( _file.getExtension(), "jst" ) )
-    {
-      TemplateParser parser = new TemplateParser( new TemplateTokenizer( _fqn, content, url, true ) );
-      return JavascriptTemplate.genClass( _model, _fqn, (JSTNode)parser.parse() );
+        String content = ResourceFileTypeManifold.getContent(_file);
+
+        if (Objects.equals(_file.getExtension(), "jst")) {
+            TemplateParser parser = new TemplateParser(new TemplateTokenizer(_fqn, content, url, true));
+            return JavascriptTemplate.genClass(_model, _fqn, (JSTNode) parser.parse());
+        } else {
+            Parser parser = new Parser(new Tokenizer(content, url));
+            ProgramNode programNode = (ProgramNode) parser.parse();
+
+            reportErrors(errorHandler, programNode);
+
+            if (parser.isES6Class()) {
+                return JavascriptClass.genClass(_fqn, _model, programNode, _file);
+            } else {
+                return JavascriptProgram.genProgram(_fqn, programNode, _file);
+            }
+        }
     }
-    else
-    {
-      Parser parser = new Parser( new Tokenizer( content, url ) );
-      ProgramNode programNode = (ProgramNode)parser.parse();
 
-      reportErrors( errorHandler, programNode );
+    private void reportErrors(DiagnosticListener<JavaFileObject> errorHandler, ProgramNode programNode) {
+        if (programNode.errorCount() > 0) {
+            JavaFileObject file;
+            try {
+                file = new SourceJavaFileObject(_file.toURI());
+            } catch (Exception e) {
+                file = null;
+            }
 
-      if( parser.isES6Class() )
-      {
-        return JavascriptClass.genClass( _fqn, _model, programNode, _file );
-      }
-      else
-      {
-        return JavascriptProgram.genProgram( _fqn, programNode, _file );
-      }
+            for (ParseError error : programNode.getErrorList()) {
+                Token token = error.getToken();
+                errorHandler.report(new JavacDiagnostic(file, Diagnostic.Kind.ERROR, token.getOffset(), token.getLineNumber(), token.getCol(), error.getMessage()));
+            }
+        }
     }
-  }
-
-  private void reportErrors( DiagnosticListener<JavaFileObject> errorHandler, ProgramNode programNode )
-  {
-    if( programNode.errorCount() > 0 )
-    {
-      JavaFileObject file;
-      try
-      {
-        file = new SourceJavaFileObject( _file.toURI() );
-      }
-      catch( Exception e )
-      {
-        file = null;
-      }
-
-      for( ParseError error : programNode.getErrorList() )
-      {
-        Token token = error.getToken();
-        errorHandler.report( new JavacDiagnostic( file, Diagnostic.Kind.ERROR, token.getOffset(), token.getLineNumber(), token.getCol(), error.getMessage() ) );
-      }
-    }
-  }
 
 }

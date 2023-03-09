@@ -22,14 +22,12 @@ import javax.tools.JavaFileObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public interface ParserFactoryFiles
-{
-  Map<String, CharSequence> fileToProcessedInput = new ConcurrentHashMap<>();
+public interface ParserFactoryFiles {
+    Map<String, CharSequence> fileToProcessedInput = new ConcurrentHashMap<>();
 
-  static CharSequence getSource( JavaFileObject file )
-  {
-    return fileToProcessedInput.get( file.getName() );
-  }
+    static CharSequence getSource(JavaFileObject file) {
+        return fileToProcessedInput.get(file.getName());
+    }
 
-  void setTaskEvent( TaskEvent e );
+    void setTaskEvent(TaskEvent e);
 }

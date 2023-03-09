@@ -14,17 +14,17 @@
     }
   },
   "properties": {
-    "bigInt" : {
+    "bigInt": {
       "$ref": "#/definitions/MyBigInteger"
     },
-    "bigDec" : {
+    "bigDec": {
       "$ref": "#/definitions/MyBigDecimal"
     },
     "anotherBigInt": {
       "type": "string",
       "format": "big-integer"
     },
-    "anotherBigDec" : {
+    "anotherBigDec": {
       "type": "string",
       "format": "big-decimal"
     }

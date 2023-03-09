@@ -18,50 +18,44 @@ package manifold.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+
 import sun.misc.Unsafe;
 
 // Duplicate the field layout of AccessibleObject so we can get the offset of the `override` field
 @SuppressWarnings({"unused", "WeakerAccess"})
-public class AccessibleObject_layout implements AnnotatedElement
-{
-  static final private String ACCESS_PERMISSION = "";
+public class AccessibleObject_layout implements AnnotatedElement {
+    static final private String ACCESS_PERMISSION = "";
 
-  boolean override;
+    boolean override;
 
-  static final String reflectionFactory = "";
+    static final String reflectionFactory = "";
 
-  volatile Object securityCheckCache;
+    volatile Object securityCheckCache;
 
 
-  protected AccessibleObject_layout() {}
-
-  @Override
-  public <T extends Annotation> T getAnnotation( Class<T> annotationClass )
-  {
-    return null;
-  }
-
-  @Override
-  public Annotation[] getAnnotations()
-  {
-    return new Annotation[0];
-  }
-
-  @Override
-  public Annotation[] getDeclaredAnnotations()
-  {
-    return new Annotation[0];
-  }
-
-  static long getOverrideOffset( Unsafe unsafe )
-  {
-    try
-    {
-      return unsafe.objectFieldOffset( AccessibleObject_layout.class.getDeclaredField( "override" ) );
+    protected AccessibleObject_layout() {
     }
-    catch( NoSuchFieldException e )
-    {
-      throw new RuntimeException( e );
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return null;
     }
-  }
+
+    @Override
+    public Annotation[] getAnnotations() {
+        return new Annotation[0];
+    }
+
+    @Override
+    public Annotation[] getDeclaredAnnotations() {
+        return new Annotation[0];
+    }
+
+    static long getOverrideOffset(Unsafe unsafe) {
+        try {
+            return unsafe.objectFieldOffset(AccessibleObject_layout.class.getDeclaredField("override"));
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

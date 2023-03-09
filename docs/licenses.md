@@ -6,7 +6,7 @@ layout: default
 
 # Licenses
 
-Manifold is open source and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Manifold is open source and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 ## Plugin for IntelliJ IDEA and Android Studio
 

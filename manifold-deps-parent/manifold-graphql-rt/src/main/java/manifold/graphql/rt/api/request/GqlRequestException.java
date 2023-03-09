@@ -26,33 +26,28 @@ import java.util.List;
  * values in the response as a type-safe list of {@link GqlError} from {@link #getErrors()}. The query result data,
  * if available, is also type-safely accessible from {@link #getResult(Class)}.
  */
-public class GqlRequestException extends RuntimeException
-{
-  private final Bindings _response;
+public class GqlRequestException extends RuntimeException {
+    private final Bindings _response;
 
-  public GqlRequestException( Bindings response )
-  {
-    _response = response;
-  }
+    public GqlRequestException(Bindings response) {
+        _response = response;
+    }
 
-  public <E> E getResult( Class<E> resultType )
-  {
-    //noinspection unchecked
-    return (E)_response.get( "data" );
-  }
+    public <E> E getResult(Class<E> resultType) {
+        //noinspection unchecked
+        return (E) _response.get("data");
+    }
 
-  @Override
-  public String getMessage()
-  {
-    //noinspection unchecked
-    List<GqlError> errors = (List)_response.get( "errors" );
-    return errors.size() == 1 ? errors.get( 0 ).getMessage() : "GraphQL request errors found";
-  }
+    @Override
+    public String getMessage() {
+        //noinspection unchecked
+        List<GqlError> errors = (List) _response.get("errors");
+        return errors.size() == 1 ? errors.get(0).getMessage() : "GraphQL request errors found";
+    }
 
-  public List<GqlError> getErrors()
-  {
-    //noinspection unchecked
-    List<GqlError> errors = (List)_response.get( "errors" );
-    return new JsonList<>( errors, GqlError.class );
-  }
+    public List<GqlError> getErrors() {
+        //noinspection unchecked
+        List<GqlError> errors = (List) _response.get("errors");
+        return new JsonList<>(errors, GqlError.class);
+    }
 }

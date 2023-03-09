@@ -18,17 +18,18 @@ package manifold.ext.props.middle.auto;
 
 import java.time.LocalDate;
 
-public interface IPerson
-{
-  IAddress getAddress();
-  void setAddress(IAddress address);
+public interface IPerson {
+    IAddress getAddress();
 
-  interface IAddress
-  {
-    String getCity();
-    void setCity(String city);
+    void setAddress(IAddress address);
 
-    LocalDate getDate();
-    void setDate(LocalDate date);
-  }
+    interface IAddress {
+        String getCity();
+
+        void setCity(String city);
+
+        LocalDate getDate();
+
+        void setDate(LocalDate date);
+    }
 }

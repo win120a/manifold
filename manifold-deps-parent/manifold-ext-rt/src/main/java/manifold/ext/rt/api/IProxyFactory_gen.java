@@ -18,10 +18,9 @@ package manifold.ext.rt.api;
 
 /**
  * !!! FOR INTERNAL USE ONLY!!!
- *
+ * <p>
  * This service interface exists solely for generated IProxyFactory impls e.g., for extension classes that implement
  * interfaces.  Use {@link IProxyFactory} instead of this.
  */
-public interface IProxyFactory_gen<T, I> extends IProxyFactory<T, I>
-{
+public interface IProxyFactory_gen<T, I> extends IProxyFactory<T, I> {
 }

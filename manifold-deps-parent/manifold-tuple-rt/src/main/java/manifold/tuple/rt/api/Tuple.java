@@ -28,36 +28,31 @@ import java.util.List;
  * <p/>
  * See {@link manifold.tuple.rt.internal.GeneratedTuple}
  */
-public interface Tuple extends Iterable<TupleItem>
-{
-  /**
-   * The tuple's labels, natural order.
-   */
-  List<String> orderedLabels();
+public interface Tuple extends Iterable<TupleItem> {
+    /**
+     * The tuple's labels, natural order.
+     */
+    List<String> orderedLabels();
 
-  /**
-   * The tuple's values, natural order.
-   */
-  List<?> orderedValues();
+    /**
+     * The tuple's values, natural order.
+     */
+    List<?> orderedValues();
 
-  /**
-   * The tuple's name/value pairs, natural order.
-   */
-  @Override
-  Iterator<TupleItem> iterator();
+    /**
+     * The tuple's name/value pairs, natural order.
+     */
+    @Override
+    Iterator<TupleItem> iterator();
 
-  /**
-   * @return A shallow copy of this tuple. The return type is the receiver's type.
-   */
-  default @Self Tuple copy()
-  {
-    try
-    {
-      return (Tuple)getClass().getConstructors()[0].newInstance( orderedValues().toArray() );
+    /**
+     * @return A shallow copy of this tuple. The return type is the receiver's type.
+     */
+    default @Self Tuple copy() {
+        try {
+            return (Tuple) getClass().getConstructors()[0].newInstance(orderedValues().toArray());
+        } catch (Exception e) {
+            throw ManExceptionUtil.unchecked(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw ManExceptionUtil.unchecked( e );
-    }
-  }
 }

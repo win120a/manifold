@@ -41,29 +41,28 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @Repeatable(Precompiles.class)
 @Deprecated
-public @interface Precompile
-{
-  /**
-   * The Type Manifold class defining the domain of types to compile from.
-   * <p/>
-   * Use {@link #fileExtension()} as a convenient alternative way to specify the type manifold via a file extension
-   * it handles.
-   */
-  Class<?> typeManifold() default Object.class;
+public @interface Precompile {
+    /**
+     * The Type Manifold class defining the domain of types to compile from.
+     * <p/>
+     * Use {@link #fileExtension()} as a convenient alternative way to specify the type manifold via a file extension
+     * it handles.
+     */
+    Class<?> typeManifold() default Object.class;
 
-  /**
-   * A file extension name e.g., {@code "json"}, handled by the Type Manifold class defining the domain of types to compile.
-   * This value is an alternative to {@link #typeManifold()} as a simple way to indirectly specify the {@code ITypeManifold}.
-   * If both arguments are present, {@link #typeManifold()} has precedence.
-   * <p/>
-   * The default wildcard value {@code "*"} precompiles types from <i>all</i> type manifolds used in the module
-   */
-  String fileExtension() default "*";
+    /**
+     * A file extension name e.g., {@code "json"}, handled by the Type Manifold class defining the domain of types to compile.
+     * This value is an alternative to {@link #typeManifold()} as a simple way to indirectly specify the {@code ITypeManifold}.
+     * If both arguments are present, {@link #typeManifold()} has precedence.
+     * <p/>
+     * The default wildcard value {@code "*"} precompiles types from <i>all</i> type manifolds used in the module
+     */
+    String fileExtension() default "*";
 
-  /**
-   * A regular expression defining the range of types that should be compiled from {@link #typeManifold} or
-   * {@link #fileExtension} via {@code ITypeManifold#getAllTypeNames()}. The default value {@code ".*"} compiles
-   * <i>all</i> types originating from the specified type manifold.
-   */
-  String typeNames() default ".*";
+    /**
+     * A regular expression defining the range of types that should be compiled from {@link #typeManifold} or
+     * {@link #fileExtension} via {@code ITypeManifold#getAllTypeNames()}. The default value {@code ".*"} compiles
+     * <i>all</i> types originating from the specified type manifold.
+     */
+    String typeNames() default ".*";
 }

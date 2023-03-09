@@ -21,15 +21,15 @@ import manifold.ext.props.rt.api.var;
 
 import java.util.List;
 
-public abstract class BaseGen<T, R>
-{
-  abstract @var List<T> names;
-  abstract @var R result;
-  abstract @var String abstractProp;
+public abstract class BaseGen<T, R> {
+    abstract @var List<T> names;
+    abstract @var R result;
+    abstract @var String abstractProp;
 
-  final @var String finalProp;
+    final @var String finalProp;
 
 //todo:  @val String valProp; // error for no init
 
-  public void asdf() {}
+    public void asdf() {
+    }
 }

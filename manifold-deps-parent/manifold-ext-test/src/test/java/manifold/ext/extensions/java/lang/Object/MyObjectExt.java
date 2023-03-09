@@ -27,34 +27,29 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @Extension
-public class MyObjectExt
-{
-  protected static String myProtectedMethod( @This Object thiz )
-  {
-    return "protected method";
-  }
-
-  @Extension
-  @SafeVarargs
-  public static <E> List<E> myStaticVarArgsMethod( E... elements) {
-    return Collections.unmodifiableList( Arrays.asList(elements));
-  }
-
-  @Extension
-  public static @Self Object myStaticSelfMethod( Predicate<@Self Object> constraints )
-  {
-    // note, without employing @ThisClass the usage of @Self in a static method is still useful with code gen when
-    // the static method is not really going to execute e.g., building a query model from the meta information in the
-    // call.
-    return null;
-  }
-
-  public static Class mySmartStaticSelfMethod( @ThisClass Class callingClass, Predicate<@Self Object> constraints ) throws Exception
-  {
-    if( !constraints.test( callingClass.newInstance() ) )
-    {
-      return null;
+public class MyObjectExt {
+    protected static String myProtectedMethod(@This Object thiz) {
+        return "protected method";
     }
-    return callingClass;
-  }
+
+    @Extension
+    @SafeVarargs
+    public static <E> List<E> myStaticVarArgsMethod(E... elements) {
+        return Collections.unmodifiableList(Arrays.asList(elements));
+    }
+
+    @Extension
+    public static @Self Object myStaticSelfMethod(Predicate<@Self Object> constraints) {
+        // note, without employing @ThisClass the usage of @Self in a static method is still useful with code gen when
+        // the static method is not really going to execute e.g., building a query model from the meta information in the
+        // call.
+        return null;
+    }
+
+    public static Class mySmartStaticSelfMethod(@ThisClass Class callingClass, Predicate<@Self Object> constraints) throws Exception {
+        if (!constraints.test(callingClass.newInstance())) {
+            return null;
+        }
+        return callingClass;
+    }
 }

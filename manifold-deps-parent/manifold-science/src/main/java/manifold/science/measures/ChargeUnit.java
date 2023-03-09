@@ -23,52 +23,44 @@ import manifold.science.util.Rational;
 
 import static manifold.science.util.CoercionConstants.r;
 
-public final class ChargeUnit extends AbstractPrimaryUnit<Charge, ChargeUnit>
-{
-  private static final UnitCache<ChargeUnit> CACHE = new UnitCache<>();
-  public static ChargeUnit get( Rational coulombs, String name, String symbol )
-  {
-    return CACHE.get( new ChargeUnit( coulombs, name, symbol ) );
-  }
+public final class ChargeUnit extends AbstractPrimaryUnit<Charge, ChargeUnit> {
+    private static final UnitCache<ChargeUnit> CACHE = new UnitCache<>();
 
-  public static final ChargeUnit Coulomb = get( 1r, "Coulomb", "C" );
-  public static final ChargeUnit Elementary = get( 1.6021766208e-19r, "Elementary", "e" );
+    public static ChargeUnit get(Rational coulombs, String name, String symbol) {
+        return CACHE.get(new ChargeUnit(coulombs, name, symbol));
+    }
 
-  public static final ChargeUnit BASE = Coulomb;
+    public static final ChargeUnit Coulomb = get(1r, "Coulomb", "C");
+    public static final ChargeUnit Elementary = get(1.6021766208e-19r, "Elementary", "e");
 
-  public ChargeUnit( Rational coulombs, String name, String symbol )
-  {
-    super( coulombs, name, symbol );
-  }
+    public static final ChargeUnit BASE = Coulomb;
 
-  public Rational getCoulombs()
-  {
-    return toNumber();
-  }
+    public ChargeUnit(Rational coulombs, String name, String symbol) {
+        super(coulombs, name, symbol);
+    }
 
-  @Override
-  public Charge makeDimension( Number amount )
-  {
-    return new Charge( Rational.get( amount ), this );
-  }
+    public Rational getCoulombs() {
+        return toNumber();
+    }
 
-  public CurrentUnit div( TimeUnit time )
-  {
-    return CurrentUnit.get( this, time );
-  }
+    @Override
+    public Charge makeDimension(Number amount) {
+        return new Charge(Rational.get(amount), this);
+    }
 
-  public TimeUnit div( CurrentUnit i )
-  {
-    return i.getTimeUnit();
-  }
+    public CurrentUnit div(TimeUnit time) {
+        return CurrentUnit.get(this, time);
+    }
 
-  public CapacitanceUnit div( PotentialUnit p )
-  {
-    return CapacitanceUnit.get( this, p );
-  }
+    public TimeUnit div(CurrentUnit i) {
+        return i.getTimeUnit();
+    }
 
-  public PotentialUnit div( CapacitanceUnit cu )
-  {
-    return cu.getPotentialUnit();
-  }
+    public CapacitanceUnit div(PotentialUnit p) {
+        return CapacitanceUnit.get(this, p);
+    }
+
+    public PotentialUnit div(CapacitanceUnit cu) {
+        return cu.getPotentialUnit();
+    }
 }

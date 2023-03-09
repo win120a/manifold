@@ -22,50 +22,44 @@ import manifold.util.concurrent.LocklessLazyVar;
 
 import java.util.*;
 
-public class ServiceDefinitions extends Definitions
-{
-  public static final LocklessLazyVar<Set<SymbolProvider>> REGISTERED_SYMBOL_PROVIDERS =
-    LocklessLazyVar.make( () -> {
-      Set<SymbolProvider> registered = new HashSet<>();
-      ServiceUtil.loadRegisteredServices( registered, SymbolProvider.class, ServiceDefinitions.class.getClassLoader() );
-      return registered;
-    } );
+public class ServiceDefinitions extends Definitions {
+    public static final LocklessLazyVar<Set<SymbolProvider>> REGISTERED_SYMBOL_PROVIDERS =
+            LocklessLazyVar.make(() -> {
+                Set<SymbolProvider> registered = new HashSet<>();
+                ServiceUtil.loadRegisteredServices(registered, SymbolProvider.class, ServiceDefinitions.class.getClassLoader());
+                return registered;
+            });
 
-  private final Definitions _rootDefinitions;
+    private final Definitions _rootDefinitions;
 
-  public ServiceDefinitions( Definitions rootDefinitions )
-  {
-    super( rootDefinitions.getSourceFile() );
-    _rootDefinitions = rootDefinitions;
-  }
+    public ServiceDefinitions(Definitions rootDefinitions) {
+        super(rootDefinitions.getSourceFile());
+        _rootDefinitions = rootDefinitions;
+    }
 
-  public Definitions getRootDefinitions()
-  {
-    return _rootDefinitions;
-  }
+    public Definitions getRootDefinitions() {
+        return _rootDefinitions;
+    }
 
-  @Override
-  protected Definitions loadParentDefinitions()
-  {
-    return null;
-  }
+    @Override
+    protected Definitions loadParentDefinitions() {
+        return null;
+    }
 
-  @Override
-  public boolean isDefined( String def )
-  {
-    Set<SymbolProvider> providers = REGISTERED_SYMBOL_PROVIDERS.get();
-    return providers.stream().anyMatch( p -> p.isDefined( getRootDefinitions(), getSourceFile(), def ) );
-  }
+    @Override
+    public boolean isDefined(String def) {
+        Set<SymbolProvider> providers = REGISTERED_SYMBOL_PROVIDERS.get();
+        return providers.stream().anyMatch(p -> p.isDefined(getRootDefinitions(), getSourceFile(), def));
+    }
 
-  @Override
-  public String getValue( String def )
-  {
-    Set<SymbolProvider> providers = REGISTERED_SYMBOL_PROVIDERS.get();
-    return providers.stream()
-      .filter( p -> p.isDefined( getRootDefinitions(), getSourceFile(), def ) )
-      .map( p -> p.getValue( getRootDefinitions(), getSourceFile(), def ) )
-      .map( v -> v == null ? "" : v )
-      .findFirst()
-      .orElse( null );
-  }
+    @Override
+    public String getValue(String def) {
+        Set<SymbolProvider> providers = REGISTERED_SYMBOL_PROVIDERS.get();
+        return providers.stream()
+                .filter(p -> p.isDefined(getRootDefinitions(), getSourceFile(), def))
+                .map(p -> p.getValue(getRootDefinitions(), getSourceFile(), def))
+                .map(v -> v == null ? "" : v)
+                .findFirst()
+                .orElse(null);
+    }
 }

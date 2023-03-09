@@ -21,77 +21,61 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import manifold.rt.api.util.StreamUtil;
 
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class CsvParser
-{
-  private final CsvTokenizer _tokenizer;
+public class CsvParser {
+    private final CsvTokenizer _tokenizer;
 
-  public static CsvDataSet parse( InputStream inputStream )
-  {
-    return new CsvParser( inputStream ).parse();
-  }
-
-  private CsvParser( InputStream inputStream )
-  {
-    try
-    {
-      String content = StreamUtil.getContent( new InputStreamReader( inputStream, UTF_8 ) );
-      _tokenizer = new CsvTokenizer( content );
+    public static CsvDataSet parse(InputStream inputStream) {
+        return new CsvParser(inputStream).parse();
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  private CsvDataSet parse()
-  {
-    return new CsvDataSet( parseHeader(), parseRecords(), _tokenizer.getTypes() );
-  }
-
-  private List<CsvRecord> parseRecords()
-  {
-    List<CsvRecord> records = new ArrayList<>();
-    List<CsvField> fields = new ArrayList<>();
-    while( true )
-    {
-      CsvToken token = _tokenizer.nextToken();
-      fields.add( new CsvField( token ) );
-      if( token.isLastInRecord() )
-      {
-        records.add( new CsvRecord( fields ) );
-        if( token.isEof() )
-        {
-          break;
+    private CsvParser(InputStream inputStream) {
+        try {
+            String content = StreamUtil.getContent(new InputStreamReader(inputStream, UTF_8));
+            _tokenizer = new CsvTokenizer(content);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        else
-        {
-          fields = new ArrayList<>();
-        }
-      }
     }
-    return records;
-  }
 
-  private CsvHeader parseHeader()
-  {
-    if( _tokenizer.hasHeader() )
-    {
-      List<CsvField> fields = new ArrayList<>();
-      while( true )
-      {
-        CsvToken token = _tokenizer.nextToken();
-        fields.add( new CsvField( token ) );
-        if( token.isLastInRecord() )
-        {
-          return new CsvHeader( fields );
-        }
-      }
+    private CsvDataSet parse() {
+        return new CsvDataSet(parseHeader(), parseRecords(), _tokenizer.getTypes());
     }
-    return null;
-  }
+
+    private List<CsvRecord> parseRecords() {
+        List<CsvRecord> records = new ArrayList<>();
+        List<CsvField> fields = new ArrayList<>();
+        while (true) {
+            CsvToken token = _tokenizer.nextToken();
+            fields.add(new CsvField(token));
+            if (token.isLastInRecord()) {
+                records.add(new CsvRecord(fields));
+                if (token.isEof()) {
+                    break;
+                } else {
+                    fields = new ArrayList<>();
+                }
+            }
+        }
+        return records;
+    }
+
+    private CsvHeader parseHeader() {
+        if (_tokenizer.hasHeader()) {
+            List<CsvField> fields = new ArrayList<>();
+            while (true) {
+                CsvToken token = _tokenizer.nextToken();
+                fields.add(new CsvField(token));
+                if (token.isLastInRecord()) {
+                    return new CsvHeader(fields);
+                }
+            }
+        }
+        return null;
+    }
 }

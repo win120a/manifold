@@ -16,37 +16,33 @@
 
 package manifold.preprocessor.expression;
 
-enum ExpressionTokenType
-{
-  Whitespace(),
-  StringLiteral(),
-  Identifier(),
-  OpenParen( "(" ),
-  CloseParen( ")" ),
-  And( "&&" ),
-  Or( "||" ),
-  Not( "!" ),
-  Equals( "==" ),
-  NotEquals( "!=" ),
-  gt( ">" ),
-  ge( ">=" ),
-  lt( "<" ),
-  le( "<=" );
+enum ExpressionTokenType {
+    Whitespace(),
+    StringLiteral(),
+    Identifier(),
+    OpenParen("("),
+    CloseParen(")"),
+    And("&&"),
+    Or("||"),
+    Not("!"),
+    Equals("=="),
+    NotEquals("!="),
+    gt(">"),
+    ge(">="),
+    lt("<"),
+    le("<=");
 
-  private String _token;
+    private String _token;
 
-  ExpressionTokenType()
-  {
-    this( null );
-  }
+    ExpressionTokenType() {
+        this(null);
+    }
 
-  ExpressionTokenType( String token )
-  {
-    _token = token;
-  }
+    ExpressionTokenType(String token) {
+        _token = token;
+    }
 
-  String getToken()
-  {
-    return _token;
-  }
+    String getToken() {
+        return _token;
+    }
 }

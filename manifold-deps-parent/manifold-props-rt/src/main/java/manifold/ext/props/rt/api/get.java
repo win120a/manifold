@@ -28,21 +28,21 @@ import java.lang.annotation.Target;
  * {@link get} makes the property read-write; the same effect as {@link var}. Note {@link val} can also be used to
  * designate a read-only property.
  * <p/>
+ *
  * @see set
  * @see val
  * @see var
  */
-@Target( {ElementType.FIELD} )
-@Retention( RetentionPolicy.CLASS )
-public @interface get
-{
-  /**
-   * Use this argument to override the property's declared access.
-   */
-  PropOption[] value() default {};
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.CLASS)
+public @interface get {
+    /**
+     * Use this argument to override the property's declared access.
+     */
+    PropOption[] value() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the property's generated getter methods.
-   */
-  any[] annos() default {};
+    /**
+     * Use this argument to specify annotations to apply to the property's generated getter methods.
+     */
+    any[] annos() default {};
 }

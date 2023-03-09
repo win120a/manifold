@@ -22,11 +22,10 @@ import org.junit.Test;
 import static manifold.science.util.AngleConstants.*;
 import static manifold.science.util.UnitConstants.m;
 
-public class VectorMathTest
-{
-  @Test
-  public void testVectorAddition() {
-    LengthVector l = 1m E + 1m N + 1m W + 1m S;
-    System.out.println(l.getMagnitude().toNumber());
-  }
+public class VectorMathTest {
+    @Test
+    public void testVectorAddition() {
+        LengthVector l = 1 m E +1 m N +1 m W +1 m S;
+        System.out.println(l.getMagnitude().toNumber());
+    }
 }

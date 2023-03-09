@@ -19,12 +19,10 @@ package manifold.js.rt.parser.tree.template;
 
 import manifold.js.rt.parser.tree.Node;
 
-public class StatementNode extends Node
-{
+public class StatementNode extends Node {
 
-  public StatementNode()
-  {
-    super( null );
-  }
+    public StatementNode() {
+        super(null);
+    }
 
 }

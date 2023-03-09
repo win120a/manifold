@@ -16,15 +16,13 @@
 
 package manifold.ext.props;
 
-public class Bar
-{
-  public void hi()
-  {
-    Foo foo = new Foo();
-    String hi = foo.thing;
-    foo.thing = "hi";
+public class Bar {
+    public void hi() {
+        Foo foo = new Foo();
+        String hi = foo.thing;
+        foo.thing = "hi";
 
-    INamed named = null;
+        INamed named = null;
 //    named.hello = ;
-  }
+    }
 }

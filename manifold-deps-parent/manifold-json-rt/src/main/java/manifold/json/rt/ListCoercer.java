@@ -26,51 +26,42 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class ListCoercer implements ICoercionProvider
-{
-  @Override
-  public Object coerce( Object value, Type toType )
-  {
-    Class<?> toClass = toType instanceof ParameterizedType
-      ? (Class)((ParameterizedType)toType).getRawType()
-      : (Class)toType;
-    if( !toClass.isInterface() )
-    {
-      return ICallHandler.UNHANDLED;
+public class ListCoercer implements ICoercionProvider {
+    @Override
+    public Object coerce(Object value, Type toType) {
+        Class<?> toClass = toType instanceof ParameterizedType
+                ? (Class) ((ParameterizedType) toType).getRawType()
+                : (Class) toType;
+        if (!toClass.isInterface()) {
+            return ICallHandler.UNHANDLED;
+        }
+
+        while (toType instanceof ParameterizedType && value instanceof List &&
+                List.class.isAssignableFrom((Class) ((ParameterizedType) toType).getRawType())) {
+            toType = ((ParameterizedType) toType).getActualTypeArguments()[0];
+        }
+        if (toType instanceof ParameterizedType) {
+            toType = ((ParameterizedType) toType).getRawType();
+        }
+        Class rawToType = (Class) toType;
+        if (value instanceof List) {
+            // handle case like Person.Hobby where Hobby extends IListBacked<HobbyItem>
+            if (IListBacked.class.isAssignableFrom(rawToType)) {
+                return RuntimeMethods.constructProxy(value, rawToType);
+            }
+
+            // Handle case like Foo where Foo is the component type to transform a simple List to a JsonList<Foo>
+            return new JsonList((List) value, rawToType);
+        }
+
+        return ICallHandler.UNHANDLED;
     }
 
-    while( toType instanceof ParameterizedType && value instanceof List &&
-      List.class.isAssignableFrom( (Class)((ParameterizedType)toType).getRawType() ) )
-    {
-      toType = ((ParameterizedType)toType).getActualTypeArguments()[0];
+    @Override
+    public Object toBindingValue(Object value) {
+        if (value instanceof JsonList) {
+            return ((JsonList) value).getList();
+        }
+        return ICallHandler.UNHANDLED;
     }
-    if( toType instanceof ParameterizedType )
-    {
-      toType = ((ParameterizedType)toType).getRawType();
-    }
-    Class rawToType = (Class)toType;
-    if( value instanceof List )
-    {
-      // handle case like Person.Hobby where Hobby extends IListBacked<HobbyItem>
-      if( IListBacked.class.isAssignableFrom( rawToType ) )
-      {
-        return RuntimeMethods.constructProxy( value, rawToType );
-      }
-
-      // Handle case like Foo where Foo is the component type to transform a simple List to a JsonList<Foo>
-      return new JsonList( (List)value, rawToType );
-    }
-
-    return ICallHandler.UNHANDLED;
-  }
-
-  @Override
-  public Object toBindingValue( Object value )
-  {
-    if( value instanceof JsonList )
-    {
-      return ((JsonList) value).getList();
-    }
-    return ICallHandler.UNHANDLED;
-  }
 }

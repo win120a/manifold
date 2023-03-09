@@ -18,50 +18,42 @@ package manifold.js;
 
 import java.net.MalformedURLException;
 import java.util.Set;
+
 import manifold.api.fs.IFile;
 import manifold.api.host.IManifoldHost;
 import manifold.api.host.IModule;
 import manifold.api.type.AbstractSingleFileModel;
 
-public class JavascriptModel extends AbstractSingleFileModel
-{
-  private final IModule _module;
-  private String _url;
+public class JavascriptModel extends AbstractSingleFileModel {
+    private final IModule _module;
+    private String _url;
 
-  JavascriptModel( IModule module, String fqn, Set<IFile> files )
-  {
-    super( module.getHost(), fqn, files );
-    _module = module;
-    assignUrl();
-  }
-
-  private void assignUrl()
-  {
-    try
-    {
-      _url = getFile().toURI().toURL().toString();
+    JavascriptModel(IModule module, String fqn, Set<IFile> files) {
+        super(module.getHost(), fqn, files);
+        _module = module;
+        assignUrl();
     }
-    catch( MalformedURLException e )
-    {
-      throw new RuntimeException( e );
+
+    private void assignUrl() {
+        try {
+            _url = getFile().toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public IModule getModule()
-  {
-    return _module;
-  }
+    public IModule getModule() {
+        return _module;
+    }
 
-  public String getUrl()
-  {
-    return _url;
-  }
+    public String getUrl() {
+        return _url;
+    }
 
-  @Override
-  public void updateFile( IFile file )
-  {
-    super.updateFile( file );
-    assignUrl();
-  }
+    @Override
+    public void updateFile(IFile file) {
+        super.updateFile(file);
+        assignUrl();
+    }
 }
 

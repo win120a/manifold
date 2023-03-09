@@ -17,9 +17,9 @@ layout: default
   <p><small>jetbrains.com</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://devm.io/java/java-type-safe-171944"><img width="240" height="135" src="/images/mco.jpg" alt="a"></a></p>
@@ -32,9 +32,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://devm.io/java/graphql-made-easy-169181"><img width="240" height="135" src="/images/graphql.png" alt="a"></a></p>
@@ -47,9 +47,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://devm.io/java/manifold-operator-overloading-java-163232"><img width="240" height="135" src="/images/math.png" alt="a"></a></p>
@@ -63,9 +63,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://github.com/manifold-systems/manifold/blob/master/docs/articles/reflection.md"><img width="240" height="135" src="/images/crazy-pills.jpg" alt="a"></a></p>
@@ -78,9 +78,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://github.com/manifold-systems/manifold/blob/master/docs/articles/unchecked.md"><img width="240" height="135" src="/images/unchecked.png" alt="a"></a></p>
@@ -93,9 +93,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://github.com/manifold-systems/manifold/blob/master/docs/articles/preprocessor.md"><img width="240" height="135" src="/images/preprocessor_article.png" alt="a"></a></p>
@@ -108,9 +108,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://github.com/manifold-systems/manifold/blob/master/docs/articles/jailbreak.md"><img width="240" height="135" src="/images/jailbreak.png" alt="a"></a></p>
@@ -123,9 +123,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/rest-api-vision-mit-manifold-80931"><img width="240" height="135" src="/images/shutterstock_225924757.jpg" alt="a"></a></p>
@@ -138,9 +138,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://devm.io/java/manifold-code-generator-part-2-151762"><img width="240" height="135" src="/images/shutterstock_739795408-350x197.jpg" alt="a"></a></p>
@@ -166,9 +166,9 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://devm.io/java/manifold-alien-technology-142755"><img width="240" height="135" src="/images/shutterstock_164685149-350x233.jpg" alt="b"></a></p>
@@ -181,10 +181,10 @@ layout: default
   <p><small>devm.io</small></p>
   </td>
  </tr>
- 
+
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
  <tr><td><p><h3>Deutsche</h3></p></td><td><p>&nbsp;</p></td></tr>
-  
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/manifold-gepruefte-exceptions-86344"><img width="240" height="135" src="/images/unchecked.png" alt="a"></a></p>
@@ -197,9 +197,9 @@ layout: default
   <p><small>jaxenter.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/manifold-java-preprocessor-85925"><img width="240" height="135" src="/images/preprocessor_article.png" alt="a"></a></p>
@@ -213,9 +213,9 @@ layout: default
   <p><small>jaxenter.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/reflexionscode-jailbreak-manifold-typsicherheit-84641"><img width="240" height="135" src="/images/jailbreak.png" alt="a"></a></p>
@@ -228,9 +228,9 @@ layout: default
   <p><small>jaxenter.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/rest-api-vision-mit-manifold-80931"><img width="240" height="135" src="/images/shutterstock_225924757.jpg" alt="a"></a></p>
@@ -246,9 +246,9 @@ layout: default
   <p><small>jaxenter.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://entwickler.de/java/nicht-von-dieser-welt"><img width="240" height="135" src="/images/entwickler.png" alt="c"></a></p>
@@ -260,9 +260,9 @@ layout: default
   <p><small>entwickler.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/manifold-code-generator-java-metadata-74906"><img width="240" height="135" src="/images/manifold-java-code-generator.jpg" alt="c"></a></p>
@@ -275,9 +275,9 @@ layout: default
   <p><small>jaxenter.de</small></p>
   </td>
  </tr>
- 
+
   <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
- 
+
  <tr>
   <td>
   <p><a href="https://jaxenter.de/manifold-typsystem-dynamisch-erweitern-69685"><img width="240" height="135" src="/images/shutterstock_546213388-768x581.jpg" alt="d"></a></p>
@@ -295,7 +295,7 @@ layout: default
 
  <tr><td><p>&nbsp;</p></td><td><p>&nbsp;</p></td></tr>
  <tr><td><p><h3>Miscellany</h3></p></td><td><p>&nbsp;</p></td></tr> 
- 
+
   <tr>
    <td>
    <p><a href="/talks/manifold2019.pptx"><img width="240" height="135" src="/images/manifold2019talk.png" alt="a"></a></p>
@@ -306,5 +306,5 @@ layout: default
    <p><small>manifold.systems</small></p>
    </td>
   </tr>
-  
+
 </table>

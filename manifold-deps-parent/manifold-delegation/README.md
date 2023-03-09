@@ -2,24 +2,29 @@
 
 > **⚠ Experimental**
 
-The `manifold-delegation` project is a compiler plugin that provides language support for call forwarding and delegation.
-These features are an experimental effort toward interface composition as a practical alternative to implementation inheritance.
+The `manifold-delegation` project is a compiler plugin that provides language support for call forwarding and
+delegation.
+These features are an experimental effort toward interface composition as a practical alternative to implementation
+inheritance.
 
 Use `@link` to automatically transfer calls to unimplemented interface methods through the fields of a class.
 
 * Choose between call forwarding and delegation with `@part`
-* Override linked interface methods (solves [the Self problem](https://web.media.mit.edu/~lieber/Lieberary/OOP/Delegation/Delegation.html))
-* Share super interface implementations (solves [the Diamond problem](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem))
+* Override linked interface methods (
+  solves [the Self problem](https://web.media.mit.edu/~lieber/Lieberary/OOP/Delegation/Delegation.html))
+* Share super interface implementations (
+  solves [the Diamond problem](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem))
 * Configure class implementation dynamically
 
 ## Table of Contents
+
 * [Basic usage](#basic-usage)
 * [Forwarding](#forwarding)
-  * [A one-way flight](#a-one-way-flight)
+    * [A one-way flight](#a-one-way-flight)
 * [Delegation](#delegation)
-  * [Self-preservation](#self-preservation) 
-  * [Inheritance](#inheritance) 
-  * [Default methods](#default-methods)
+    * [Self-preservation](#self-preservation)
+    * [Inheritance](#inheritance)
+    * [Default methods](#default-methods)
 * [Diamonds](#diamonds)
 * [Example](#example)
 * [IDE Support](#ide-support)
@@ -28,12 +33,13 @@ Use `@link` to automatically transfer calls to unimplemented interface methods t
 * [License](#license)
 * [Versioning](#versioning)
 * [Author](#author)
-    
 
 # Basic usage
 
 ## `@link`
-Use `@link` to implement one or more interfaces through a field. 
+
+Use `@link` to implement one or more interfaces through a field.
+
 ```java
 class MyClass implements MyInterface {
   @link MyInterface myInterface; // transfers calls on MyInterface to myInterface
@@ -45,7 +51,9 @@ class MyClass implements MyInterface {
   // No need to implement MyInterface here, but you can override myInterface as needed
 }
 ```
-The interfaces used in a link are the intersection of the type[s] specified in the linked field and the interfaces of the
+
+The interfaces used in a link are the intersection of the type[s] specified in the linked field and the interfaces of
+the
 enclosing class.
 
 ```java
@@ -53,35 +61,47 @@ interface A {. . .}
 interface B {. . .}
 public class Sample implements A, B {. . .}
 ```
+
 If the field's type is an interface, the intersection of that interface and the interfaces of the enclosing class define
 the link.
+
 ```java
 public class MyClass implements A, B {
   @link A foo; // links A to foo
   . . .
 }
 ```
-If the field's type is a class, the intersection of the interfaces of the class and the interfaces of the enclosing class
+
+If the field's type is a class, the intersection of the interfaces of the class and the interfaces of the enclosing
+class
 define the link.
+
 ```java
   @link Sample foo; // links A and B to foo
 ```
-If interfaces are specified in `@link`, the intersection of those interfaces and the interfaces of the enclosing class define
+
+If interfaces are specified in `@link`, the intersection of those interfaces and the interfaces of the enclosing class
+define
 the link.
+
 ```java
   @link(A.class) Sample foo; // links A to foo
 ```
+
 Note, `@link` fields are `private` and `final` by default.
 
 Unimplemented interface calls transfer through the link to the assigned value of the field. The value's type determines
-how the calls are transferred. If the type is annotated with [`@part`](#part), calls are transferred using [delegation](#delegation).
+how the calls are transferred. If the type is annotated with [`@part`](#part), calls are transferred
+using [delegation](#delegation).
 Otherwise, they are transferred using call [forwarding](#forwarding).
- 
+
 ## `@part`
+
 Use `@part` to enable delegation with `@link`.
 
-Generally, a link establishes a "part-of" relationship between the linking object and the linked `part`. Both objects form
-a single, composite object in terms of the interfaces defined in the link. 
+Generally, a link establishes a "part-of" relationship between the linking object and the linked `part`. Both objects
+form
+a single, composite object in terms of the interfaces defined in the link.
 
 ```java
 interface Doubler {
@@ -106,22 +126,29 @@ class MyClass implements Doubler {
 Doubler doubler = new MyClass();
 out.println(doubler.doubleDown());
 ```
+
 Output:
+
 ```text
     16
 ```
+
 DoublerPart's `@part` annotation enables _true_ delegation in MyClass's link.
 
-The takeaway from this example is DoublerPart's call to `getDown()` calls MyClass's `getDown()`, indicating linked interfaces
+The takeaway from this example is DoublerPart's call to `getDown()` calls MyClass's `getDown()`, indicating linked
+interfaces
 are polymorphic wrt `part` classes. The [Delegation](#delegation) section covers more about the what and how of `@part`.
 
 # Forwarding
-Forwarding uses a separate object to handle unimplemented interface calls. A class implements an interface simply by invoking
+
+Forwarding uses a separate object to handle unimplemented interface calls. A class implements an interface simply by
+invoking
 the methods on another object that implements the interface.
 
 With `@link` this process is handled automatically.
 
 A simple example demonstrating interface composition via forwarding with a map.
+
 ```java
 public class StringMap<E> implements Map<String, E> {
   @link Map<String, E> map = new HashMap<>();
@@ -130,13 +157,15 @@ public class StringMap<E> implements Map<String, E> {
   public int hashCode() {return map.hashCode();}
 }
 ``` 
-The advantage over implementation inheritance is that the implementation of StringMap is decoupled from HashMap; only the Map
+
+The advantage over implementation inheritance is that the implementation of StringMap is decoupled from HashMap; only
+the Map
 interface is exposed. `@link` performs the grunt work of forwarding unimplemented Map calls.
-                                                                                                    
+
 ### A one-way flight
 
 Here, StudentPart uses `@link` to automatically transfer calls to unimplemented Person methods to the `person` field.
-But PersonPart does something interesting, its implementation of `getTitledName()` calls other Person methods. 
+But PersonPart does something interesting, its implementation of `getTitledName()` calls other Person methods.
 
 ```java
 interface Student extends Person {
@@ -175,47 +204,59 @@ PersonPart person = new PersonPart("Milton");
 StudentPart student = new StudentPart(person, "Metallurgy");
 out.println(student.getTitledName());
 ```
+
 Output:
+
 ```text
     Person Milton
 ```
-With forwarding, the object handling the calls is unaware of the link defined in the forwarding object. As a consequence,
+
+With forwarding, the object handling the calls is unaware of the link defined in the forwarding object. As a
+consequence,
 forwarded calls are one-way flights. The call to `getTitle()` from `PersonPart#getTitledName()` is invoked _statically_,
 StudentPart's override is ignored.
 
 Generally, linked interface calls within forwarded objects are not polymorphic. This behavior is often referred to as
 _the Self problem_.
 
-
 # Delegation
 
 If PersonPart is annotated with `@part`, Person methods are called using _delegation_.
 
-Delegation is more rigorous. It enables polymorphic calls from linked parts where StudentPart can override Person methods
+Delegation is more rigorous. It enables polymorphic calls from linked parts where StudentPart can override Person
+methods
 so that the implementation of Person defers to StudentPart.
+
 ```java
 @part class PersonPart implements Person {
   . . .
 }
 ```
+
 With `@part` the call to `student.getTitledName()` results in:
+
 ```text
     Student Milton
 ```
-Inside PersonPart `this` refers to StudentPart in terms of the Person interface. Thus, the call to `getTitle()` dispatches
+
+Inside PersonPart `this` refers to StudentPart in terms of the Person interface. Thus, the call to `getTitle()`
+dispatches
 _dynamically_. This "true" form of delegation solves _the Self problem_.
 
 ### Self-preservation
 
 Delegation involves composite objects each consisting of a root object and its graph of linked `part` objects. Within a
 composite object, linked interface calls are initially dispatched from the root object, never from linked parts; `this`
-always refers to the root in terms of the interfaces defined by the links. Otherwise, if any of the linked parts are allowed
+always refers to the root in terms of the interfaces defined by the links. Otherwise, if any of the linked parts are
+allowed
 to directly refer to a non-root part, delegation is broken.
 
-Essentially, polymorphic calls are compromised when a direct reference to a part bypasses the root. Therefore, `part` classes
+Essentially, polymorphic calls are compromised when a direct reference to a part bypasses the root. Therefore, `part`
+classes
 are not permitted to reference `this` in a context other than a declared interface.
 
-Invalid `this` usages in `part` classes result in compile error: `Part class 'this' must be used as an interface here`. 
+Invalid `this` usages in `part` classes result in compile error: `Part class 'this' must be used as an interface here`.
+
 ```java
 @part class MyPart implements MyInterface {
     @override public void interfaceMethod() {
@@ -236,12 +277,14 @@ Invalid `this` usages in `part` classes result in compile error: `Part class 'th
     }
 }
 ```
-Note, `@part` classes are not confined to usage as linked objects. They can be used anywhere for any purpose. 
+
+Note, `@part` classes are not confined to usage as linked objects. They can be used anywhere for any purpose.
 
 ### Inheritance
 
 `@part` classes support implementation inheritance. But to maintain polymorphic calls within linked parts, superclasses
 associated with links must also be `part` classes.
+
 ```java
 interface A {
   String a(String a);
@@ -264,7 +307,9 @@ class MyA implements A {
 MyA a = new MyA();
 out.println(a.a( "x_" )); 
 ```
+
 Output:
+
 ```text
     x_y_z
 ```
@@ -272,6 +317,7 @@ Output:
 ### Default methods
 
 Consider `getTitledName()` as a default method in Person instead of an implementation in PersonPart.
+
 ```java
 interface Person {
   String getName();
@@ -279,17 +325,21 @@ interface Person {
   default String getTitledName() {return getTitle() + " " + getName();}
 }
 ```  
-Calls must behave identically regardless of where the method is implemented; polymorphism must be preserved when using `part`
+
+Calls must behave identically regardless of where the method is implemented; polymorphism must be preserved when
+using `part`
 classes. As such, the call to `student.getTitledName()` dispatches dynamically as before:
+
 ```text
     Student Milton
 ```    
+
 Inside the Person interface `this` refers to StudentPart even when called from PersonPart.
- 
 
 # Diamonds
 
 When super interfaces overlap, a "diamond" relationship results. This is known as _the Diamond problem_.
+
 ```text
          Person
            ▲▲
@@ -299,7 +349,9 @@ When super interfaces overlap, a "diamond" relationship results. This is known a
       └────┐┌────┘
            TA
 ```
+
 Should TA use Student's Person or Teacher's? Use `@link(share=true)` to resolve the ambiguity.
+
 ```java
 interface Teacher extends Person {
   String getDepartment();
@@ -329,14 +381,16 @@ interface TA extends Student, Teacher {
   }
 }
 ```
-The student is the teacher, so TaPart shares the link to student with `@link(share=true)` and student is passed along to
-the Teacher constructor. Without `share=true` a compiler error indicates the overlap with Person. 
 
->Note, `part` classes are _not_ required with `@link(share=true)`; it works with both forwarding and delegation.
+The student is the teacher, so TaPart shares the link to student with `@link(share=true)` and student is passed along to
+the Teacher constructor. Without `share=true` a compiler error indicates the overlap with Person.
+
+> Note, `part` classes are _not_ required with `@link(share=true)`; it works with both forwarding and delegation.
 
 # Example
 
 Here is the Student/Teacher example in one code sample for easier readability.
+
 ```java
 import manifold.ext.delegation.rt.api.link;
 import manifold.ext.delegation.rt.api.part;
@@ -402,14 +456,17 @@ public class DelegationExample {
   }
 }
 ```
+
 Output:
+
 ```text
     TA Milton
 ```
 
 # IDE Support
 
-Delegation with links & parts is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+Delegation with links & parts is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -423,8 +480,10 @@ Get the [Manifold plugin](https://plugins.jetbrains.com/plugin/10057-manifold) d
 
 ## Building this project
 
-The `manifold-delegation` project is defined with Maven.  To build it install Maven and a Java 8 JDK and run the following
+The `manifold-delegation` project is defined with Maven. To build it install Maven and a Java 8 JDK and run the
+following
 command.
+
 ```
 mvn compile
 ```
@@ -435,24 +494,28 @@ The `manifold-delegation` dependency works with all build tooling, including Mav
 versions 8 - 19.
 
 This project consists of two modules:
+
 * `manifold-delegation`
 * `manifold-delegation-rt`
 
 For optimal performance and to work with Android and other JVM languages it is recommended to:
+
 * Add a dependency on `manifold-delegation-rt` (Gradle: "implementation", Maven: "compile")
-* Add `manifold-delegation` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "annotationProcessorPaths")
+* Add `manifold-delegation` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "
+  annotationProcessorPaths")
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
->Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired JDK
 LTS release (8 - 19) or latest JDK release, the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -490,7 +553,9 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyProject'
 ```

@@ -41,7 +41,7 @@ package manifold.rt.api;
  * See {@code manifold.ext.rt.extensions.manifold.rt.api.Array.ManArrayExt} for implementations of builtin Array
  * extension methods.
  */
-public final class Array
-{
-  private Array() {}
+public final class Array {
+    private Array() {
+    }
 }

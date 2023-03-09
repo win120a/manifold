@@ -19,53 +19,43 @@ package manifold.science.measures;
 import manifold.science.api.AbstractMeasure;
 import manifold.science.util.Rational;
 
-public final class Momentum extends AbstractMeasure<MomentumUnit, Momentum>
-{
-  public Momentum( Rational value, MomentumUnit unit, MomentumUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+public final class Momentum extends AbstractMeasure<MomentumUnit, Momentum> {
+    public Momentum(Rational value, MomentumUnit unit, MomentumUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public Momentum( Rational value, MomentumUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public Momentum(Rational value, MomentumUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public MomentumUnit getBaseUnit()
-  {
-    return MomentumUnit.BASE;
-  }
+    @Override
+    public MomentumUnit getBaseUnit() {
+        return MomentumUnit.BASE;
+    }
 
-  @Override
-  public Momentum make( Rational value, MomentumUnit unit, MomentumUnit displayUnit )
-  {
-    return new Momentum( value, unit, displayUnit );
-  }
+    @Override
+    public Momentum make(Rational value, MomentumUnit unit, MomentumUnit displayUnit) {
+        return new Momentum(value, unit, displayUnit);
+    }
 
-  @Override
-  public Momentum make( Rational value, MomentumUnit unit )
-  {
-    return new Momentum( value, unit );
-  }
+    @Override
+    public Momentum make(Rational value, MomentumUnit unit) {
+        return new Momentum(value, unit);
+    }
 
-  public Energy times( Velocity v )
-  {
-    return new Energy( toBaseNumber() * v.toBaseNumber(), EnergyUnit.BASE, getDisplayUnit() * v.getDisplayUnit() );
-  }
+    public Energy times(Velocity v) {
+        return new Energy(toBaseNumber() * v.toBaseNumber(), EnergyUnit.BASE, getDisplayUnit() * v.getDisplayUnit());
+    }
 
-  public Velocity div( Mass mass )
-  {
-    return new Velocity( toBaseNumber() / mass.toBaseNumber(), VelocityUnit.BASE, getDisplayUnit().getVelocityUnit() );
-  }
+    public Velocity div(Mass mass) {
+        return new Velocity(toBaseNumber() / mass.toBaseNumber(), VelocityUnit.BASE, getDisplayUnit().getVelocityUnit());
+    }
 
-  public Mass div( Velocity v )
-  {
-    return new Mass( toBaseNumber() / v.toBaseNumber(), MassUnit.BASE, getDisplayUnit().getMassUnit() );
-  }
+    public Mass div(Velocity v) {
+        return new Mass(toBaseNumber() / v.toBaseNumber(), MassUnit.BASE, getDisplayUnit().getMassUnit());
+    }
 
-  public Force div( Time t )
-  {
-    return new Force( toBaseNumber() / t.toBaseNumber(), ForceUnit.BASE, getDisplayUnit() / t.getDisplayUnit() );
-  }
+    public Force div(Time t) {
+        return new Force(toBaseNumber() / t.toBaseNumber(), ForceUnit.BASE, getDisplayUnit() / t.getDisplayUnit());
+    }
 }

@@ -23,56 +23,46 @@ import manifold.science.util.Rational;
 
 import static manifold.science.util.CoercionConstants.r;
 
-public final class MomentumUnit extends AbstractProductUnit<MassUnit, VelocityUnit, Momentum, MomentumUnit>
-{
-  private static final UnitCache<MomentumUnit> CACHE = new UnitCache<>();
+public final class MomentumUnit extends AbstractProductUnit<MassUnit, VelocityUnit, Momentum, MomentumUnit> {
+    private static final UnitCache<MomentumUnit> CACHE = new UnitCache<>();
 
-  public static final MomentumUnit BASE = get( MassUnit.BASE, VelocityUnit.BASE, 1 r, "newton-second", "N⋅s" );
+    public static final MomentumUnit BASE = get(MassUnit.BASE, VelocityUnit.BASE, 1r, "newton-second", "N⋅s");
 
-  public static MomentumUnit get( MassUnit massUnit, VelocityUnit velocityUnit )
-  {
-    return get( massUnit, velocityUnit, null, null, null );
-  }
+    public static MomentumUnit get(MassUnit massUnit, VelocityUnit velocityUnit) {
+        return get(massUnit, velocityUnit, null, null, null);
+    }
 
-  public static MomentumUnit get( MassUnit massUnit, VelocityUnit velocityUnit, Rational factor, String name, String symbol )
-  {
-    MomentumUnit unit = new MomentumUnit( massUnit, velocityUnit, factor, name, symbol );
-    return CACHE.get( unit );
-  }
+    public static MomentumUnit get(MassUnit massUnit, VelocityUnit velocityUnit, Rational factor, String name, String symbol) {
+        MomentumUnit unit = new MomentumUnit(massUnit, velocityUnit, factor, name, symbol);
+        return CACHE.get(unit);
+    }
 
-  private MomentumUnit( MassUnit massUnit, VelocityUnit velocityUnit, Rational factor, String name, String symbol )
-  {
-    super( massUnit, velocityUnit, factor, name, symbol );
-  }
+    private MomentumUnit(MassUnit massUnit, VelocityUnit velocityUnit, Rational factor, String name, String symbol) {
+        super(massUnit, velocityUnit, factor, name, symbol);
+    }
 
-  @Override
-  public Momentum makeDimension( Number amount )
-  {
-    return new Momentum( Rational.get( amount ), this );
-  }
+    @Override
+    public Momentum makeDimension(Number amount) {
+        return new Momentum(Rational.get(amount), this);
+    }
 
-  public MassUnit getMassUnit()
-  {
-    return getLeftUnit();
-  }
+    public MassUnit getMassUnit() {
+        return getLeftUnit();
+    }
 
-  public VelocityUnit getVelocityUnit()
-  {
-    return getRightUnit();
-  }
+    public VelocityUnit getVelocityUnit() {
+        return getRightUnit();
+    }
 
-  public EnergyUnit times( VelocityUnit v )
-  {
-    return EnergyUnit.get( getMassUnit() * (getVelocityUnit() / v.getTimeUnit()), v.getLengthUnit() );
-  }
+    public EnergyUnit times(VelocityUnit v) {
+        return EnergyUnit.get(getMassUnit() * (getVelocityUnit() / v.getTimeUnit()), v.getLengthUnit());
+    }
 
-  public MassUnit div( VelocityUnit w )
-  {
-    return getMassUnit();
-  }
+    public MassUnit div(VelocityUnit w) {
+        return getMassUnit();
+    }
 
-  public ForceUnit div( TimeUnit t )
-  {
-    return ForceUnit.get( getMassUnit(), getVelocityUnit() / t );
-  }
+    public ForceUnit div(TimeUnit t) {
+        return ForceUnit.get(getMassUnit(), getVelocityUnit() / t);
+    }
 }

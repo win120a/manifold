@@ -18,30 +18,24 @@ package manifold.ext;
 
 import junit.framework.TestCase;
 
-public class NonPublicExtensionMethodTest extends TestCase
-{
-  public void testProtectedMethodDirectly()
-  {
-    Foo foo = new Foo();
-    assertEquals( "protected method", foo.callDirectly() );
-  }
-
-  public void testProtectedMethodIndirectly()
-  {
-    Foo foo = new Foo();
-    assertEquals( "protected method", foo.callIndirectly() );
-  }
-
-  static class Foo
-  {
-    public String callDirectly()
-    {
-      return myProtectedMethod();
+public class NonPublicExtensionMethodTest extends TestCase {
+    public void testProtectedMethodDirectly() {
+        Foo foo = new Foo();
+        assertEquals("protected method", foo.callDirectly());
     }
 
-    public String callIndirectly()
-    {
-      return new Foo().myProtectedMethod();
+    public void testProtectedMethodIndirectly() {
+        Foo foo = new Foo();
+        assertEquals("protected method", foo.callIndirectly());
     }
-  }
+
+    static class Foo {
+        public String callDirectly() {
+            return myProtectedMethod();
+        }
+
+        public String callIndirectly() {
+            return new Foo().myProtectedMethod();
+        }
+    }
 }

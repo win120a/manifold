@@ -18,43 +18,37 @@ package manifold.preprocessor.expression;
 
 import java.util.Collections;
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 
-public class ParenthesizedExpression extends Expression
-{
-  private Expression _expr;
+public class ParenthesizedExpression extends Expression {
+    private Expression _expr;
 
-  ParenthesizedExpression( Expression expr, int start, int end )
-  {
-    super( start, end );
-    _expr = expr;
-  }
+    ParenthesizedExpression(Expression expr, int start, int end) {
+        super(start, end);
+        _expr = expr;
+    }
 
-  Expression getExpression()
-  {
-    return _expr;
-  }
+    Expression getExpression() {
+        return _expr;
+    }
 
-  @Override
-  public List<Expression> getChildren()
-  {
-    return Collections.singletonList( _expr );
-  }
+    @Override
+    public List<Expression> getChildren() {
+        return Collections.singletonList(_expr);
+    }
 
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return getExpression().evaluate( definitions );
-  }
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return getExpression().evaluate(definitions);
+    }
 
-  public String getValue( Definitions definitions )
-  {
-    return getExpression().getValue( definitions );
-  }
+    public String getValue(Definitions definitions) {
+        return getExpression().getValue(definitions);
+    }
 
-  @Override
-  public String toString()
-  {
-    return "(" + _expr + ")";
-  }
+    @Override
+    public String toString() {
+        return "(" + _expr + ")";
+    }
 }

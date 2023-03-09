@@ -1,8 +1,14 @@
 {
   "type": "object",
   "properties": {
-    "foo": {"type": "string"},
-    "bar": {"format":  "date"}
+    "foo": {
+      "type": "string"
+    },
+    "bar": {
+      "format": "date"
+    }
   },
-  "required": ["foo"]
+  "required": [
+    "foo"
+  ]
 }

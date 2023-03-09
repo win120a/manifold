@@ -24,105 +24,84 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-public class ServiceUtil
-{
-  /**
-   * Loads, but does not initialize, all <i>registered</i> services of type `C` managed by this module container.
-   * A registered compiler task is discoverable in the META-INF/ directory as specified by {@link ServiceLoader}.
-   */
-  public static <C> Set<C> loadRegisteredServices( Set<C> services, Class<C> serviceClass, ClassLoader classLoader )
-  {
-    // Load from Thread Context Loader
-    // (currently the IJ plugin creates loaders for accessing type manifolds from project classpath)
+public class ServiceUtil {
+    /**
+     * Loads, but does not initialize, all <i>registered</i> services of type `C` managed by this module container.
+     * A registered compiler task is discoverable in the META-INF/ directory as specified by {@link ServiceLoader}.
+     */
+    public static <C> Set<C> loadRegisteredServices(Set<C> services, Class<C> serviceClass, ClassLoader classLoader) {
+        // Load from Thread Context Loader
+        // (currently the IJ plugin creates loaders for accessing type manifolds from project classpath)
 
-    ServiceLoader<C> loader = ServiceLoader.load( serviceClass );
-    try
-    {
-      hackServiceLoaderToHandleProxyFactoryForJpms( loader, serviceClass, null );
-      for( Iterator<C> iterator = loader.iterator(); iterator.hasNext(); )
-      {
-        try
-        {
-          C service = iterator.next();
-          if( isAbsent( services, service ) )
-          {
-            services.add( service );
-          }
+        ServiceLoader<C> loader = ServiceLoader.load(serviceClass);
+        try {
+            hackServiceLoaderToHandleProxyFactoryForJpms(loader, serviceClass, null);
+            for (Iterator<C> iterator = loader.iterator(); iterator.hasNext(); ) {
+                try {
+                    C service = iterator.next();
+                    if (isAbsent(services, service)) {
+                        services.add(service);
+                    }
+                } catch (ServiceConfigurationError e) {
+                    // not in the loader, check thread ctx loader next
+                }
+            }
+        } catch (UnsupportedClassVersionError ignore) {
+            // This happens when compiling from IntelliJ because it sets the context classloader with a loader having all
+            // kinds of stuff that shouldn't be there, like plugin jars etc. So if the plugin jar is compiled with a newer
+            // version of bytecode than the project that is building and happens to have a class that implements the service
+            // here, an UnsupportedClassVersion love note results.
+            // SymbolProvider is an example of this where separate implementations for IDE and compiler provide BuildVariantSymbols.
+            // The problem is that the IDE class is in this context classloader path.
+            //
+            //ignore.printStackTrace(); // printing this for now, but swallowing the exception and using the normal loader next...
         }
-        catch( ServiceConfigurationError e )
-        {
-          // not in the loader, check thread ctx loader next
+
+        if (Thread.currentThread().getContextClassLoader() != classLoader) {
+            // Also load from this loader
+            loader = ServiceLoader.load(serviceClass, classLoader);
+            hackServiceLoaderToHandleProxyFactoryForJpms(loader, serviceClass, classLoader);
+            for (Iterator<C> iterator = loader.iterator(); iterator.hasNext(); ) {
+                try {
+                    C service = iterator.next();
+                    if (isAbsent(services, service)) {
+                        services.add(service);
+                    }
+                } catch (ServiceConfigurationError e) {
+                    // avoid chicken/egg errors from attempting to build a module that self-registers a source producer
+                    // it's important to allow a source producer module to specify its xxx.ITypeManifold file in its META-INF
+                    // directory so that users of the source producer don't have to
+                }
+            }
         }
-      }
-    }
-    catch( UnsupportedClassVersionError ignore )
-    {
-      // This happens when compiling from IntelliJ because it sets the context classloader with a loader having all
-      // kinds of stuff that shouldn't be there, like plugin jars etc. So if the plugin jar is compiled with a newer
-      // version of bytecode than the project that is building and happens to have a class that implements the service
-      // here, an UnsupportedClassVersion love note results.
-      // SymbolProvider is an example of this where separate implementations for IDE and compiler provide BuildVariantSymbols.
-      // The problem is that the IDE class is in this context classloader path.
-      //
-      //ignore.printStackTrace(); // printing this for now, but swallowing the exception and using the normal loader next...
+
+        return services;
     }
 
-    if( Thread.currentThread().getContextClassLoader() != classLoader )
-    {
-      // Also load from this loader
-      loader = ServiceLoader.load( serviceClass, classLoader );
-      hackServiceLoaderToHandleProxyFactoryForJpms( loader, serviceClass, classLoader );
-      for( Iterator<C> iterator = loader.iterator(); iterator.hasNext(); )
-      {
-        try
-        {
-          C service = iterator.next();
-          if( isAbsent( services, service ) )
-          {
-            services.add( service );
-          }
+    private static <C> void hackServiceLoaderToHandleProxyFactoryForJpms(ServiceLoader<C> serviceLoader, Class<?> serviceClass, ClassLoader classLoader) {
+        if (!JreUtil.isJava9Modular_runtime() || !serviceClass.getSimpleName().equals("IProxyFactory_gen")) {
+            return;
         }
-        catch( ServiceConfigurationError e )
-        {
-          // avoid chicken/egg errors from attempting to build a module that self-registers a source producer
-          // it's important to allow a source producer module to specify its xxx.ITypeManifold file in its META-INF
-          // directory so that users of the source producer don't have to
+        // Handle IProxyFactory_gen services in module mode.
+        //
+        // In module mode the standard Java LazyClassPathLookupIterator requires module-info.java files to expose services
+        // as "providers".  This here LazyClassPathLookupIterator lets us get them from META-INF/services, which is required
+        // since they are generated and placed there. Otherwise, there is no way (I am aware of) to generate services that
+        // are discoverable in module mode.
+        ReflectUtil.field(serviceLoader, "lookupIterator1").set(
+                ReflectUtil.constructor("manifold.util.LazyClassPathLookupIterator", Class.class, ClassLoader.class)
+                        .newInstance(serviceClass, classLoader == null ? ReflectUtil.field(serviceLoader, "loader").get() : classLoader));
+    }
+
+    /**
+     * @return True if {@code sp} is not contained within {@code sps}
+     */
+    static <C> boolean isAbsent(Set<C> services, C service) {
+        for (C existingSp : services) {
+            if (existingSp.getClass().equals(service.getClass())) {
+                return false;
+            }
         }
-      }
+        return true;
     }
-
-    return services;
-  }
-
-  private static <C> void hackServiceLoaderToHandleProxyFactoryForJpms( ServiceLoader<C> serviceLoader, Class<?> serviceClass, ClassLoader classLoader )
-  {
-    if( !JreUtil.isJava9Modular_runtime() || !serviceClass.getSimpleName().equals( "IProxyFactory_gen" ) )
-    {
-      return;
-    }
-    // Handle IProxyFactory_gen services in module mode.
-    //
-    // In module mode the standard Java LazyClassPathLookupIterator requires module-info.java files to expose services
-    // as "providers".  This here LazyClassPathLookupIterator lets us get them from META-INF/services, which is required
-    // since they are generated and placed there. Otherwise, there is no way (I am aware of) to generate services that
-    // are discoverable in module mode.
-    ReflectUtil.field( serviceLoader, "lookupIterator1" ).set(
-      ReflectUtil.constructor( "manifold.util.LazyClassPathLookupIterator", Class.class, ClassLoader.class )
-        .newInstance(serviceClass, classLoader == null ? ReflectUtil.field( serviceLoader, "loader" ).get() : classLoader ) );
-  }
-
-  /**
-   * @return True if {@code sp} is not contained within {@code sps}
-   */
-  static <C> boolean isAbsent( Set<C> services, C service )
-  {
-    for( C existingSp: services )
-    {
-      if( existingSp.getClass().equals( service.getClass() ) )
-      {
-        return false;
-      }
-    }
-    return true;
-  }
 }

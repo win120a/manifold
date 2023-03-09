@@ -25,32 +25,34 @@ import java.util.Set;
 /**
  * A service interface for translating JSON bindings to a data format such as JSON, XML, YAML, and CSV.
  */
-public interface IJsonBindingsTranslator
-{
-  LocklessLazyVar<Set<IJsonBindingsTranslator>> CODECS =
-    LocklessLazyVar.make( () -> {
-      Set<IJsonBindingsTranslator> registered = new HashSet<>();
-      ServiceUtil.loadRegisteredServices( registered, IJsonBindingsTranslator.class, IJsonBindingsTranslator.class.getClassLoader() );
-      return registered;
-    } );
+public interface IJsonBindingsTranslator {
+    LocklessLazyVar<Set<IJsonBindingsTranslator>> CODECS =
+            LocklessLazyVar.make(() -> {
+                Set<IJsonBindingsTranslator> registered = new HashSet<>();
+                ServiceUtil.loadRegisteredServices(registered, IJsonBindingsTranslator.class, IJsonBindingsTranslator.class.getClassLoader());
+                return registered;
+            });
 
-  static IJsonBindingsTranslator get( String name )
-  {
-    return IJsonBindingsTranslator.CODECS.get().stream()
-      .filter( e -> e.getName().equals( name ) )
-      .findFirst().orElseThrow( () -> new RuntimeException( "Missing JSON bindings encoder for : " + name ) );
-  }
+    static IJsonBindingsTranslator get(String name) {
+        return IJsonBindingsTranslator.CODECS.get().stream()
+                .filter(e -> e.getName().equals(name))
+                .findFirst().orElseThrow(() -> new RuntimeException("Missing JSON bindings encoder for : " + name));
+    }
 
-  /**
-   * @return An acronym or abbreviated name for the encoded format, such as JSON or XML.
-   */
-  String getName();
+    /**
+     * @return An acronym or abbreviated name for the encoded format, such as JSON or XML.
+     */
+    String getName();
 
-  String fromBindings( Object bindingsValue );
-  void fromBindings( Object bindingsValue, StringBuilder target );
-  void fromBindings( Object bindingsValue, String name, StringBuilder target, int indent );
+    String fromBindings(Object bindingsValue);
 
-  Object toBindings( String translation );
-  Object toBindings( String translation, boolean withTokens );
-  Object toBindings( String translation, boolean withBigNumbers, boolean withTokens );
+    void fromBindings(Object bindingsValue, StringBuilder target);
+
+    void fromBindings(Object bindingsValue, String name, StringBuilder target, int indent);
+
+    Object toBindings(String translation);
+
+    Object toBindings(String translation, boolean withTokens);
+
+    Object toBindings(String translation, boolean withBigNumbers, boolean withTokens);
 }

@@ -16,7 +16,6 @@
 
 package manifold.ext.props.multi;
 
-public interface ISimplest
-{
-  Object getType();
+public interface ISimplest {
+    Object getType();
 }

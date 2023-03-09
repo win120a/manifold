@@ -18,15 +18,15 @@ package manifold.ext.delegation.errant;
 
 //import com.google.testing.compile.Compilation;
 //import com.google.testing.compile.JavaFileObjects;
+
 import junit.framework.TestCase;
 //
 //import static com.google.testing.compile.CompilationSubject.assertThat;
 //import static com.google.testing.compile.Compiler.javac;
 
-public class SimpleErrant extends TestCase
-{
-  //todo: see about mapping a maven build file to this thing. Essentially, the compiler used here must reflect exactly
-  // this test module's pom file.
+public class SimpleErrant extends TestCase {
+    //todo: see about mapping a maven build file to this thing. Essentially, the compiler used here must reflect exactly
+    // this test module's pom file.
 
 //  public void testSimple()
 //  {
@@ -35,5 +35,6 @@ public class SimpleErrant extends TestCase
 //    assertThat( compilation ).succeeded();
 //  }
 
-  public void testNothing() {}
+    public void testNothing() {
+    }
 }

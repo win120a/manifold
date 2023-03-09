@@ -1,7 +1,7 @@
 # Type-safe Reflection via `@Jailbreak`
 
->Annotate the type of any variable with `@Jailbreak` to gain direct, type-safe access to private fields, methods, and
-types.
+> Annotate the type of any variable with `@Jailbreak` to gain direct, type-safe access to private fields, methods, and
+> types.
 >
 >```java
 >@Jailbreak Foo foo = new Foo(1);
@@ -13,7 +13,7 @@ types.
 
 Sometimes you have to use Java reflection to access fields, methods, and types that are not directly accessible from
 your code. But writing reflection code is not only tedious and error-prone, it also loses type-safety in the process.
-Manifold mitigates these issues with the `@Jailbreak` annotation and the `jailbreak()` extension method.  Use them to
+Manifold mitigates these issues with the `@Jailbreak` annotation and the `jailbreak()` extension method. Use them to
 leverage the convenience and type-safety of the Java compiler and let Manifold generate reliable, efficient reflection
 code for you.
 
@@ -22,8 +22,8 @@ code for you.
 Annotate the type of any variable with `@Jailbreak` to gain direct, type-safe access to private fields, methods, and
 types.
 
->Note, `@Jailbreak` is ideal for use within tests. It saves you from losing type-safety that is otherwise the case with
-reflection code and it enables you to maintain private methods and fields.
+> Note, `@Jailbreak` is ideal for use within tests. It saves you from losing type-safety that is otherwise the case with
+> reflection code and it enables you to maintain private methods and fields.
 
 ### Basic Use
 
@@ -33,6 +33,7 @@ foo.privateMethod();
 foo.privateMethod("hey");
 foo._privateField = 88;
 ```
+
 ```java
 public class Foo {
   private final int _privateField;
@@ -60,6 +61,7 @@ Since Java does not permit you to annotate the type in a static expression, you 
 myClass.staticMethod();
 myClass.Static_Field = "hi";
 ```
+
 ```java
 public class MyClass {
   private static String Static_Field = "hello";
@@ -72,11 +74,13 @@ public class MyClass {
 ### Use With Types and Constructors
 
 Use `@Jailbreak` to access hidden types and constructors:
+
 ```java
 com.abc. @Jailbreak SecretClass secretClass = 
   new com.abc. @Jailbreak SecretClass("hi");
 secretClass._data = "hey";
 ```
+
 ```java
 package com.abc;
 // not public
@@ -100,6 +104,7 @@ class SecretClass {
 ### Break JPMS Barriers
 
 Access fields, methods, and constructors from packages otherwise prohibited for use in your module by the JPMS:
+
 ```java
 jdk.internal.misc. @Jailbreak VM vm = null;
 String[] args = vm.getRuntimeArguments();
@@ -114,6 +119,7 @@ private fields, methods, and types.
 Foo foo = new Foo();
 foo.jailbreak().privateMethodOnFoo();
 ```
+
 This method is especially handy when you have a chain of member access expressions and you want to quickly use
 inaccessible members:
 

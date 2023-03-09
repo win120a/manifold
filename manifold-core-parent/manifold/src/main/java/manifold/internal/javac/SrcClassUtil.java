@@ -23,6 +23,7 @@ import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Pair;
+
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,77 +44,59 @@ import static com.sun.tools.javac.code.TypeTag.CLASS;
 import static manifold.util.JreUtil.isJava8;
 
 /**
+ *
  */
-public class SrcClassUtil
-{
-  private static final SrcClassUtil INSTANCE = new SrcClassUtil();
+public class SrcClassUtil {
+    private static final SrcClassUtil INSTANCE = new SrcClassUtil();
 
-  private SrcClassUtil()
-  {
-  }
-
-  public static SrcClassUtil instance()
-  {
-    return INSTANCE;
-  }
-
-  public SrcClass makeStub( String fqn, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    return makeStub( fqn, classSymbol, compilationUnit, javacTask, module, location, errorHandler, true );
-  }
-
-  public SrcClass makeStub( String fqn, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler,
-                            boolean withMembers )
-  {
-    return makeSrcClass( fqn, null, classSymbol, compilationUnit, javacTask, module, location, errorHandler, withMembers );
-  }
-
-  private SrcClass makeSrcClass( String fqn, SrcClass enclosing, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler, boolean withMembers )
-  {
-    SrcClass srcClass;
-    if( enclosing == null )
-    {
-      srcClass = new SrcClass( fqn, getKindFrom( classSymbol ), location, module, errorHandler )
-        .modifiers( classSymbol.getModifiers() );
+    private SrcClassUtil() {
     }
-    else
-    {
-      srcClass = new SrcClass( fqn, enclosing, getKindFrom( classSymbol ) )
-        .modifiers( classSymbol.getModifiers() );
+
+    public static SrcClassUtil instance() {
+        return INSTANCE;
     }
-    if( classSymbol.getEnclosingElement() instanceof Symbol.PackageSymbol && compilationUnit != null )
-    {
-      for( ImportTree imp: compilationUnit.getImports() )
-      {
-        if( imp.isStatic() )
-        {
-          srcClass.addStaticImport( imp.getQualifiedIdentifier().toString() );
+
+    public SrcClass makeStub(String fqn, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler) {
+        return makeStub(fqn, classSymbol, compilationUnit, javacTask, module, location, errorHandler, true);
+    }
+
+    public SrcClass makeStub(String fqn, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler,
+                             boolean withMembers) {
+        return makeSrcClass(fqn, null, classSymbol, compilationUnit, javacTask, module, location, errorHandler, withMembers);
+    }
+
+    private SrcClass makeSrcClass(String fqn, SrcClass enclosing, Symbol.ClassSymbol classSymbol, CompilationUnitTree compilationUnit, BasicJavacTask javacTask, IModule module, JavaFileManager.Location location, DiagnosticListener<JavaFileObject> errorHandler, boolean withMembers) {
+        SrcClass srcClass;
+        if (enclosing == null) {
+            srcClass = new SrcClass(fqn, getKindFrom(classSymbol), location, module, errorHandler)
+                    .modifiers(classSymbol.getModifiers());
+        } else {
+            srcClass = new SrcClass(fqn, enclosing, getKindFrom(classSymbol))
+                    .modifiers(classSymbol.getModifiers());
         }
-        else
-        {
-          srcClass.addImport( imp.getQualifiedIdentifier().toString() );
+        if (classSymbol.getEnclosingElement() instanceof Symbol.PackageSymbol && compilationUnit != null) {
+            for (ImportTree imp : compilationUnit.getImports()) {
+                if (imp.isStatic()) {
+                    srcClass.addStaticImport(imp.getQualifiedIdentifier().toString());
+                } else {
+                    srcClass.addImport(imp.getQualifiedIdentifier().toString());
+                }
+            }
         }
-      }
-    }
-    addAnnotations( srcClass, classSymbol );
-    for( Symbol.TypeVariableSymbol typeVar: classSymbol.getTypeParameters() )
-    {
-      srcClass.addTypeVar( makeTypeVarType( typeVar ) );
-    }
-    Type superclass = classSymbol.getSuperclass();
-    if( !(superclass instanceof NoType) )
-    {
-      srcClass.superClass( makeNestedType( superclass ) );
-    }
-    for( Type iface: classSymbol.getInterfaces() )
-    {
-      srcClass.addInterface( makeNestedType( iface ) );
-    }
-    if( withMembers )
-    {
-      java.util.List<Symbol> members = classSymbol.getEnclosedElements();
-      for( Symbol sym: members )
-      {
+        addAnnotations(srcClass, classSymbol);
+        for (Symbol.TypeVariableSymbol typeVar : classSymbol.getTypeParameters()) {
+            srcClass.addTypeVar(makeTypeVarType(typeVar));
+        }
+        Type superclass = classSymbol.getSuperclass();
+        if (!(superclass instanceof NoType)) {
+            srcClass.superClass(makeNestedType(superclass));
+        }
+        for (Type iface : classSymbol.getInterfaces()) {
+            srcClass.addInterface(makeNestedType(iface));
+        }
+        if (withMembers) {
+            java.util.List<Symbol> members = classSymbol.getEnclosedElements();
+            for (Symbol sym : members) {
 // include private members because:
 // 1. @Jailbreak can expose private members
 // 2. Compiler error messages are better when referencing an inaccessible method vs. a non-existent one
@@ -123,844 +106,654 @@ public class SrcClassUtil
 //          continue;
 //        }
 
-        if( sym instanceof Symbol.ClassSymbol )
-        {
-          addInnerClass( module, srcClass, sym, javacTask );
-        }
-        else if( sym instanceof Symbol.VarSymbol )
-        {
-          addField( srcClass, (Symbol.VarSymbol)sym );
-        }
-        else if( sym instanceof Symbol.MethodSymbol )
-        {
-          if( !isEnumMethod( sym ) )
-          {
-            addMethod( module, srcClass, (Symbol.MethodSymbol)sym, javacTask );
-          }
-        }
-      }
-
-      addDefaultCtorForEnum( classSymbol, srcClass, members );
-    }
-    return srcClass;
-  }
-
-  /*
-   * Note, we have to check for the java.lang.Record super class because we get the ClassSymbol using Java 8,
-   * which does not have records
-   */
-  private AbstractSrcClass.Kind getKindFrom( Symbol.ClassSymbol classSymbol )
-  {
-    if( !classSymbol.isInterface() && JreUtil.isJava16orLater() )
-    {
-      Type superclass = classSymbol.getSuperclass();
-      if( superclass != null && superclass.toString().equals( "java.lang.Record" ) )
-      {
-        return AbstractSrcClass.Kind.Record;
-      }
-    }
-    return SrcClass.Kind.from( classSymbol.getKind() );
-  }
-
-  private void addDefaultCtorForEnum( Symbol.ClassSymbol classSymbol, SrcClass srcClass, java.util.List<Symbol> members )
-  {
-    if( !classSymbol.isEnum() )
-    {
-      return;
-    }
-
-    if( members.stream().noneMatch( e ->
-      e.isConstructor() && e instanceof Symbol.MethodSymbol && ((Symbol.MethodSymbol)e).getParameters().isEmpty() ) )
-    {
-      // Add default no-arg ctor because enum constant stubs do not call a ctor explicitly
-      SrcMethod srcMethod = new SrcMethod( srcClass, true );
-      srcMethod.body( new SrcStatementBlock()
-        .addStatement(
-          new SrcRawStatement()
-            .rawText( "throw new RuntimeException();" ) ) );
-      srcClass.addMethod( srcMethod );
-    }
-  }
-
-  private boolean isEnumMethod( Symbol sym )
-  {
-    return sym.getEnclosingElement().isEnum() &&
-           (sym.toString().equals( "values()" ) || sym.toString().equals( "valueOf(java.lang.String)" ));
-  }
-
-  private SrcType makeNestedType( Type type )
-  {
-    String fqn = type.toString();
-    Type enclosingType = type.getEnclosingType();
-    SrcType srcType;
-    if( enclosingType != null && !(enclosingType instanceof NoType) && fqn.length() > enclosingType.toString().length() )
-    {
-      String simpleName = fqn.substring( enclosingType.toString().length() + 1 );
-      srcType = new SrcType( simpleName );
-      srcType.setEnclosingType( makeNestedType( enclosingType ) );
-    }
-    else
-    {
-      srcType = new SrcType( fqn );
-    }
-    return srcType;
-  }
-
-  private void addInnerClass( IModule module, SrcClass srcClass, Symbol sym, BasicJavacTask javacTask )
-  {
-    SrcClass innerClass = makeSrcClass( sym.getQualifiedName().toString(), srcClass, (Symbol.ClassSymbol)sym, null, javacTask, module, null, null, true );
-    srcClass.addInnerClass( innerClass );
-  }
-
-  private void addField( SrcClass srcClass, Symbol.VarSymbol sym )
-  {
-    SrcField srcField = new SrcField( sym.name.toString(), makeSrcType( sym.type, sym, TargetType.FIELD, -1 ) );
-    if( sym.isEnum() )
-    {
-      srcField.enumConst();
-      srcClass.addEnumConst( srcField );
-    }
-    else
-    {
-      srcField.modifiers( sym.getModifiers() );
-      if( Modifier.isFinal( (int)srcField.getModifiers() ) )
-      {
-        Object constValue = sym.getConstantValue();
-        if( constValue == null )
-        {
-          constValue = getValueForType( sym.type );
-        }
-        else
-        {
-          constValue = "(" + sym.type + ")" + qualifyConstantValue( constValue );
-        }
-        srcField.initializer( (String)constValue );
-      }
-      srcClass.addField( srcField );
-    }
-  }
-
-  private String qualifyConstantValue( Object constValue )
-  {
-    String value = String.valueOf( constValue );
-    if( constValue instanceof Long )
-    {
-      value += "L";
-    }
-    else if( constValue instanceof Float )
-    {
-      if( Float.isInfinite( (Float)constValue ) )
-      {
-        String infinite = "1.0f / 0.0f";
-        if( value.charAt( 0 ) == '-' )
-        {
-          infinite = '-' + infinite;
-        }
-        value = infinite;
-      }
-      else if( Float.isNaN( (Float)constValue ) )
-      {
-        value = "0.0f / 0.0f";
-      }
-      else
-      {
-        value += "f";
-      }
-    }
-    else if( constValue instanceof Double )
-    {
-      if( Double.isInfinite( (Double)constValue ) )
-      {
-        String infinite = "1.0 / 0.0";
-        if( value.charAt( 0 ) == '-' )
-        {
-          infinite = '-' + infinite;
-        }
-        value = infinite;
-      }
-      else if( Double.isNaN( (Double)constValue ) )
-      {
-        value = "0.0d / 0.0";
-      }
-      else
-      {
-        value += "d";
-      }
-    }
-    else if( constValue instanceof String )
-    {
-      value = '"' + ManEscapeUtil.escapeForJavaStringLiteral( value ) + '"';
-    }
-    else if( constValue instanceof Character )
-    {
-      value = "'" + ManEscapeUtil.escapeForJava( (char)constValue ) + "'";
-    }
-    return value;
-  }
-
-  private void addMethod( IModule module, SrcClass srcClass, Symbol.MethodSymbol method, BasicJavacTask javacTask )
-  {
-    String name = method.flatName().toString();
-    SrcMethod srcMethod = new SrcMethod( srcClass, name.equals( "<init>" ) );
-    addAnnotations( srcMethod, method );
-    srcMethod.modifiers( method.getModifiers() );
-    if( (method.flags() & Flags.VARARGS) != 0 )
-    {
-      srcMethod.modifiers( srcMethod.getModifiers() | 0x00000080 ); // Modifier.VARARGS
-    }
-    if( name.equals( "<clinit>" ) )
-    {
-      return;
-    }
-    if( !srcMethod.isConstructor() )
-    {
-      srcMethod.name( name );
-      srcMethod.returns( makeSrcType( method.getReturnType(), method, TargetType.METHOD_RETURN, -1 ) );
-      removeMethodAnnotationsIntendedForReturnType( srcMethod );
-    }
-    for( Symbol.TypeVariableSymbol typeVar: method.getTypeParameters() )
-    {
-      srcMethod.addTypeVar( makeTypeVarType( typeVar ) );
-    }
-    java.util.List<Symbol.VarSymbol> recordFields = null;
-    Symbol.ClassSymbol owner = (Symbol.ClassSymbol)method.owner;
-    if( method.isConstructor() && getKindFrom( owner ) == AbstractSrcClass.Kind.Record )
-    {
-      Symbol.MethodSymbol primaryRecordCtor = findPrimaryRecordCtor( owner, javacTask );
-      if( primaryRecordCtor == method )
-      {
-        recordFields = getRecordFields( owner );
-      }
-    }
-    List<Symbol.VarSymbol> parameters = method.getParameters();
-    for( int i = 0; i < parameters.size(); i++ )
-    {
-      Symbol.VarSymbol param = parameters.get( i );
-      String paramName = recordFields == null ? param.flatName().toString() : recordFields.get( i ).flatName().toString();
-      SrcParameter srcParam = new SrcParameter( paramName, makeSrcType( param.type, method, TargetType.METHOD_FORMAL_PARAMETER, i ) );
-      srcMethod.addParam( srcParam );
-      addAnnotations( srcParam, param );
-    }
-    removeParamAnnotationsIntendedForParamType( srcMethod );
-    List<Type> thrownTypes = method.getThrownTypes();
-    for( int i = 0; i < thrownTypes.size(); i++ )
-    {
-      Type throwType = thrownTypes.get( i );
-      srcMethod.addThrowType( makeSrcType( throwType, method, TargetType.THROWS, i ) );
-    }
-    String bodyStmt;
-    if( srcMethod.isConstructor() && !srcClass.isEnum() )
-    {
-      // Note we can't just throw an exception for the ctor body, the compiler will
-      // still complain about the missing super() call if the super class does not have
-      // an accessible default ctor. To appease the compiler we generate a super(...)
-      // call to the first accessible constructor we can find in the super class.
-      if( srcClass.isRecord() )
-      {
-        bodyStmt = genRecordCtorBody( srcMethod, method, javacTask );
-      }
-      else
-      {
-        bodyStmt = genSuperCtorCall( module, srcClass, javacTask );
-      }
-    }
-    else
-    {
-      bodyStmt = "throw new RuntimeException();";
-    }
-    srcMethod.body( new SrcStatementBlock()
-      .addStatement(
-        new SrcRawStatement()
-          .rawText( bodyStmt ) ) );
-    srcClass.addMethod( srcMethod );
-  }
-
-  /**
-   * Prevent "error: Xxx is not a repeatable annotation type" when eg., jetbrtains Nullable is used in classes
-   * that have extensions -- the MethodSymbol erroneously claims the annotation is on both the method and the ret type,
-   * maybe to be backward compatible with older processors that don't handle annotated types (?)  Anyhow, we remove the
-   * duplicate from the method, since the return type is more specific and since the compiler is just gonna put it back
-   * on the method when it compiles the augmented class to produce the ClassSymbol with extensions.
-   */
-  private void removeMethodAnnotationsIntendedForReturnType( SrcMethod srcMethod )
-  {
-    SrcType returnType = srcMethod.getReturnType();
-    java.util.List<SrcAnnotationExpression> retAnnos = returnType.getAnnotations();
-    java.util.List<SrcAnnotationExpression> methAnnos = srcMethod.getAnnotations();
-    for( SrcAnnotationExpression anno: retAnnos )
-    {
-      for( int i = 0; i < methAnnos.size(); i++ )
-      {
-        SrcAnnotationExpression methAnno = methAnnos.get( i );
-        if( methAnno.toString().equals( anno.toString() ) )
-        {
-          methAnnos.remove( i );
-          break;
-        }
-      }
-    }
-  }
-
-  /**
-   * Similar to {@link #removeMethodAnnotationsIntendedForReturnType} but applies to parameters and parameter types.
-   */
-  private void removeParamAnnotationsIntendedForParamType( SrcMethod srcMethod )
-  {
-    for( SrcParameter param: srcMethod.getParameters() )
-    {
-      SrcType paramType = param.getType();
-      java.util.List<SrcAnnotationExpression> paramAnnos = param.getAnnotations();
-      java.util.List<SrcAnnotationExpression> typeAnnos = paramType.getAnnotations();
-      for( SrcAnnotationExpression typeAnno: typeAnnos )
-      {
-        for( int i = 0; i < paramAnnos.size(); i++ )
-        {
-          SrcAnnotationExpression paramAnno = paramAnnos.get( i );
-          if( paramAnno.toString().equals( typeAnno.toString() ) )
-          {
-            paramAnnos.remove( i );
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  private SrcType makeSrcType( Type type, Symbol symbol, TargetType targetType, int index )
-  {
-    SrcType srcType;
-    List<Attribute.TypeCompound> annotationMirrors = type.getAnnotationMirrors();
-    if( annotationMirrors != null && !annotationMirrors.isEmpty() )
-    {
-      String unannotatedType = unannotatedType( type ).toString();
-      srcType = new SrcType( unannotatedType );
-    }
-    else
-    {
-      srcType = new SrcType( typeNoAnnotations( type ) );
-    }
-    SymbolMetadata metadata = symbol.getMetadata();
-    if( metadata == null || metadata.isTypesEmpty() )
-    {
-      return srcType;
-    }
-    List<Attribute.TypeCompound> typeAttributes = metadata.getTypeAttributes();
-    if( typeAttributes.isEmpty() )
-    {
-      return null;
-    }
-
-    java.util.List<Attribute.TypeCompound> targetedTypeAttrs = typeAttributes.stream()
-      .filter( attr -> attr.position.type == targetType && isTargetIndex( targetType, attr, index ) )
-      .collect( Collectors.toList() );
-
-    annotateType( srcType, targetedTypeAttrs );
-    return srcType;
-  }
-
-  private Type unannotatedType( Type type )
-  {
-    return isJava8()
-           ? (Type)ReflectUtil.method( type, "unannotatedType" ).invoke()
-           : (Type)ReflectUtil.method( type, "stripMetadata" ).invoke();
-  }
-
-  private String typeNoAnnotations( Type type )
-  {
-    if( isJava8() )
-    {
-      if( type instanceof Type.ArrayType )
-      {
-        return typeNoAnnotations( unannotatedType( ((Type.ArrayType)type).getComponentType() ) ) + "[]";
-      }
-      return type.toString();
-    }
-
-    StringBuilder sb = new StringBuilder();
-    if( type instanceof Type.ClassType )
-    {
-      if( type.getEnclosingType().hasTag( CLASS ) &&
-          ReflectUtil.field( type.tsym.owner, "kind" ).get() == ReflectUtil.field( "com.sun.tools.javac.code.Kinds$Kind", "TYP" ).getStatic() )
-      {
-        sb.append( typeNoAnnotations( type.getEnclosingType() ) );
-        sb.append( "." );
-        sb.append( ReflectUtil.method( type, "className", Symbol.class, boolean.class ).invoke( type.tsym, false ) );
-      }
-      else
-      {
-        sb.append( ReflectUtil.method( type, "className", Symbol.class, boolean.class ).invoke( type.tsym, true ) );
-      }
-
-      List<Type> typeArgs = type.getTypeArguments();
-      if( typeArgs.nonEmpty() )
-      {
-        sb.append( '<' );
-        for( int i = 0; i < typeArgs.size(); i++ )
-        {
-          if( i > 0 )
-          {
-            sb.append( ", " );
-          }
-          Type typeArg = typeArgs.get( i );
-          sb.append( typeNoAnnotations( typeArg ) );
-        }
-        sb.append( ">" );
-      }
-    }
-    else if( type instanceof Type.ArrayType )
-    {
-      sb.append( typeNoAnnotations( ((Type.ArrayType)type).getComponentType() ) ).append( "[]" );
-    }
-    else if( type instanceof Type.WildcardType )
-    {
-      Type.WildcardType wildcardType = (Type.WildcardType)type;
-      BoundKind kind = wildcardType.kind;
-      sb.append( kind.toString() );
-      if( kind != BoundKind.UNBOUND )
-      {
-        sb.append( typeNoAnnotations( wildcardType.type ) );
-      }
-    }
-    else
-    {
-      sb.append( type.toString() );
-    }
-    return sb.toString();
-  }
-
-  private boolean isTargetIndex( TargetType targetType, Attribute.TypeCompound attr, int index )
-  {
-    switch( targetType )
-    {
-      case METHOD_FORMAL_PARAMETER:
-        return attr.position.parameter_index == index;
-
-      case THROWS:
-        return attr.position.type_index == index;
-
-      default:
-        return index < 0;
-    }
-  }
-
-  private void annotateType( SrcType srcType, java.util.List<Attribute.TypeCompound> attributes )
-  {
-    if( attributes.isEmpty() )
-    {
-      return;
-    }
-
-    for( Attribute.TypeCompound attr: attributes )
-    {
-      if( srcType.isArray() )
-      {
-        SrcType componentType = srcType.getComponentType();
-        addAnnotation( componentType, attr );
-      }
-      else if( isClassType( srcType ) )
-      {
-        TypeAnnotationPosition attrPos = attr.position;
-        List<TypeAnnotationPosition.TypePathEntry> attrLocation = attrPos == null ? List.nil() : attrPos.location;
-        if( attrLocation.isEmpty() )
-        {
-          addAnnotation( srcType, attr );
-        }
-        else
-        {
-          java.util.List<SrcType> typeArguments = srcType.getTypeParams();
-          for( int i = 0; i < typeArguments.size(); i++ )
-          {
-            SrcType typeParam = typeArguments.get( i );
-            if( i == attrLocation.get( 0 ).arg )
-            {
-              List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy = List.from( attrLocation.subList( 1, attrLocation.size() ) );
-              TypeAnnotationPosition posCopy = getTypeAnnotationPosition( attrLocationCopy );
-              annotateType( typeParam, Collections.singletonList( new Attribute.TypeCompound( attr.type, attr.values, posCopy ) ) );
+                if (sym instanceof Symbol.ClassSymbol) {
+                    addInnerClass(module, srcClass, sym, javacTask);
+                } else if (sym instanceof Symbol.VarSymbol) {
+                    addField(srcClass, (Symbol.VarSymbol) sym);
+                } else if (sym instanceof Symbol.MethodSymbol) {
+                    if (!isEnumMethod(sym)) {
+                        addMethod(module, srcClass, (Symbol.MethodSymbol) sym, javacTask);
+                    }
+                }
             }
-          }
+
+            addDefaultCtorForEnum(classSymbol, srcClass, members);
         }
-      }
-      else if( "?".equals( srcType.getName() ) && !srcType.getBounds().isEmpty() )
-      {
-        TypeAnnotationPosition attrPos = attr.position;
-        if( attrPos == null )
-        {
-          return;
+        return srcClass;
+    }
+
+    /*
+     * Note, we have to check for the java.lang.Record super class because we get the ClassSymbol using Java 8,
+     * which does not have records
+     */
+    private AbstractSrcClass.Kind getKindFrom(Symbol.ClassSymbol classSymbol) {
+        if (!classSymbol.isInterface() && JreUtil.isJava16orLater()) {
+            Type superclass = classSymbol.getSuperclass();
+            if (superclass != null && superclass.toString().equals("java.lang.Record")) {
+                return AbstractSrcClass.Kind.Record;
+            }
         }
-        List<TypeAnnotationPosition.TypePathEntry> attrLocation = attrPos.location;
-        List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy = null;
-        if( !attrLocation.isEmpty() )
-        {
-          attrLocationCopy = List.from( attrLocation.subList( 1, attrLocation.size() ) );
+        return SrcClass.Kind.from(classSymbol.getKind());
+    }
+
+    private void addDefaultCtorForEnum(Symbol.ClassSymbol classSymbol, SrcClass srcClass, java.util.List<Symbol> members) {
+        if (!classSymbol.isEnum()) {
+            return;
         }
 
-        if( attrLocationCopy == null || attrLocationCopy.isEmpty() )
-        {
-          addAnnotation( srcType, attr );
+        if (members.stream().noneMatch(e ->
+                e.isConstructor() && e instanceof Symbol.MethodSymbol && ((Symbol.MethodSymbol) e).getParameters().isEmpty())) {
+            // Add default no-arg ctor because enum constant stubs do not call a ctor explicitly
+            SrcMethod srcMethod = new SrcMethod(srcClass, true);
+            srcMethod.body(new SrcStatementBlock()
+                    .addStatement(
+                            new SrcRawStatement()
+                                    .rawText("throw new RuntimeException();")));
+            srcClass.addMethod(srcMethod);
         }
-        else
-        {
-          TypeAnnotationPosition posCopy = getTypeAnnotationPosition( attrLocationCopy );
-          annotateType( srcType.getBounds().get( 0 ), Collections.singletonList( new Attribute.TypeCompound( attr.type, attr.values, posCopy ) ) );
+    }
+
+    private boolean isEnumMethod(Symbol sym) {
+        return sym.getEnclosingElement().isEnum() &&
+                (sym.toString().equals("values()") || sym.toString().equals("valueOf(java.lang.String)"));
+    }
+
+    private SrcType makeNestedType(Type type) {
+        String fqn = type.toString();
+        Type enclosingType = type.getEnclosingType();
+        SrcType srcType;
+        if (enclosingType != null && !(enclosingType instanceof NoType) && fqn.length() > enclosingType.toString().length()) {
+            String simpleName = fqn.substring(enclosingType.toString().length() + 1);
+            srcType = new SrcType(simpleName);
+            srcType.setEnclosingType(makeNestedType(enclosingType));
+        } else {
+            srcType = new SrcType(fqn);
         }
-      }
+        return srcType;
     }
-  }
 
-  public static TypeAnnotationPosition getTypeAnnotationPosition( List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy )
-  {
-    TypeAnnotationPosition posCopy;
-    if( isJava8() )
-    {
-      posCopy = (TypeAnnotationPosition)ReflectUtil.constructor( "com.sun.tools.javac.code.TypeAnnotationPosition" ).newInstance();
-      ReflectUtil.field( posCopy, "location" ).set( attrLocationCopy );
+    private void addInnerClass(IModule module, SrcClass srcClass, Symbol sym, BasicJavacTask javacTask) {
+        SrcClass innerClass = makeSrcClass(sym.getQualifiedName().toString(), srcClass, (Symbol.ClassSymbol) sym, null, javacTask, module, null, null, true);
+        srcClass.addInnerClass(innerClass);
     }
-    else
-    {
-      posCopy = (TypeAnnotationPosition)ReflectUtil
-        .method( TypeAnnotationPosition.class, "methodReceiver", List.class )
-        .invokeStatic( attrLocationCopy );
-    }
-    return posCopy;
-  }
 
-  private void addAnnotation( SrcType srcType, Attribute.TypeCompound attr )
-  {
-    String fqn = attr.type.toString();
-    if( fqn.equals( "jdk.internal.HotSpotIntrinsicCandidate" ) )
-    {
-      // Since java 10 we have to keep these out of stubbed java source
-      return;
-    }
-    SrcAnnotationExpression annoExpr = new SrcAnnotationExpression( fqn );
-    for( Pair<Symbol.MethodSymbol, Attribute> value: attr.values )
-    {
-      annoExpr.addArgument( value.fst.flatName().toString(), new SrcType( value.snd.type.toString() ), value.snd.getValue() );
-    }
-    srcType.addAnnotation( annoExpr );
-  }
-
-  private boolean isClassType( SrcType srcType )
-  {
-    return !srcType.isPrimitive() && !srcType.isArray() && !"?".equals( srcType.getName() );
-  }
-
-  private String genSuperCtorCall( IModule module, SrcClass srcClass, BasicJavacTask javacTask )
-  {
-    String bodyStmt;
-    SrcType superClass = srcClass.getSuperClass();
-    if( superClass == null )
-    {
-      bodyStmt = "";
-    }
-    else
-    {
-      Symbol.MethodSymbol superCtor = findConstructor( module, superClass.getFqName(), javacTask );
-      if( superCtor == null )
-      {
-        bodyStmt = "";
-      }
-      else
-      {
-        bodyStmt = genSuperCtorCall( superCtor );
-      }
-    }
-    return bodyStmt;
-  }
-
-  private String genSuperCtorCall( Symbol.MethodSymbol superCtor )
-  {
-    String bodyStmt;
-    StringBuilder sb = new StringBuilder( "super(" );
-    List<Symbol.VarSymbol> parameters = superCtor.getParameters();
-    for( int i = 0; i < parameters.size(); i++ )
-    {
-      Symbol.VarSymbol param = parameters.get( i );
-      if( i > 0 )
-      {
-        sb.append( ", " );
-      }
-      sb.append( getValueForType( param.type ) );
-    }
-    sb.append( ");" );
-    bodyStmt = sb.toString();
-    return bodyStmt;
-  }
-
-  private String genRecordCtorBody( SrcMethod srcMethod, Symbol.MethodSymbol method, BasicJavacTask javacTask )
-  {
-    Symbol.ClassSymbol owner = (Symbol.ClassSymbol)method.owner;
-    Symbol.MethodSymbol primaryRecordCtor = findPrimaryRecordCtor( (Symbol.ClassSymbol)method.owner, javacTask );
-    if( primaryRecordCtor == method )
-    {
-      srcMethod.setPrimaryConstructor( true );
-      return initializeRecordFields( owner );
-    }
-    return callPrimaryRecordCtor( owner, primaryRecordCtor );
-  }
-
-  private String callPrimaryRecordCtor( Symbol.ClassSymbol owner, Symbol.MethodSymbol primaryRecordCtor )
-  {
-    StringBuilder sb = new StringBuilder( "this(" );
-    List<Symbol.VarSymbol> parameters = primaryRecordCtor.getParameters();
-    for( int i = 0, parametersSize = parameters.size(); i < parametersSize; i++ )
-    {
-      Symbol.VarSymbol param = parameters.get( i );
-      if( i > 0 )
-      {
-        sb.append( ", " );
-      }
-      sb.append( getValueForType( param.type ) );
-    }
-    sb.append( ");\n" );
-    return sb.toString();
-  }
-
-  private Symbol.MethodSymbol findPrimaryRecordCtor( Symbol.ClassSymbol owner, BasicJavacTask javacTask )
-  {
-    java.util.List<Symbol.VarSymbol> fields = getRecordFields( owner );
-    for( Symbol meth : IDynamicJdk.instance().getMembers( owner, m -> m instanceof Symbol.MethodSymbol && m.isConstructor() ) )
-    {
-      Symbol.MethodSymbol method = (Symbol.MethodSymbol)meth;
-      List<Symbol.VarSymbol> params = method.getParameters();
-      if( params.size() == fields.size() )
-      {
-        boolean primaryCtor = true;
-        Types types = Types.instance( javacTask.getContext() );
-        for( int i = 0, paramsSize = params.size(); i < paramsSize; i++ )
-        {
-          Symbol.VarSymbol param = params.get( i );
-          if( !types.isSameType( param.type, fields.get( i ).type ) )
-          {
-            primaryCtor = false;
-            break;
-          }
+    private void addField(SrcClass srcClass, Symbol.VarSymbol sym) {
+        SrcField srcField = new SrcField(sym.name.toString(), makeSrcType(sym.type, sym, TargetType.FIELD, -1));
+        if (sym.isEnum()) {
+            srcField.enumConst();
+            srcClass.addEnumConst(srcField);
+        } else {
+            srcField.modifiers(sym.getModifiers());
+            if (Modifier.isFinal((int) srcField.getModifiers())) {
+                Object constValue = sym.getConstantValue();
+                if (constValue == null) {
+                    constValue = getValueForType(sym.type);
+                } else {
+                    constValue = "(" + sym.type + ")" + qualifyConstantValue(constValue);
+                }
+                srcField.initializer((String) constValue);
+            }
+            srcClass.addField(srcField);
         }
-        if( primaryCtor )
-        {
-          return method;
+    }
+
+    private String qualifyConstantValue(Object constValue) {
+        String value = String.valueOf(constValue);
+        if (constValue instanceof Long) {
+            value += "L";
+        } else if (constValue instanceof Float) {
+            if (Float.isInfinite((Float) constValue)) {
+                String infinite = "1.0f / 0.0f";
+                if (value.charAt(0) == '-') {
+                    infinite = '-' + infinite;
+                }
+                value = infinite;
+            } else if (Float.isNaN((Float) constValue)) {
+                value = "0.0f / 0.0f";
+            } else {
+                value += "f";
+            }
+        } else if (constValue instanceof Double) {
+            if (Double.isInfinite((Double) constValue)) {
+                String infinite = "1.0 / 0.0";
+                if (value.charAt(0) == '-') {
+                    infinite = '-' + infinite;
+                }
+                value = infinite;
+            } else if (Double.isNaN((Double) constValue)) {
+                value = "0.0d / 0.0";
+            } else {
+                value += "d";
+            }
+        } else if (constValue instanceof String) {
+            value = '"' + ManEscapeUtil.escapeForJavaStringLiteral(value) + '"';
+        } else if (constValue instanceof Character) {
+            value = "'" + ManEscapeUtil.escapeForJava((char) constValue) + "'";
         }
-      }
+        return value;
     }
-    return null;
-  }
 
-  private String initializeRecordFields( Symbol.ClassSymbol owner )
-  {
-    StringBuilder sb = new StringBuilder();
-    java.util.List<Symbol.VarSymbol> fields = getRecordFields( owner );
-    for( Symbol f: fields )
-    {
-      sb.append( "this." ).append( f.flatName() ).append( " = " ).append( getValueForType( f.type ) ).append( "; " );
-    }
-    sb.append( "\n" );
-    return sb.toString();
-  }
-
-  private java.util.List<Symbol.VarSymbol> getRecordFields( Symbol.ClassSymbol owner )
-  {
-    // fields in declared order
-    return owner.getEnclosedElements().stream()
-      .filter( e -> e instanceof Symbol.VarSymbol && !e.isStatic() )
-      .map( e -> (Symbol.VarSymbol)e )
-      .collect( Collectors.toList() );
-  }
-
-  private Symbol.MethodSymbol findConstructor( IModule module, String fqn, BasicJavacTask javacTask )
-  {
-    manifold.rt.api.util.Pair<Symbol.ClassSymbol, JCTree.JCCompilationUnit> classSymbol = ClassSymbols.instance( module ).getClassSymbol( javacTask, fqn );
-    Symbol.ClassSymbol cs = classSymbol.getFirst();
-    Symbol.MethodSymbol ctor = null;
-    for( Symbol sym: cs.getEnclosedElements() )
-    {
-      if( sym instanceof Symbol.MethodSymbol && sym.flatName().toString().equals( "<init>" ) )
-      {
-        if( ctor == null )
-        {
-          ctor = (Symbol.MethodSymbol)sym;
+    private void addMethod(IModule module, SrcClass srcClass, Symbol.MethodSymbol method, BasicJavacTask javacTask) {
+        String name = method.flatName().toString();
+        SrcMethod srcMethod = new SrcMethod(srcClass, name.equals("<init>"));
+        addAnnotations(srcMethod, method);
+        srcMethod.modifiers(method.getModifiers());
+        if ((method.flags() & Flags.VARARGS) != 0) {
+            srcMethod.modifiers(srcMethod.getModifiers() | 0x00000080); // Modifier.VARARGS
         }
-        else
-        {
-          ctor = mostAccessible( ctor, (Symbol.MethodSymbol)sym );
+        if (name.equals("<clinit>")) {
+            return;
         }
-        if( Modifier.isPublic( (int)ctor.flags() ) )
-        {
-          return ctor;
+        if (!srcMethod.isConstructor()) {
+            srcMethod.name(name);
+            srcMethod.returns(makeSrcType(method.getReturnType(), method, TargetType.METHOD_RETURN, -1));
+            removeMethodAnnotationsIntendedForReturnType(srcMethod);
         }
-      }
+        for (Symbol.TypeVariableSymbol typeVar : method.getTypeParameters()) {
+            srcMethod.addTypeVar(makeTypeVarType(typeVar));
+        }
+        java.util.List<Symbol.VarSymbol> recordFields = null;
+        Symbol.ClassSymbol owner = (Symbol.ClassSymbol) method.owner;
+        if (method.isConstructor() && getKindFrom(owner) == AbstractSrcClass.Kind.Record) {
+            Symbol.MethodSymbol primaryRecordCtor = findPrimaryRecordCtor(owner, javacTask);
+            if (primaryRecordCtor == method) {
+                recordFields = getRecordFields(owner);
+            }
+        }
+        List<Symbol.VarSymbol> parameters = method.getParameters();
+        for (int i = 0; i < parameters.size(); i++) {
+            Symbol.VarSymbol param = parameters.get(i);
+            String paramName = recordFields == null ? param.flatName().toString() : recordFields.get(i).flatName().toString();
+            SrcParameter srcParam = new SrcParameter(paramName, makeSrcType(param.type, method, TargetType.METHOD_FORMAL_PARAMETER, i));
+            srcMethod.addParam(srcParam);
+            addAnnotations(srcParam, param);
+        }
+        removeParamAnnotationsIntendedForParamType(srcMethod);
+        List<Type> thrownTypes = method.getThrownTypes();
+        for (int i = 0; i < thrownTypes.size(); i++) {
+            Type throwType = thrownTypes.get(i);
+            srcMethod.addThrowType(makeSrcType(throwType, method, TargetType.THROWS, i));
+        }
+        String bodyStmt;
+        if (srcMethod.isConstructor() && !srcClass.isEnum()) {
+            // Note we can't just throw an exception for the ctor body, the compiler will
+            // still complain about the missing super() call if the super class does not have
+            // an accessible default ctor. To appease the compiler we generate a super(...)
+            // call to the first accessible constructor we can find in the super class.
+            if (srcClass.isRecord()) {
+                bodyStmt = genRecordCtorBody(srcMethod, method, javacTask);
+            } else {
+                bodyStmt = genSuperCtorCall(module, srcClass, javacTask);
+            }
+        } else {
+            bodyStmt = "throw new RuntimeException();";
+        }
+        srcMethod.body(new SrcStatementBlock()
+                .addStatement(
+                        new SrcRawStatement()
+                                .rawText(bodyStmt)));
+        srcClass.addMethod(srcMethod);
     }
-    return ctor;
-  }
 
-  private Symbol.MethodSymbol mostAccessible( Symbol.MethodSymbol ctor, Symbol.MethodSymbol sym )
-  {
-    int ctorMods = (int)ctor.flags();
-    int symMods = (int)sym.flags();
-    if( Modifier.isPublic( ctorMods ) )
-    {
-      return ctor;
+    /**
+     * Prevent "error: Xxx is not a repeatable annotation type" when eg., jetbrtains Nullable is used in classes
+     * that have extensions -- the MethodSymbol erroneously claims the annotation is on both the method and the ret type,
+     * maybe to be backward compatible with older processors that don't handle annotated types (?)  Anyhow, we remove the
+     * duplicate from the method, since the return type is more specific and since the compiler is just gonna put it back
+     * on the method when it compiles the augmented class to produce the ClassSymbol with extensions.
+     */
+    private void removeMethodAnnotationsIntendedForReturnType(SrcMethod srcMethod) {
+        SrcType returnType = srcMethod.getReturnType();
+        java.util.List<SrcAnnotationExpression> retAnnos = returnType.getAnnotations();
+        java.util.List<SrcAnnotationExpression> methAnnos = srcMethod.getAnnotations();
+        for (SrcAnnotationExpression anno : retAnnos) {
+            for (int i = 0; i < methAnnos.size(); i++) {
+                SrcAnnotationExpression methAnno = methAnnos.get(i);
+                if (methAnno.toString().equals(anno.toString())) {
+                    methAnnos.remove(i);
+                    break;
+                }
+            }
+        }
     }
-    if( Modifier.isPublic( symMods ) )
-    {
-      return sym;
-    }
-    if( Modifier.isProtected( ctorMods ) )
-    {
-      return ctor;
-    }
-    if( Modifier.isProtected( symMods ) )
-    {
-      return sym;
-    }
-    if( Modifier.isPrivate( ctorMods ) )
-    {
-      return Modifier.isPrivate( symMods ) ? ctor : sym;
-    }
-    return ctor;
-  }
 
-  private void addAnnotations( SrcAnnotated<?> srcAnnotated, Symbol symbol )
-  {
-    for( Attribute.Compound annotationMirror: symbol.getAnnotationMirrors() )
-    {
-      String fqn = annotationMirror.getAnnotationType().toString();
-      if( fqn.equals( "jdk.internal.HotSpotIntrinsicCandidate" ) )
-      {
-        // Since java 10 we have to keep these out of stubbed java source
-        continue;
-      }
-      if( fqn.equals( "jdk.internal.ValueBased" ) )
-      {
-        // Since java 16 we have to keep these out of stubbed java source
-        continue;
-      }
-      //noinspection IfCanBeSwitch
-      if( fqn.equals( "android.annotation.Nullable" ) )
-      {
-        // retarded android bullshit
+    /**
+     * Similar to {@link #removeMethodAnnotationsIntendedForReturnType} but applies to parameters and parameter types.
+     */
+    private void removeParamAnnotationsIntendedForParamType(SrcMethod srcMethod) {
+        for (SrcParameter param : srcMethod.getParameters()) {
+            SrcType paramType = param.getType();
+            java.util.List<SrcAnnotationExpression> paramAnnos = param.getAnnotations();
+            java.util.List<SrcAnnotationExpression> typeAnnos = paramType.getAnnotations();
+            for (SrcAnnotationExpression typeAnno : typeAnnos) {
+                for (int i = 0; i < paramAnnos.size(); i++) {
+                    SrcAnnotationExpression paramAnno = paramAnnos.get(i);
+                    if (paramAnno.toString().equals(typeAnno.toString())) {
+                        paramAnnos.remove(i);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private SrcType makeSrcType(Type type, Symbol symbol, TargetType targetType, int index) {
+        SrcType srcType;
+        List<Attribute.TypeCompound> annotationMirrors = type.getAnnotationMirrors();
+        if (annotationMirrors != null && !annotationMirrors.isEmpty()) {
+            String unannotatedType = unannotatedType(type).toString();
+            srcType = new SrcType(unannotatedType);
+        } else {
+            srcType = new SrcType(typeNoAnnotations(type));
+        }
+        SymbolMetadata metadata = symbol.getMetadata();
+        if (metadata == null || metadata.isTypesEmpty()) {
+            return srcType;
+        }
+        List<Attribute.TypeCompound> typeAttributes = metadata.getTypeAttributes();
+        if (typeAttributes.isEmpty()) {
+            return null;
+        }
+
+        java.util.List<Attribute.TypeCompound> targetedTypeAttrs = typeAttributes.stream()
+                .filter(attr -> attr.position.type == targetType && isTargetIndex(targetType, attr, index))
+                .collect(Collectors.toList());
+
+        annotateType(srcType, targetedTypeAttrs);
+        return srcType;
+    }
+
+    private Type unannotatedType(Type type) {
+        return isJava8()
+                ? (Type) ReflectUtil.method(type, "unannotatedType").invoke()
+                : (Type) ReflectUtil.method(type, "stripMetadata").invoke();
+    }
+
+    private String typeNoAnnotations(Type type) {
+        if (isJava8()) {
+            if (type instanceof Type.ArrayType) {
+                return typeNoAnnotations(unannotatedType(((Type.ArrayType) type).getComponentType())) + "[]";
+            }
+            return type.toString();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (type instanceof Type.ClassType) {
+            if (type.getEnclosingType().hasTag(CLASS) &&
+                    ReflectUtil.field(type.tsym.owner, "kind").get() == ReflectUtil.field("com.sun.tools.javac.code.Kinds$Kind", "TYP").getStatic()) {
+                sb.append(typeNoAnnotations(type.getEnclosingType()));
+                sb.append(".");
+                sb.append(ReflectUtil.method(type, "className", Symbol.class, boolean.class).invoke(type.tsym, false));
+            } else {
+                sb.append(ReflectUtil.method(type, "className", Symbol.class, boolean.class).invoke(type.tsym, true));
+            }
+
+            List<Type> typeArgs = type.getTypeArguments();
+            if (typeArgs.nonEmpty()) {
+                sb.append('<');
+                for (int i = 0; i < typeArgs.size(); i++) {
+                    if (i > 0) {
+                        sb.append(", ");
+                    }
+                    Type typeArg = typeArgs.get(i);
+                    sb.append(typeNoAnnotations(typeArg));
+                }
+                sb.append(">");
+            }
+        } else if (type instanceof Type.ArrayType) {
+            sb.append(typeNoAnnotations(((Type.ArrayType) type).getComponentType())).append("[]");
+        } else if (type instanceof Type.WildcardType) {
+            Type.WildcardType wildcardType = (Type.WildcardType) type;
+            BoundKind kind = wildcardType.kind;
+            sb.append(kind.toString());
+            if (kind != BoundKind.UNBOUND) {
+                sb.append(typeNoAnnotations(wildcardType.type));
+            }
+        } else {
+            sb.append(type.toString());
+        }
+        return sb.toString();
+    }
+
+    private boolean isTargetIndex(TargetType targetType, Attribute.TypeCompound attr, int index) {
+        switch (targetType) {
+            case METHOD_FORMAL_PARAMETER:
+                return attr.position.parameter_index == index;
+
+            case THROWS:
+                return attr.position.type_index == index;
+
+            default:
+                return index < 0;
+        }
+    }
+
+    private void annotateType(SrcType srcType, java.util.List<Attribute.TypeCompound> attributes) {
+        if (attributes.isEmpty()) {
+            return;
+        }
+
+        for (Attribute.TypeCompound attr : attributes) {
+            if (srcType.isArray()) {
+                SrcType componentType = srcType.getComponentType();
+                addAnnotation(componentType, attr);
+            } else if (isClassType(srcType)) {
+                TypeAnnotationPosition attrPos = attr.position;
+                List<TypeAnnotationPosition.TypePathEntry> attrLocation = attrPos == null ? List.nil() : attrPos.location;
+                if (attrLocation.isEmpty()) {
+                    addAnnotation(srcType, attr);
+                } else {
+                    java.util.List<SrcType> typeArguments = srcType.getTypeParams();
+                    for (int i = 0; i < typeArguments.size(); i++) {
+                        SrcType typeParam = typeArguments.get(i);
+                        if (i == attrLocation.get(0).arg) {
+                            List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy = List.from(attrLocation.subList(1, attrLocation.size()));
+                            TypeAnnotationPosition posCopy = getTypeAnnotationPosition(attrLocationCopy);
+                            annotateType(typeParam, Collections.singletonList(new Attribute.TypeCompound(attr.type, attr.values, posCopy)));
+                        }
+                    }
+                }
+            } else if ("?".equals(srcType.getName()) && !srcType.getBounds().isEmpty()) {
+                TypeAnnotationPosition attrPos = attr.position;
+                if (attrPos == null) {
+                    return;
+                }
+                List<TypeAnnotationPosition.TypePathEntry> attrLocation = attrPos.location;
+                List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy = null;
+                if (!attrLocation.isEmpty()) {
+                    attrLocationCopy = List.from(attrLocation.subList(1, attrLocation.size()));
+                }
+
+                if (attrLocationCopy == null || attrLocationCopy.isEmpty()) {
+                    addAnnotation(srcType, attr);
+                } else {
+                    TypeAnnotationPosition posCopy = getTypeAnnotationPosition(attrLocationCopy);
+                    annotateType(srcType.getBounds().get(0), Collections.singletonList(new Attribute.TypeCompound(attr.type, attr.values, posCopy)));
+                }
+            }
+        }
+    }
+
+    public static TypeAnnotationPosition getTypeAnnotationPosition(List<TypeAnnotationPosition.TypePathEntry> attrLocationCopy) {
+        TypeAnnotationPosition posCopy;
+        if (isJava8()) {
+            posCopy = (TypeAnnotationPosition) ReflectUtil.constructor("com.sun.tools.javac.code.TypeAnnotationPosition").newInstance();
+            ReflectUtil.field(posCopy, "location").set(attrLocationCopy);
+        } else {
+            posCopy = (TypeAnnotationPosition) ReflectUtil
+                    .method(TypeAnnotationPosition.class, "methodReceiver", List.class)
+                    .invokeStatic(attrLocationCopy);
+        }
+        return posCopy;
+    }
+
+    private void addAnnotation(SrcType srcType, Attribute.TypeCompound attr) {
+        String fqn = attr.type.toString();
+        if (fqn.equals("jdk.internal.HotSpotIntrinsicCandidate")) {
+            // Since java 10 we have to keep these out of stubbed java source
+            return;
+        }
+        SrcAnnotationExpression annoExpr = new SrcAnnotationExpression(fqn);
+        for (Pair<Symbol.MethodSymbol, Attribute> value : attr.values) {
+            annoExpr.addArgument(value.fst.flatName().toString(), new SrcType(value.snd.type.toString()), value.snd.getValue());
+        }
+        srcType.addAnnotation(annoExpr);
+    }
+
+    private boolean isClassType(SrcType srcType) {
+        return !srcType.isPrimitive() && !srcType.isArray() && !"?".equals(srcType.getName());
+    }
+
+    private String genSuperCtorCall(IModule module, SrcClass srcClass, BasicJavacTask javacTask) {
+        String bodyStmt;
+        SrcType superClass = srcClass.getSuperClass();
+        if (superClass == null) {
+            bodyStmt = "";
+        } else {
+            Symbol.MethodSymbol superCtor = findConstructor(module, superClass.getFqName(), javacTask);
+            if (superCtor == null) {
+                bodyStmt = "";
+            } else {
+                bodyStmt = genSuperCtorCall(superCtor);
+            }
+        }
+        return bodyStmt;
+    }
+
+    private String genSuperCtorCall(Symbol.MethodSymbol superCtor) {
+        String bodyStmt;
+        StringBuilder sb = new StringBuilder("super(");
+        List<Symbol.VarSymbol> parameters = superCtor.getParameters();
+        for (int i = 0; i < parameters.size(); i++) {
+            Symbol.VarSymbol param = parameters.get(i);
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(getValueForType(param.type));
+        }
+        sb.append(");");
+        bodyStmt = sb.toString();
+        return bodyStmt;
+    }
+
+    private String genRecordCtorBody(SrcMethod srcMethod, Symbol.MethodSymbol method, BasicJavacTask javacTask) {
+        Symbol.ClassSymbol owner = (Symbol.ClassSymbol) method.owner;
+        Symbol.MethodSymbol primaryRecordCtor = findPrimaryRecordCtor((Symbol.ClassSymbol) method.owner, javacTask);
+        if (primaryRecordCtor == method) {
+            srcMethod.setPrimaryConstructor(true);
+            return initializeRecordFields(owner);
+        }
+        return callPrimaryRecordCtor(owner, primaryRecordCtor);
+    }
+
+    private String callPrimaryRecordCtor(Symbol.ClassSymbol owner, Symbol.MethodSymbol primaryRecordCtor) {
+        StringBuilder sb = new StringBuilder("this(");
+        List<Symbol.VarSymbol> parameters = primaryRecordCtor.getParameters();
+        for (int i = 0, parametersSize = parameters.size(); i < parametersSize; i++) {
+            Symbol.VarSymbol param = parameters.get(i);
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(getValueForType(param.type));
+        }
+        sb.append(");\n");
+        return sb.toString();
+    }
+
+    private Symbol.MethodSymbol findPrimaryRecordCtor(Symbol.ClassSymbol owner, BasicJavacTask javacTask) {
+        java.util.List<Symbol.VarSymbol> fields = getRecordFields(owner);
+        for (Symbol meth : IDynamicJdk.instance().getMembers(owner, m -> m instanceof Symbol.MethodSymbol && m.isConstructor())) {
+            Symbol.MethodSymbol method = (Symbol.MethodSymbol) meth;
+            List<Symbol.VarSymbol> params = method.getParameters();
+            if (params.size() == fields.size()) {
+                boolean primaryCtor = true;
+                Types types = Types.instance(javacTask.getContext());
+                for (int i = 0, paramsSize = params.size(); i < paramsSize; i++) {
+                    Symbol.VarSymbol param = params.get(i);
+                    if (!types.isSameType(param.type, fields.get(i).type)) {
+                        primaryCtor = false;
+                        break;
+                    }
+                }
+                if (primaryCtor) {
+                    return method;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String initializeRecordFields(Symbol.ClassSymbol owner) {
+        StringBuilder sb = new StringBuilder();
+        java.util.List<Symbol.VarSymbol> fields = getRecordFields(owner);
+        for (Symbol f : fields) {
+            sb.append("this.").append(f.flatName()).append(" = ").append(getValueForType(f.type)).append("; ");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private java.util.List<Symbol.VarSymbol> getRecordFields(Symbol.ClassSymbol owner) {
+        // fields in declared order
+        return owner.getEnclosedElements().stream()
+                .filter(e -> e instanceof Symbol.VarSymbol && !e.isStatic())
+                .map(e -> (Symbol.VarSymbol) e)
+                .collect(Collectors.toList());
+    }
+
+    private Symbol.MethodSymbol findConstructor(IModule module, String fqn, BasicJavacTask javacTask) {
+        manifold.rt.api.util.Pair<Symbol.ClassSymbol, JCTree.JCCompilationUnit> classSymbol = ClassSymbols.instance(module).getClassSymbol(javacTask, fqn);
+        Symbol.ClassSymbol cs = classSymbol.getFirst();
+        Symbol.MethodSymbol ctor = null;
+        for (Symbol sym : cs.getEnclosedElements()) {
+            if (sym instanceof Symbol.MethodSymbol && sym.flatName().toString().equals("<init>")) {
+                if (ctor == null) {
+                    ctor = (Symbol.MethodSymbol) sym;
+                } else {
+                    ctor = mostAccessible(ctor, (Symbol.MethodSymbol) sym);
+                }
+                if (Modifier.isPublic((int) ctor.flags())) {
+                    return ctor;
+                }
+            }
+        }
+        return ctor;
+    }
+
+    private Symbol.MethodSymbol mostAccessible(Symbol.MethodSymbol ctor, Symbol.MethodSymbol sym) {
+        int ctorMods = (int) ctor.flags();
+        int symMods = (int) sym.flags();
+        if (Modifier.isPublic(ctorMods)) {
+            return ctor;
+        }
+        if (Modifier.isPublic(symMods)) {
+            return sym;
+        }
+        if (Modifier.isProtected(ctorMods)) {
+            return ctor;
+        }
+        if (Modifier.isProtected(symMods)) {
+            return sym;
+        }
+        if (Modifier.isPrivate(ctorMods)) {
+            return Modifier.isPrivate(symMods) ? ctor : sym;
+        }
+        return ctor;
+    }
+
+    private void addAnnotations(SrcAnnotated<?> srcAnnotated, Symbol symbol) {
+        for (Attribute.Compound annotationMirror : symbol.getAnnotationMirrors()) {
+            String fqn = annotationMirror.getAnnotationType().toString();
+            if (fqn.equals("jdk.internal.HotSpotIntrinsicCandidate")) {
+                // Since java 10 we have to keep these out of stubbed java source
+                continue;
+            }
+            if (fqn.equals("jdk.internal.ValueBased")) {
+                // Since java 16 we have to keep these out of stubbed java source
+                continue;
+            }
+            //noinspection IfCanBeSwitch
+            if (fqn.equals("android.annotation.Nullable")) {
+                // retarded android bullshit
 //        fqn = "androidx.annotation.RecentlyNullable";
-        continue;
-      }
-      else if( fqn.equals( "android.annotation.NonNull" ) )
-      {
-        // retarded android bullshit
+                continue;
+            } else if (fqn.equals("android.annotation.NonNull")) {
+                // retarded android bullshit
 //        fqn = "androidx.annotation.RecentlyNonNull";
-        continue;
-      }
-      else if( fqn.equals( "androidx.annotation.RecentlyNullable" ) )
-      {
-        // retarded android bullshit
+                continue;
+            } else if (fqn.equals("androidx.annotation.RecentlyNullable")) {
+                // retarded android bullshit
 //        fqn = "androidx.annotation.RecentlyNullable";
-        continue;
-      }
-      else if( fqn.equals( "androidx.annotation.RecentlyNonNull" ) )
-      {
-        // retarded android bullshit
+                continue;
+            } else if (fqn.equals("androidx.annotation.RecentlyNonNull")) {
+                // retarded android bullshit
 //        fqn = "androidx.annotation.RecentlyNonNull";
-        continue;
-      }
+                continue;
+            }
 
-      SrcAnnotationExpression annoExpr = new SrcAnnotationExpression( fqn );
-      for( Pair<Symbol.MethodSymbol, Attribute> value: annotationMirror.values )
-      {
-        Type t = value.snd.type;
-        SrcType type = new SrcType( t.toString() );
-        if( t.tsym != null && t.tsym.isEnum() )
-        {
-          type.setEnum( true );
+            SrcAnnotationExpression annoExpr = new SrcAnnotationExpression(fqn);
+            for (Pair<Symbol.MethodSymbol, Attribute> value : annotationMirror.values) {
+                Type t = value.snd.type;
+                SrcType type = new SrcType(t.toString());
+                if (t.tsym != null && t.tsym.isEnum()) {
+                    type.setEnum(true);
+                }
+                annoExpr.addArgument(value.fst.flatName().toString(), type, value.snd.getValue());
+            }
+            srcAnnotated.addAnnotation(annoExpr);
         }
-        annoExpr.addArgument( value.fst.flatName().toString(), type, value.snd.getValue() );
-      }
-      srcAnnotated.addAnnotation( annoExpr );
     }
-  }
 
-  private SrcType makeTypeVarType( Symbol.TypeVariableSymbol typeVar )
-  {
-    StringBuilder sb = new StringBuilder( typeVar.type.toString() );
-    Type lowerBound = typeVar.type.getLowerBound();
-    if( lowerBound != null && !(lowerBound instanceof NullType) )
-    {
-      sb.append( " super " ).append( lowerBound.toString() );
+    private SrcType makeTypeVarType(Symbol.TypeVariableSymbol typeVar) {
+        StringBuilder sb = new StringBuilder(typeVar.type.toString());
+        Type lowerBound = typeVar.type.getLowerBound();
+        if (lowerBound != null && !(lowerBound instanceof NullType)) {
+            sb.append(" super ").append(lowerBound.toString());
+        } else {
+            Type upperBound = typeVar.type.getUpperBound();
+            if (upperBound != null && !(upperBound instanceof NoType) && !upperBound.toString().equals(Object.class.getName())) {
+                sb.append(" extends ").append(upperBound.toString());
+            }
+        }
+        return new SrcType(sb.toString());
     }
-    else
-    {
-      Type upperBound = typeVar.type.getUpperBound();
-      if( upperBound != null && !(upperBound instanceof NoType) && !upperBound.toString().equals( Object.class.getName() ) )
-      {
-        sb.append( " extends " ).append( upperBound.toString() );
-      }
-    }
-    return new SrcType( sb.toString() );
-  }
 
-  // These values substitute NON-compile-time constant initializers, thus they are never used at runtime (because
-  // extension stub classes are not used at runtime).
-  private String getValueForType( Type type )
-  {
-    String value;
-    if( type.isPrimitive() )
-    {
-      switch( type.getKind() )
-      {
-        case BOOLEAN:
-          value = "(boolean)Boolean.valueOf(true)";
-          break;
-        case BYTE:
-          value = "(byte)Byte.valueOf((byte)0)";
-          break;
-        case SHORT:
-          value = "(short)Short.valueOf((short)0)";
-          break;
-        case INT:
-          value = "(int)Integer.valueOf(0)";
-          break;
-        case LONG:
-          value = "(long)Long.valueOf(0)";
-          break;
-        case CHAR:
-          value = "(char)Character.valueOf((char)0)";
-          break;
-        case FLOAT:
-          value = "(float)Float.valueOf(0f)";
-          break;
-        case DOUBLE:
-          value = "(double)Double.valueOf(0d)";
-          break;
-        default:
-          throw new IllegalStateException();
-      }
+    // These values substitute NON-compile-time constant initializers, thus they are never used at runtime (because
+    // extension stub classes are not used at runtime).
+    private String getValueForType(Type type) {
+        String value;
+        if (type.isPrimitive()) {
+            switch (type.getKind()) {
+                case BOOLEAN:
+                    value = "(boolean)Boolean.valueOf(true)";
+                    break;
+                case BYTE:
+                    value = "(byte)Byte.valueOf((byte)0)";
+                    break;
+                case SHORT:
+                    value = "(short)Short.valueOf((short)0)";
+                    break;
+                case INT:
+                    value = "(int)Integer.valueOf(0)";
+                    break;
+                case LONG:
+                    value = "(long)Long.valueOf(0)";
+                    break;
+                case CHAR:
+                    value = "(char)Character.valueOf((char)0)";
+                    break;
+                case FLOAT:
+                    value = "(float)Float.valueOf(0f)";
+                    break;
+                case DOUBLE:
+                    value = "(double)Double.valueOf(0d)";
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
+        } else {
+            String fqn = type.toString();
+            if (type instanceof Type.TypeVar) {
+                value = "null";
+            } else {
+                fqn = removeGenerics(fqn);
+                value = "(" + fqn + ") null"; // cast to disambiguate when used as an argument
+            }
+        }
+        return value;
     }
-    else
-    {
-      String fqn = type.toString();
-      if( type instanceof Type.TypeVar )
-      {
-        value = "null";
-      }
-      else
-      {
-        fqn = removeGenerics( fqn );
-        value = "(" + fqn + ") null"; // cast to disambiguate when used as an argument
-      }
-    }
-    return value;
-  }
 
-  public String removeGenerics( String type )
-  {
-    String rawType = type;
-    int iAngle = type.indexOf( "<" );
-    if( iAngle > 0 )
-    {
-      rawType = rawType.substring( 0, iAngle );
-      int iLastAngle = type.lastIndexOf( '>' );
-      if( type.length()-1 > iLastAngle )
-      {
-        // array brackets
-        rawType += type.substring( iLastAngle + 1 );
-      }
+    public String removeGenerics(String type) {
+        String rawType = type;
+        int iAngle = type.indexOf("<");
+        if (iAngle > 0) {
+            rawType = rawType.substring(0, iAngle);
+            int iLastAngle = type.lastIndexOf('>');
+            if (type.length() - 1 > iLastAngle) {
+                // array brackets
+                rawType += type.substring(iLastAngle + 1);
+            }
+        }
+        return rawType;
     }
-    return rawType;
-  }
 }

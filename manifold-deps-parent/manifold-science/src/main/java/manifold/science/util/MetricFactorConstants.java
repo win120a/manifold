@@ -18,39 +18,59 @@ package manifold.science.util;
 
 import static manifold.science.util.CoercionConstants.r;
 
-public interface MetricFactorConstants
-{
-  // SI metric unit factors
-  //
-  Rational YOCTO = "1/1000000000000000000000000"r;
-  Rational ZEPTO = "1/1000000000000000000000"r;
-  Rational ATTO =  "1/1000000000000000000"r;
-  Rational FEMTO = "1/1000000000000000"r;
-  Rational PICO =  "1/1000000000000"r;
-  Rational NANO =  "1/1000000000"r;
-  Rational MICRO = "1/1000000"r;
-  Rational MILLI = "1/1000"r;
-  Rational CENTI = "1/100"r;
-  Rational DECI =  "1/10"r;
-  Rational DECA =  10r;
-  Rational HECTO = 100r;
-  Rational KILO =  1000r;
-  Rational MEGA =  1000000r;
-  Rational GIGA =  1000000000r;
-  Rational TERA =  "1000000000000"r;
-  Rational PETA =  "1000000000000000"r;
-  Rational EXA =   "1000000000000000000"r;
-  Rational ZETTA = "1000000000000000000000"r;
-  Rational YOTTA = "1000000000000000000000000"r;
+public interface MetricFactorConstants {
+    // SI metric unit factors
+    //
+    Rational YOCTO = "1/1000000000000000000000000"
+    r;
+    Rational ZEPTO = "1/1000000000000000000000"
+    r;
+    Rational ATTO = "1/1000000000000000000"
+    r;
+    Rational FEMTO = "1/1000000000000000"
+    r;
+    Rational PICO = "1/1000000000000"
+    r;
+    Rational NANO = "1/1000000000"
+    r;
+    Rational MICRO = "1/1000000"
+    r;
+    Rational MILLI = "1/1000"
+    r;
+    Rational CENTI = "1/100"
+    r;
+    Rational DECI = "1/10"
+    r;
+    Rational DECA = 10
+    r;
+    Rational HECTO = 100
+    r;
+    Rational KILO = 1000
+    r;
+    Rational MEGA = 1000000
+    r;
+    Rational GIGA = 1000000000
+    r;
+    Rational TERA = "1000000000000"
+    r;
+    Rational PETA = "1000000000000000"
+    r;
+    Rational EXA = "1000000000000000000"
+    r;
+    Rational ZETTA = "1000000000000000000000"
+    r;
+    Rational YOTTA = "1000000000000000000000000"
+    r;
 
-  // Byte unit factors for quantities of digital information (International Electrotechnical Commission)
-  //
-  Rational KIBI = 1024r; // kibibyte (prev. kilobyte)
-  Rational MEBI = KIBI.pow( 2 );
-  Rational GIBI = KIBI.pow( 3 );
-  Rational TEBI = KIBI.pow( 4 );
-  Rational PEBI = KIBI.pow( 5 );
-  Rational EXBI = KIBI.pow( 6 );
-  Rational ZEBI = KIBI.pow( 7 );
-  Rational YOBI = KIBI.pow( 8 );
+    // Byte unit factors for quantities of digital information (International Electrotechnical Commission)
+    //
+    Rational KIBI = 1024
+    r; // kibibyte (prev. kilobyte)
+    Rational MEBI = KIBI.pow(2);
+    Rational GIBI = KIBI.pow(3);
+    Rational TEBI = KIBI.pow(4);
+    Rational PEBI = KIBI.pow(5);
+    Rational EXBI = KIBI.pow(6);
+    Rational ZEBI = KIBI.pow(7);
+    Rational YOBI = KIBI.pow(8);
 }

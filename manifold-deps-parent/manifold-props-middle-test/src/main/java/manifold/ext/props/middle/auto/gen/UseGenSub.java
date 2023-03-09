@@ -20,43 +20,38 @@ import manifold.ext.props.middle.auto.gen.GenSub;
 
 import java.util.Collections;
 
-public class UseGenSub
-{
-  static class Foo<T extends CharSequence> extends GenericBase<T>
-  {
-    public Foo( T tee )
-    {
-      super( tee );
+public class UseGenSub {
+    static class Foo<T extends CharSequence> extends GenericBase<T> {
+        public Foo(T tee) {
+            super(tee);
+        }
+
+        @Override
+        protected GenericBase<T> getMee() {
+            return null;
+        }
+
+        @Override
+        protected void setMee(GenericBase<T> mee) {
+
+        }
     }
 
-    @Override
-    protected GenericBase<T> getMee()
-    {
-      return null;
+    public static void main(String[] args) {
+        GenSub gs = new GenSub("hi");
+        gs.tee = "foo";
+        System.out.println(gs.tee);
+        gs.list = Collections.singletonList("bar");
+        System.out.println(gs.list.get(0).substring(0));
+        gs.mee = gs;
+        System.out.println(gs.mee + " : " + gs.tee);
+
+        Foo<StringBuilder> foo = new Foo<>(new StringBuilder("hi"));
+        foo.tee = new StringBuilder("foo");
+        System.out.println(foo.tee);
+        foo.list = Collections.singletonList(new StringBuilder("bar"));
+        System.out.println(foo.list.get(0).substring(0));
+        foo.mee = foo;
+        System.out.println(foo.mee + " : " + foo.tee);
     }
-
-    @Override
-    protected void setMee( GenericBase<T> mee )
-    {
-
-    }
-  }
-  public static void main( String[] args )
-  {
-    GenSub gs = new GenSub( "hi" );
-    gs.tee = "foo";
-    System.out.println(gs.tee);
-    gs.list = Collections.singletonList( "bar" );
-    System.out.println(gs.list.get(0).substring(0));
-    gs.mee = gs;
-    System.out.println(gs.mee + " : " + gs.tee);
-
-    Foo<StringBuilder> foo = new Foo<>( new StringBuilder( "hi" ) );
-    foo.tee = new StringBuilder( "foo" );
-    System.out.println(foo.tee);
-    foo.list = Collections.singletonList( new StringBuilder( "bar" ) );
-    System.out.println(foo.list.get(0).substring(0));
-    foo.mee = foo;
-    System.out.println(foo.mee + " : " + foo.tee);
-  }
 }

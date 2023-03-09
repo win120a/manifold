@@ -20,135 +20,120 @@ import junit.framework.TestCase;
 import manifold.ext.delegation.rt.api.link;
 import manifold.ext.delegation.rt.api.part;
 
-public class GenericsTest extends TestCase
-{
-  public void testGenerics()
-  {
-    TA<String> ta = new TAPart<>( new StudentPart<>( new PersonPart<>( "Fred" ), "CS" ) );
-    String titledName = ta.getTitledName();
-    assertEquals( "TA Fred", titledName );
-    String foo = ta.foo( "hi" );
-    assertEquals( "hi", foo );
-  }
-
-  interface Person<E>
-  {
-    E foo( E e );
-
-    String getName();
-
-    String getTitle();
-
-    String getTitledName();
-  }
-
-  interface Teacher<F> extends Person<F>
-  {
-    String getDept();
-  }
-
-  interface Student<G> extends Person<G>
-  {
-    String getMajor();
-  }
-
-  interface TA<H> extends Student<H>, Teacher<H>
-  {
-  }
-
-  static @part class PersonPart<I> implements Person<I>
-  {
-    private final String _name;
-
-    public PersonPart( String name )
-    {
-      _name = name;
+public class GenericsTest extends TestCase {
+    public void testGenerics() {
+        TA<String> ta = new TAPart<>(new StudentPart<>(new PersonPart<>("Fred"), "CS"));
+        String titledName = ta.getTitledName();
+        assertEquals("TA Fred", titledName);
+        String foo = ta.foo("hi");
+        assertEquals("hi", foo);
     }
 
-    public String getName()
-    {
-      return _name;
+    interface Person<E> {
+        E foo(E e);
+
+        String getName();
+
+        String getTitle();
+
+        String getTitledName();
     }
 
-    public String getTitle()
-    {
-      return "Person";
+    interface Teacher<F> extends Person<F> {
+        String getDept();
     }
 
-    public String getTitledName()
-    {
-      return getTitle() + " " + getName();
+    interface Student<G> extends Person<G> {
+        String getMajor();
     }
 
-    public I foo( I e )
-    {
-      return e;
-    }
-  }
-
-  static @part class TeacherPart<J> implements Teacher<J>
-  {
-    @link Person<J> _person;
-    private final String _dept;
-
-    public TeacherPart( Person<J> p, String dept )
-    {
-      _person = p;
-      _dept = dept;
+    interface TA<H> extends Student<H>, Teacher<H> {
     }
 
-    public String getTitle()
-    {
-      return "Teacher";
+    static @part class PersonPart<I> implements Person<I> {
+        private final String _name;
+
+        public PersonPart(String name) {
+            _name = name;
+        }
+
+        public String getName() {
+            return _name;
+        }
+
+        public String getTitle() {
+            return "Person";
+        }
+
+        public String getTitledName() {
+            return getTitle() + " " + getName();
+        }
+
+        public I foo(I e) {
+            return e;
+        }
     }
 
-    public String getDept()
-    {
-      return _dept;
-    }
-  }
+    static @part class TeacherPart<J> implements Teacher<J> {
+        @link
+        Person<J> _person;
+        private final String _dept;
 
-  static @part class StudentPart<K> implements Student<K>
-  {
-    @link Person<K> _person;
-    private final String _major;
+        public TeacherPart(Person<J> p, String dept) {
+            _person = p;
+            _dept = dept;
+        }
 
-    public StudentPart( Person p, String major )
-    {
-      _person = p;
-      _major = major;
-    }
+        public String getTitle() {
+            return "Teacher";
+        }
 
-    public String getTitle()
-    {
-      return "Student";
+        public String getDept() {
+            return _dept;
+        }
     }
 
-    public String getMajor()
-    {
-      return _major;
+    static @part class StudentPart<K> implements Student<K> {
+        @link
+        Person<K> _person;
+        private final String _major;
+
+        public StudentPart(Person p, String major) {
+            _person = p;
+            _major = major;
+        }
+
+        public String getTitle() {
+            return "Student";
+        }
+
+        public String getMajor() {
+            return _major;
+        }
     }
-  }
 
-  static @part class TAPart<L> implements TA<L>
-  {
-    @link( share = true ) Student<L> _student;
-    @link Teacher<L> _teacher;
+    static @part class TAPart<L> implements TA<L> {
+        @link(share = true)
+        Student<L> _student;
+        @link
+        Teacher<L> _teacher;
 
-    public TAPart( Student<L> student )
-    {
-      _student = student;
-      _teacher = new TeacherPart<>( _student, "Math" );
+        public TAPart(Student<L> student) {
+            _student = student;
+            _teacher = new TeacherPart<>(_student, "Math");
+        }
+
+        public String getTitle() {
+            return "TA";
+        }
     }
 
-    public String getTitle()
-    {
-      return "TA";
-    }
-  }
+    static @part class TeacherPart_ifaceFromAnno<L> implements Teacher<L> {
+        @link({Teacher.class})
+        Teacher<L> _student;
 
-  static @part class TeacherPart_ifaceFromAnno<L> implements Teacher<L> {
-    @link({Teacher.class}) Teacher<L> _student;
-    public String getTitle() { return "TA"; }
-  }
+        public String getTitle() {
+            return "TA";
+        }
+    }
 }

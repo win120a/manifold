@@ -20,10 +20,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyClassExt
-{
-  public static <T> String whateverClassMethod( @This Class<T> thiz )
-  {
-    return "whatever";
-  }
+public class MyClassExt {
+    public static <T> String whateverClassMethod(@This Class<T> thiz) {
+        return "whatever";
+    }
 }

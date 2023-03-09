@@ -16,7 +16,8 @@
 
 package manifold.ext.delegation.parts.diamond;
 
-/** A "diamond" interface. Student and Teacher both extend Person. */
-public interface TA extends Student, Teacher
-{
+/**
+ * A "diamond" interface. Student and Teacher both extend Person.
+ */
+public interface TA extends Student, Teacher {
 }

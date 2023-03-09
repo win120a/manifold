@@ -20,170 +20,132 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class LockingLazyVar<T>
-{
-  private final static Object NULL = new Object();
-  private volatile T _val = null;
-  private final ReadWriteLock _rwLock;
+public abstract class LockingLazyVar<T> {
+    private final static Object NULL = new Object();
+    private volatile T _val = null;
+    private final ReadWriteLock _rwLock;
 
-  protected LockingLazyVar()
-  {
-    this( new ReentrantReadWriteLock() );
-  }
-
-  protected LockingLazyVar( ReadWriteLock lock )
-  {
-    _rwLock = lock;
-  }
-
-  /**
-   * @return the value of this lazy var, created if necessary
-   */
-  public final T get()
-  {
-    T result;
-    Lock rLock = _rwLock.readLock();
-    rLock.lock();
-    try
-    {
-      result = _val;
-    }
-    finally
-    {
-      rLock.unlock();
+    protected LockingLazyVar() {
+        this(new ReentrantReadWriteLock());
     }
 
-    if( result == NULL )
-    {
-      return null;
+    protected LockingLazyVar(ReadWriteLock lock) {
+        _rwLock = lock;
     }
 
-    if( result != null )
-    {
-      return result;
-    }
-
-    Lock wLock = _rwLock.writeLock();
-    wLock.lock();
-    try
-    {
-      result = _val;
-      if( result == NULL )
-      {
-        return null;
-      }
-      if( result == null )
-      {
-        result = init();
-        if( result == null )
-        {
-          _val = (T)NULL;
+    /**
+     * @return the value of this lazy var, created if necessary
+     */
+    public final T get() {
+        T result;
+        Lock rLock = _rwLock.readLock();
+        rLock.lock();
+        try {
+            result = _val;
+        } finally {
+            rLock.unlock();
         }
-        else
-        {
-          _val = result;
+
+        if (result == NULL) {
+            return null;
         }
-      }
-    }
-    finally
-    {
-      wLock.unlock();
-    }
-    return result;
-  }
 
-  public T set( T value )
-  {
-    if( value == null )
-    {
-      value = (T)NULL;
-    }
-    T prev = get();
-    Lock wLock = _rwLock.writeLock();
-    wLock.lock();
-    try
-    {
-      _val = value;
-    }
-    finally
-    {
-      wLock.unlock();
-    }
-    return prev;
-  }
+        if (result != null) {
+            return result;
+        }
 
-  protected abstract T init();
-
-  /**
-   * Clears the variable, forcing the next call to {@link #get()} to re-calculate
-   * the value.
-   */
-  public final T clear()
-  {
-    T prev;
-    Lock wLock = _rwLock.writeLock();
-    wLock.lock();
-    try
-    {
-      prev = _val;
-      _val = null;
+        Lock wLock = _rwLock.writeLock();
+        wLock.lock();
+        try {
+            result = _val;
+            if (result == NULL) {
+                return null;
+            }
+            if (result == null) {
+                result = init();
+                if (result == null) {
+                    _val = (T) NULL;
+                } else {
+                    _val = result;
+                }
+            }
+        } finally {
+            wLock.unlock();
+        }
+        return result;
     }
-    finally
-    {
-      wLock.unlock();
+
+    public T set(T value) {
+        if (value == null) {
+            value = (T) NULL;
+        }
+        T prev = get();
+        Lock wLock = _rwLock.writeLock();
+        wLock.lock();
+        try {
+            _val = value;
+        } finally {
+            wLock.unlock();
+        }
+        return prev;
     }
-    return prev;
-  }
 
-  public final void clearNoLock()
-  {
-    _val = null;
-  }
+    protected abstract T init();
 
-  public boolean isLoaded()
-  {
-    Lock rLock = _rwLock.readLock();
-    rLock.lock();
-    try
-    {
-      return _val != null;
+    /**
+     * Clears the variable, forcing the next call to {@link #get()} to re-calculate
+     * the value.
+     */
+    public final T clear() {
+        T prev;
+        Lock wLock = _rwLock.writeLock();
+        wLock.lock();
+        try {
+            prev = _val;
+            _val = null;
+        } finally {
+            wLock.unlock();
+        }
+        return prev;
     }
-    finally
-    {
-      rLock.unlock();
+
+    public final void clearNoLock() {
+        _val = null;
     }
-  }
 
-  /**
-   * A simple init interface to make LockingLazyVar's easier to construct.
-   */
-  public interface LazyVarInit<Q>
-  {
-    Q init();
-  }
+    public boolean isLoaded() {
+        Lock rLock = _rwLock.readLock();
+        rLock.lock();
+        try {
+            return _val != null;
+        } finally {
+            rLock.unlock();
+        }
+    }
 
-  /**
-   * Creates a new LockingLazyVar based on the type of the LazyVarInit passed in.
-   */
-  public static <Q> LockingLazyVar<Q> make( final LazyVarInit<Q> init )
-  {
-    return new LockingLazyVar<Q>()
-    {
-      protected Q init()
-      {
-        return init.init();
-      }
-    };
-  }
+    /**
+     * A simple init interface to make LockingLazyVar's easier to construct.
+     */
+    public interface LazyVarInit<Q> {
+        Q init();
+    }
 
-  public static <Q> LockingLazyVar<Q> make( ReadWriteLock lock, final LazyVarInit<Q> init )
-  {
-    return new LockingLazyVar<Q>( lock )
-    {
-      protected Q init()
-      {
-        return init.init();
-      }
-    };
-  }
+    /**
+     * Creates a new LockingLazyVar based on the type of the LazyVarInit passed in.
+     */
+    public static <Q> LockingLazyVar<Q> make(final LazyVarInit<Q> init) {
+        return new LockingLazyVar<Q>() {
+            protected Q init() {
+                return init.init();
+            }
+        };
+    }
+
+    public static <Q> LockingLazyVar<Q> make(ReadWriteLock lock, final LazyVarInit<Q> init) {
+        return new LockingLazyVar<Q>(lock) {
+            protected Q init() {
+                return init.init();
+            }
+        };
+    }
 }

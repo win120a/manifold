@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyClassTypeExt
-{
-  public static String hiClassType( @This ClassType thiz )
-  {
-    return "classType";
-  }
+public class MyClassTypeExt {
+    public static String hiClassType(@This ClassType thiz) {
+        return "classType";
+    }
 }

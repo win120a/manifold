@@ -29,19 +29,18 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Structural
-{
-  /**
-   * Optional.
-   * <p/>
-   * A factory class that produces a proxy for a structural interface.  The factory class must provide a public default
-   * constructor and must implement {@link IProxyFactory}.
-   * <p/>
-   * Note, the factory class exists to address performance and to facilitate proxies where structural interface methods
-   * are implemented indirectly as extension methods. In the latter case a factory class is required either here in the
-   * &#64;Structural declaration or as a service. Note if there are more than one factory classes, they should be
-   * provided as service implementations in the META-INF/services/manifold.ext.rt.api.IProxyFactory file, or listed in
-   * your module's module-info.java file if you are using JDK 9+ with named modules.
-   */
-  Class factoryClass() default Void.class;
+public @interface Structural {
+    /**
+     * Optional.
+     * <p/>
+     * A factory class that produces a proxy for a structural interface.  The factory class must provide a public default
+     * constructor and must implement {@link IProxyFactory}.
+     * <p/>
+     * Note, the factory class exists to address performance and to facilitate proxies where structural interface methods
+     * are implemented indirectly as extension methods. In the latter case a factory class is required either here in the
+     * &#64;Structural declaration or as a service. Note if there are more than one factory classes, they should be
+     * provided as service implementations in the META-INF/services/manifold.ext.rt.api.IProxyFactory file, or listed in
+     * your module's module-info.java file if you are using JDK 9+ with named modules.
+     */
+    Class factoryClass() default Void.class;
 }

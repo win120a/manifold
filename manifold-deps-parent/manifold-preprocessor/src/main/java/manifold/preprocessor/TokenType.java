@@ -16,43 +16,38 @@
 
 package manifold.preprocessor;
 
-public enum TokenType
-{
-  Whitespace(),
-  LineComment(),
-  BlockComment(),
-  StringLiteral(),
-  CharLiteral(),
-  TextBlock(),
-  If("if"),
-  Elif("elif"),
-  Else("else"),
-  Endif("endif"),
-  Define("define"),
-  Undef("undef"),
-  Error("error"),
-  Warning("warning"),
-  Source();
+public enum TokenType {
+    Whitespace(),
+    LineComment(),
+    BlockComment(),
+    StringLiteral(),
+    CharLiteral(),
+    TextBlock(),
+    If("if"),
+    Elif("elif"),
+    Else("else"),
+    Endif("endif"),
+    Define("define"),
+    Undef("undef"),
+    Error("error"),
+    Warning("warning"),
+    Source();
 
-  private String _directive;
+    private String _directive;
 
-  TokenType()
-  {
-    this( null );
-  }
+    TokenType() {
+        this(null);
+    }
 
-  TokenType( String directive )
-  {
-    _directive = directive;
-  }
+    TokenType(String directive) {
+        _directive = directive;
+    }
 
-  public boolean isDirective()
-  {
-    return _directive != null;
-  }
+    public boolean isDirective() {
+        return _directive != null;
+    }
 
-  public String getDirective()
-  {
-    return _directive;
-  }
+    public String getDirective() {
+        return _directive;
+    }
 }

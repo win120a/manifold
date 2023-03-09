@@ -18,18 +18,15 @@ package manifold.xml.rt.parser;
 
 import manifold.xml.rt.parser.antlr.XMLParser;
 
-public class XmlRootElement extends XmlElement
-{
-  private final XmlElement _prolog;
+public class XmlRootElement extends XmlElement {
+    private final XmlElement _prolog;
 
-  XmlRootElement( XMLParser.ElementContext ctx, XmlElement prolog )
-  {
-    super( ctx, null );
-    _prolog = prolog;
-  }
+    XmlRootElement(XMLParser.ElementContext ctx, XmlElement prolog) {
+        super(ctx, null);
+        _prolog = prolog;
+    }
 
-  public XmlElement getProlog()
-  {
-    return _prolog;
-  }
+    public XmlElement getProlog() {
+        return _prolog;
+    }
 }

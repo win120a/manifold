@@ -27,127 +27,114 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-@SuppressWarnings( "JavaReflectionMemberAccess" )
-public class FromSourceFileTest extends TestCase
-{
-  public void testStaticReadWriteBacking() throws Throwable
-  {
-    assertEquals( "staticReadwriteBackingProp", FromSourceFile.staticReadwriteBackingProp );
-    FromSourceFile.staticReadwriteBackingProp = "b";
-    assertEquals( "b", FromSourceFile.staticReadwriteBackingProp );
+@SuppressWarnings("JavaReflectionMemberAccess")
+public class FromSourceFileTest extends TestCase {
+    public void testStaticReadWriteBacking() throws Throwable {
+        assertEquals("staticReadwriteBackingProp", FromSourceFile.staticReadwriteBackingProp);
+        FromSourceFile.staticReadwriteBackingProp = "b";
+        assertEquals("b", FromSourceFile.staticReadwriteBackingProp);
 
-    Field field = FromSourceFile.class.getDeclaredField( "staticReadwriteBackingProp" );
-    assertNotNull( field );
-    assertTrue( Modifier.isPrivate( field.getModifiers() ) );
-  }
-
-  public void testStaticReadonlyBacking() throws Throwable
-  {
-    assertEquals( "staticReadonlyBackingProp", FromSourceFile.staticReadonlyBackingProp );
-    FromSourceFile.updateStaticReadonlyBackingProp();
-    assertEquals( "updated", FromSourceFile.staticReadonlyBackingProp );
-
-    Field field = FromSourceFile.class.getDeclaredField( "staticReadonlyBackingProp" );
-    assertNotNull( field );
-    assertTrue( Modifier.isPrivate( field.getModifiers() ) );
-
-    try
-    {
-      FromSourceFile.class.getMethod( "staticReadonlyBackingProp", String.class );
-      fail( "method should not exist" );
+        Field field = FromSourceFile.class.getDeclaredField("staticReadwriteBackingProp");
+        assertNotNull(field);
+        assertTrue(Modifier.isPrivate(field.getModifiers()));
     }
-    catch( NoSuchMethodException ignore )
-    {
+
+    public void testStaticReadonlyBacking() throws Throwable {
+        assertEquals("staticReadonlyBackingProp", FromSourceFile.staticReadonlyBackingProp);
+        FromSourceFile.updateStaticReadonlyBackingProp();
+        assertEquals("updated", FromSourceFile.staticReadonlyBackingProp);
+
+        Field field = FromSourceFile.class.getDeclaredField("staticReadonlyBackingProp");
+        assertNotNull(field);
+        assertTrue(Modifier.isPrivate(field.getModifiers()));
+
+        try {
+            FromSourceFile.class.getMethod("staticReadonlyBackingProp", String.class);
+            fail("method should not exist");
+        } catch (NoSuchMethodException ignore) {
+        }
     }
-  }
 
-  public void testReadWriteBacking() throws Throwable
-  {
-    FromSourceFile f = new FromSourceFile();
-    assertEquals( "readwriteBackingProp", f.readwriteBackingProp );
-    f.readwriteBackingProp = "b";
-    assertEquals( "b", f.readwriteBackingProp );
+    public void testReadWriteBacking() throws Throwable {
+        FromSourceFile f = new FromSourceFile();
+        assertEquals("readwriteBackingProp", f.readwriteBackingProp);
+        f.readwriteBackingProp = "b";
+        assertEquals("b", f.readwriteBackingProp);
 
-    Field field = FromSourceFile.class.getDeclaredField( "readwriteBackingProp" );
-    assertNotNull( field );
-    assertTrue( Modifier.isPrivate( field.getModifiers() ) );
-  }
-
-  public void testReadWriteBacking2() throws Throwable
-  {
-    FromSourceFile f = new FromSourceFile();
-    assertEquals( "readwriteBackingProp2", f.readwriteBackingProp2 );
-    f.readwriteBackingProp2 = "b";
-    assertEquals( "b", f.readwriteBackingProp2 );
-
-    Field field = FromSourceFile.class.getDeclaredField( "readwriteBackingProp2" );
-    assertNotNull( field );
-    assertTrue( Modifier.isPrivate( field.getModifiers() ) );
-  }
-
-  public void testReadonlyBackingProp() throws Throwable
-  {
-    FromSourceFile f = new FromSourceFile();
-    assertEquals( "readonlyBackingProp", f.readonlyBackingProp );
-
-    Field field = FromSourceFile.class.getDeclaredField( "readonlyBackingProp" );
-    assertNotNull( field );
-    assertTrue( Modifier.isPrivate( field.getModifiers() ) );
-
-    try
-    {
-      FromSourceFile.class.getMethod( "setReadonlyBackingProp", String.class );
-      fail( "method should not exist" );
+        Field field = FromSourceFile.class.getDeclaredField("readwriteBackingProp");
+        assertNotNull(field);
+        assertTrue(Modifier.isPrivate(field.getModifiers()));
     }
-    catch( NoSuchMethodException ignore )
-    {
+
+    public void testReadWriteBacking2() throws Throwable {
+        FromSourceFile f = new FromSourceFile();
+        assertEquals("readwriteBackingProp2", f.readwriteBackingProp2);
+        f.readwriteBackingProp2 = "b";
+        assertEquals("b", f.readwriteBackingProp2);
+
+        Field field = FromSourceFile.class.getDeclaredField("readwriteBackingProp2");
+        assertNotNull(field);
+        assertTrue(Modifier.isPrivate(field.getModifiers()));
     }
-  }
 
-  public void testWriteonlyBackingProp() throws Throwable
-  {
-    FromSourceFile f = new FromSourceFile();
-    f.writeonlyBackingProp = "c";
+    public void testReadonlyBackingProp() throws Throwable {
+        FromSourceFile f = new FromSourceFile();
+        assertEquals("readonlyBackingProp", f.readonlyBackingProp);
 
-    ReflectUtil.LiveFieldRef ref = ReflectUtil.field( f, "writeonlyBackingProp" );
-    assertNotNull( ref );
-    assertTrue( Modifier.isPrivate( ref.getField().getModifiers() ) );
-    assertEquals( "c", ref.get() );
+        Field field = FromSourceFile.class.getDeclaredField("readonlyBackingProp");
+        assertNotNull(field);
+        assertTrue(Modifier.isPrivate(field.getModifiers()));
 
-    try
-    {
-      FromSourceFile.class.getMethod( "getWriteonlyBackingProp" );
-      fail( "method should not exist" );
+        try {
+            FromSourceFile.class.getMethod("setReadonlyBackingProp", String.class);
+            fail("method should not exist");
+        } catch (NoSuchMethodException ignore) {
+        }
     }
-    catch( NoSuchMethodException ignore )
-    {
+
+    public void testWriteonlyBackingProp() throws Throwable {
+        FromSourceFile f = new FromSourceFile();
+        f.writeonlyBackingProp = "c";
+
+        ReflectUtil.LiveFieldRef ref = ReflectUtil.field(f, "writeonlyBackingProp");
+        assertNotNull(ref);
+        assertTrue(Modifier.isPrivate(ref.getField().getModifiers()));
+        assertEquals("c", ref.get());
+
+        try {
+            FromSourceFile.class.getMethod("getWriteonlyBackingProp");
+            fail("method should not exist");
+        } catch (NoSuchMethodException ignore) {
+        }
     }
-  }
 
-  public void testStaticNonBacking() throws Throwable
-  {
-    // field should not exist
-    ReflectUtil.FieldRef staticnNonbackingProp = ReflectUtil.field( FromSourceFile.class, "staticNonbackingProp" );
-    assertNull( staticnNonbackingProp );
+    public void testStaticNonBacking() throws Throwable {
+        // field should not exist
+        ReflectUtil.FieldRef staticnNonbackingProp = ReflectUtil.field(FromSourceFile.class, "staticNonbackingProp");
+        assertNull(staticnNonbackingProp);
 
-    // nonbacking field works
-    assertEquals( 8, FromSourceFile.staticNonbackingProp );
-    FromSourceFile.staticNonbackingProp = 9;
-    assertEquals( 9, FromSourceFile.staticNonbackingProp );
-  }
+        // nonbacking field works
+        assertEquals(8, FromSourceFile.staticNonbackingProp);
+        FromSourceFile.staticNonbackingProp = 9;
+        assertEquals(9, FromSourceFile.staticNonbackingProp);
+    }
 
-  public void testPropWithInnerClass()
-  {
-    FromSourceFile fromSourceFile = new FromSourceFile();
-    FromSourceFile.MyInnerEnum muhEnum = fromSourceFile.myInnerEnum;
-  }
+    public void testPropWithInnerClass() {
+        FromSourceFile fromSourceFile = new FromSourceFile();
+        FromSourceFile.MyInnerEnum muhEnum = fromSourceFile.myInnerEnum;
+    }
 
-  public void testUseOwnPropsInDefaultMethod() {
-    SomeInterfaceImpl delme = new SomeInterfaceImpl();
-    assertEquals( 8, delme.useProps() );
-  }
-  class SomeInterfaceImpl implements ISomeInterface {
-    @override @var int varFoo = 2;
-    @override @val int foo = 1;
-  }
+    public void testUseOwnPropsInDefaultMethod() {
+        SomeInterfaceImpl delme = new SomeInterfaceImpl();
+        assertEquals(8, delme.useProps());
+    }
+
+    class SomeInterfaceImpl implements ISomeInterface {
+        @override
+        @var
+        int varFoo = 2;
+        @override
+        @val
+        int foo = 1;
+    }
 }

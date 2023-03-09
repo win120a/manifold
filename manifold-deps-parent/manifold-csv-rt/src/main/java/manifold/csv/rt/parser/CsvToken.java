@@ -16,104 +16,86 @@
 
 package manifold.csv.rt.parser;
 
-public class CsvToken
-{
-  enum Type {Quoted, NotQuoted}
+public class CsvToken {
+    enum Type {Quoted, NotQuoted}
 
-  private final Type _type;
-  private final String _value;
-  private final int _offset;
-  private final int _line;
-  private final int _tokenLength;
-  private final int _separatorPos;
-  private final char _separatorChar;
+    private final Type _type;
+    private final String _value;
+    private final int _offset;
+    private final int _line;
+    private final int _tokenLength;
+    private final int _separatorPos;
+    private final char _separatorChar;
 
-  public CsvToken( Type type, String value, int line, int offset, int length, int separatorPos, char separatorChar )
-  {
-    _type = type;
-    _value = value;
-    _line = line;
-    _offset = offset;
-    _tokenLength = length;
-    _separatorPos = separatorPos;
-    _separatorChar = separatorChar;
-    verifyQuotes();
-    verifyLength();
-  }
-
-  private void verifyLength()
-  {
-    if( getTokenLength() < _value.length() )
-    {
-      throw new IllegalStateException( "Token length < value length" );
+    public CsvToken(Type type, String value, int line, int offset, int length, int separatorPos, char separatorChar) {
+        _type = type;
+        _value = value;
+        _line = line;
+        _offset = offset;
+        _tokenLength = length;
+        _separatorPos = separatorPos;
+        _separatorChar = separatorChar;
+        verifyQuotes();
+        verifyLength();
     }
-  }
 
-  private void verifyQuotes()
-  {
-    if( getType() == Type.Quoted )
-    {
-      if( _value.charAt( 0 ) != '"' || _value.charAt( _value.length()-1 ) != '"' )
-      {
-        throw new IllegalStateException( "Quoted value missing quote: " + _value );
-      }
+    private void verifyLength() {
+        if (getTokenLength() < _value.length()) {
+            throw new IllegalStateException("Token length < value length");
+        }
     }
-  }
 
-  public Type getType()
-  {
-    return _type;
-  }
+    private void verifyQuotes() {
+        if (getType() == Type.Quoted) {
+            if (_value.charAt(0) != '"' || _value.charAt(_value.length() - 1) != '"') {
+                throw new IllegalStateException("Quoted value missing quote: " + _value);
+            }
+        }
+    }
 
-  public String getValue()
-  {
-    return _value;
-  }
+    public Type getType() {
+        return _type;
+    }
 
-  public String getData()
-  {
-    return getType() == Type.Quoted
-           ? getValue().substring( 1, getValue().length() - 1 )
-           : getValue();
-  }
+    public String getValue() {
+        return _value;
+    }
 
-  public int getOffset()
-  {
-    return _offset;
-  }
+    public String getData() {
+        return getType() == Type.Quoted
+                ? getValue().substring(1, getValue().length() - 1)
+                : getValue();
+    }
 
-  public int getTokenLength()
-  {
-    return _tokenLength;
-  }
+    public int getOffset() {
+        return _offset;
+    }
 
-  public int getLine()
-  {
-    return _line;
-  }
+    public int getTokenLength() {
+        return _tokenLength;
+    }
 
-  public int getSeparatorPos()
-  {
-    return _separatorPos;
-  }
+    public int getLine() {
+        return _line;
+    }
 
-  public char getSeparatorChar()
-  {
-    return _separatorChar;
-  }
+    public int getSeparatorPos() {
+        return _separatorPos;
+    }
 
-  public boolean isEmpty()
-  {
-    return getData().isEmpty();
-  }
+    public char getSeparatorChar() {
+        return _separatorChar;
+    }
 
-  public boolean isLastInRecord()
-  {
-    return _separatorChar == '\n' || _separatorChar == '\0';
-  }
+    public boolean isEmpty() {
+        return getData().isEmpty();
+    }
 
-  public boolean isEof()
-  {
-    return _separatorChar == '\0';
-  }
+    public boolean isLastInRecord() {
+        return _separatorChar == '\n' || _separatorChar == '\0';
+    }
+
+    public boolean isEof() {
+        return _separatorChar == '\0';
+    }
 }

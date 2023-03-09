@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *   
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -25,383 +25,380 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 #define TRUE
-#define FOO
+        #define FOO
 
 public class ExpressionTest {
-  @Test
-  public void testBaseline() {
-    boolean success = false;
+    @Test
+    public void testBaseline() {
+        boolean success = false;
 
     #if FALSE
-    fail();
+        fail();
     #endif
 
      #if TRUE
-      success = true;
+                success = true;
      #endif
-    assertTrueAndFlip(success);
-  }
+        assertTrueAndFlip(success);
+    }
 
-  public void testAnd() {
-    boolean success = false;
+    public void testAnd() {
+        boolean success = false;
 
     #if FALSE
-    fail();
+        fail();
     #endif
 
      #if TRUE
-      success = true;
+                success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE && TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE && TRUE && TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
     #if TRUE && FALSE
-    fail();
+        fail();
     #endif
 
     #if FALSE && TRUE
-    fail();
+        fail();
     #endif
 
     #if TRUE && FALSE && TRUE
-    fail();
+        fail();
     #endif
 
     #if FALSE && TRUE && FALSE
-    fail();
+        fail();
     #endif
 
     #if FALSE && FALSE && FALSE
-    fail();
+        fail();
     #endif
-  }
+    }
 
-  public void testOr() {
-    boolean success = false;
+    public void testOr() {
+        boolean success = false;
 
      #if TRUE || TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE || TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE || FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
     #if FALSE || FALSE
-    fail();
+        fail();
     #endif
 
      #if TRUE || FALSE || TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE || TRUE || FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
     #if FALSE || FALSE || FALSE
-    fail();
+        fail();
     #endif
-  }
+    }
 
-  @Test
-  public void testPrecedence() {
-    boolean success = false;
+    @Test
+    public void testPrecedence() {
+        boolean success = false;
 
      #if TRUE || TRUE && FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE || FALSE && TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE || FALSE && FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE || TRUE && FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE || FALSE && TRUE
-    fail();
+        fail();
      #endif
 
      #if FALSE && FALSE || FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE && TRUE || FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE && TRUE || FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE && FALSE || TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE && (FALSE || TRUE)
-    fail();
+        fail();
      #endif
-  }
+    }
 
-  @Test
-  public void testNot() {
-    boolean success = false;
+    @Test
+    public void testNot() {
+        boolean success = false;
 
      #if !FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if !(FALSE)
-      success = true;
+                success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if !FALSE && TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if !!FALSE
-    fail();
+        fail();
      #endif
 
      #if !TRUE
-    fail();
+        fail();
      #endif
 
      #if !(TRUE)
-      fail();
+                fail();
      #endif
 
      #if !!TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
-  }
+                success = assertTrueAndFlip(success);
+    }
 
-  @Test
-  public void testEquality() {
-    boolean success = false;
+    @Test
+    public void testEquality() {
+        boolean success = false;
 
      #if FALSE == FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE == TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE == FOO
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE == FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE == TRUE
-    fail();
+        fail();
      #endif
 
      #if FALSE == FOO
-    fail();
+        fail();
      #endif
 
      #if FALSE == FALSE || FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE || FALSE == FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE == FALSE && TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE == TRUE || TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if TRUE || TRUE == FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
-     #if (TRUE || FALSE) == FALSE
-    fail();
+     #if (TRUE || FALSE) ==FALSE
+        fail();
      #endif
 
      #if TRUE || (FALSE == FALSE)
-    success = true;
+        success = true;
      #endif
-  }
+    }
 
-  @Test
-  public void testNotEquality() {
-    boolean success = false;
+    @Test
+    public void testNotEquality() {
+        boolean success = false;
 
      #if FALSE != FALSE
-    fail();
+        fail();
      #endif
 
      #if TRUE != TRUE
-    fail();
+        fail();
      #endif
 
      #if TRUE != FOO
-    fail();
+        fail();
      #endif
 
      #if TRUE != FALSE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE != TRUE
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE != FOO
-    success = true;
+        success = true;
      #endif
-      success = assertTrueAndFlip(success);
+                success = assertTrueAndFlip(success);
 
      #if FALSE != FALSE || FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE || FALSE != FALSE
-    fail();
+        fail();
      #endif
 
      #if FALSE != FALSE && TRUE
-    fail();
+        fail();
      #endif
-  }
+    }
 
-  @Test
-  public void testStrings()
-  {
+    @Test
+    public void testStrings() {
     #if "abc" == "abc"
-      String abc = "abc";
+        String abc = "abc";
     #else
-      String abc = "xyz";
+        String abc = "xyz";
     #endif
-    assertEquals( "abc", abc );
+        assertEquals("abc", abc);
 
     #if "abc" != "abc"
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "xyz", abc );
+        assertEquals("xyz", abc);
 
     #if MY_PROP1 == "abc"
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "abc", abc );
+        assertEquals("abc", abc);
 
     #if MY_PROP1 == MY_PROP1
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "abc", abc );
+        assertEquals("abc", abc);
 
     #if MY_PROP1 != MY_PROP1
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "xyz", abc );
+        assertEquals("xyz", abc);
 
     #if MY_PROP1 == MY_PROP2
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "xyz", abc );
+        assertEquals("xyz", abc);
 
     #if MY_BUILD_PROP == ""
-      abc = "abc";
+        abc = "abc";
     #else
-      abc = "xyz";
+        abc = "xyz";
     #endif
-    assertEquals( "abc", abc );
-  }
+        assertEquals("abc", abc);
+    }
 
-  @Test
-  public void testRelationalExpr()
-  {
-    String abc = "bad";
-    #if year.old < year.current
-      abc = "good";
+    @Test
+    public void testRelationalExpr() {
+        String abc = "bad";
+    #if year.old<year.current
+                abc = "good";
     #endif
 
-    assertEquals( "good", abc );
+        assertEquals("good", abc);
 
     #if year.old <= year.current
-      abc = "good";
+        abc = "good";
     #endif
 
-    assertEquals( "good", abc );
+        assertEquals("good", abc);
 
     #if year.old > year.current
-      abc = "bad";
+        abc = "bad";
     #endif
 
-    assertEquals( "good", abc );
+        assertEquals("good", abc);
 
     #if year.old >= year.current
-      abc = "bad";
+        abc = "bad";
     #endif
 
-    assertEquals( "good", abc );
-  }
+        assertEquals("good", abc);
+    }
 
-  private boolean assertTrueAndFlip( boolean cond )
-  {
-    assertTrue( cond );
-    return false;
-  }
+    private boolean assertTrueAndFlip(boolean cond) {
+        assertTrue(cond);
+        return false;
+    }
 }

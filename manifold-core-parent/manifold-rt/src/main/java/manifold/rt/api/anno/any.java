@@ -23,6 +23,5 @@ import java.lang.annotation.RetentionPolicy;
  * Facilitates having an annotation parameter be any annotation type as opposed to a specific one.
  */
 @Retention(RetentionPolicy.SOURCE)
-public @interface any
-{
+public @interface any {
 }

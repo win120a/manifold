@@ -18,25 +18,24 @@ package manifold.xml.api;
 
 import java.util.Collections;
 import java.util.List;
+
 import manifold.api.host.IModule;
 import manifold.api.json.AbstractJsonTypeManifold;
 
 /**
+ *
  */
-public class XmlTypeManifold extends AbstractJsonTypeManifold<XmlModel>
-{
-  @SuppressWarnings("WeakerAccess")
-  public static final List<String> FILE_EXTENSION = Collections.singletonList( "xml" );
+public class XmlTypeManifold extends AbstractJsonTypeManifold<XmlModel> {
+    @SuppressWarnings("WeakerAccess")
+    public static final List<String> FILE_EXTENSION = Collections.singletonList("xml");
 
-  @Override
-  public void init( IModule module )
-  {
-    init( module, ( fqn, files ) -> new XmlModel( getModule().getHost(), fqn, files ) );
-  }
+    @Override
+    public void init(IModule module) {
+        init(module, (fqn, files) -> new XmlModel(getModule().getHost(), fqn, files));
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return FILE_EXTENSION.contains( fileExtension );
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return FILE_EXTENSION.contains(fileExtension);
+    }
 }

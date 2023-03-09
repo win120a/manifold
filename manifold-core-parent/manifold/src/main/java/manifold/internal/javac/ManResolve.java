@@ -35,220 +35,191 @@ import com.sun.tools.javac.jvm.Gen;
 import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
+
 import javax.tools.JavaFileObject;
 
 import manifold.util.JreUtil;
 import manifold.util.ReflectUtil;
 import manifold.util.concurrent.LocklessLazyVar;
 
-public class ManResolve extends Resolve
-{
-  private static final String RESOLVE_FIELD = "rs";
+public class ManResolve extends Resolve {
+    private static final String RESOLVE_FIELD = "rs";
 
-  private static final LocklessLazyVar<Class<?>> EXTENSION_TRANSFORMER = LocklessLazyVar.make(
-    () -> ReflectUtil.type( "manifold.ext.ExtensionTransformer" )
-  );
+    private static final LocklessLazyVar<Class<?>> EXTENSION_TRANSFORMER = LocklessLazyVar.make(
+            () -> ReflectUtil.type("manifold.ext.ExtensionTransformer")
+    );
 
-  private final Attr _attr;
+    private final Attr _attr;
 
-  public static Resolve instance( Context ctx )
-  {
-    Resolve resolve = ctx.get( resolveKey );
-    if( !(resolve instanceof ManResolve) )
-    {
-      ctx.put( resolveKey, (Resolve)null );
-      resolve = new ManResolve( ctx );
+    public static Resolve instance(Context ctx) {
+        Resolve resolve = ctx.get(resolveKey);
+        if (!(resolve instanceof ManResolve)) {
+            ctx.put(resolveKey, (Resolve) null);
+            resolve = new ManResolve(ctx);
+        }
+
+        return resolve;
     }
 
-    return resolve;
-  }
+    @SuppressWarnings("ConstantConditions")
+    private ManResolve(Context context) {
+        super(context);
+        _attr = Attr.instance(context);
+        ReflectUtil.field(this, "log").set(ReflectUtil.field(_attr, "log").get());
 
-  @SuppressWarnings("ConstantConditions")
-  private ManResolve( Context context )
-  {
-    super( context );
-    _attr = Attr.instance( context );
-    ReflectUtil.field( this, "log" ).set( ReflectUtil.field( _attr, "log" ).get() );
-
-    if( JreUtil.isJava8() )
-    {
-      reassignEarlyHolders8( context );
-    }
-    else
-    {
-      reassignEarlyHolders( context );
-    }
-  }
-
-  private void reassignEarlyHolders8( Context context )
-  {
-    ReflectUtil.field( Attr.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( DeferredAttr.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Check.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Infer.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Flow.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Lower.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Gen.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Annotate.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( JavacTrees.instance( context ), "resolve" ).set( this );
-    ReflectUtil.field( TransTypes.instance( context ), "resolve" ).set( this );
-  }
-
-  private void reassignEarlyHolders( Context context )
-  {
-    ReflectUtil.field( _attr, RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( DeferredAttr.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Check.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Infer.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Flow.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( LambdaToMethod.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Lower.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field( Gen.instance( context ), RESOLVE_FIELD ).set( this );
-    ReflectUtil.field(
-      ReflectUtil.method(
-        ReflectUtil.type( "com.sun.tools.javac.jvm.StringConcat" ), "instance", Context.class )
-        .invokeStatic( context ), RESOLVE_FIELD )
-      .set( this );
-    ReflectUtil.field( JavacTrees.instance( context ), "resolve" ).set( this );
-    ReflectUtil.field( Annotate.instance( context ), "resolve" ).set( this );
-    ReflectUtil.field( TransTypes.instance( context ), "resolve" ).set( this );
-    ReflectUtil.field( JavacElements.instance( context ), "resolve" ).set( this );
-
-    if( JreUtil.isJava11orLater() )
-    {
-      // Allow @var to work with properties.
-      // Note, this is not as scary as it looks. Setting allowLocalVariableTypeInference to false only turns off
-      // unnecessary name checking so we can use @var annotation type, which should be allowed because `@` effectively
-      // escapes the name, so there really isn't any conflict with Java's 'var' construct. Just sayin'
-      ReflectUtil.field( this, "allowLocalVariableTypeInference" ).set( false );
-    }
-    else if( JreUtil.isJava17orLater() )
-    {
-      ReflectUtil.field( ReflectUtil.method( "com.sun.tools.javac.comp.TransPattern", "instance", Context.class )
-        .invokeStatic( context ), RESOLVE_FIELD ).set( this );
-    }
-  }
-
-  /**
-   * Allow augmented classes to access modules as if defined in both the extended class' module and
-   * the extension class' module.
-   */
-  @Override
-  public boolean isAccessible( Env<AttrContext> env, Symbol.TypeSymbol typeSymbol, boolean checkInner )
-  {
-    boolean accessible = super.isAccessible( env, typeSymbol, checkInner );
-    if( accessible )
-    {
-      return true;
+        if (JreUtil.isJava8()) {
+            reassignEarlyHolders8(context);
+        } else {
+            reassignEarlyHolders(context);
+        }
     }
 
-    if( isJailbreakOnType() )
-    {
-      // handle the case where the class itself is inaccessible:
-      //
-      // // the *type* must be @Jailbreak as well as the constructor
-      // com.foo.@Jailbreak PrivateClass privateThing = new com.foo.@Jailbreak PrivateClass();
-      // privateThing.privateMethod();
-      // ...
-      return true;
+    private void reassignEarlyHolders8(Context context) {
+        ReflectUtil.field(Attr.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(DeferredAttr.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Check.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Infer.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Flow.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Lower.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Gen.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Annotate.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(JavacTrees.instance(context), "resolve").set(this);
+        ReflectUtil.field(TransTypes.instance(context), "resolve").set(this);
     }
 
-    if( JreUtil.isJava8() )
-    {
-      return false;
+    private void reassignEarlyHolders(Context context) {
+        ReflectUtil.field(_attr, RESOLVE_FIELD).set(this);
+        ReflectUtil.field(DeferredAttr.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Check.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Infer.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Flow.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(LambdaToMethod.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Lower.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(Gen.instance(context), RESOLVE_FIELD).set(this);
+        ReflectUtil.field(
+                        ReflectUtil.method(
+                                        ReflectUtil.type("com.sun.tools.javac.jvm.StringConcat"), "instance", Context.class)
+                                .invokeStatic(context), RESOLVE_FIELD)
+                .set(this);
+        ReflectUtil.field(JavacTrees.instance(context), "resolve").set(this);
+        ReflectUtil.field(Annotate.instance(context), "resolve").set(this);
+        ReflectUtil.field(TransTypes.instance(context), "resolve").set(this);
+        ReflectUtil.field(JavacElements.instance(context), "resolve").set(this);
+
+        if (JreUtil.isJava11orLater()) {
+            // Allow @var to work with properties.
+            // Note, this is not as scary as it looks. Setting allowLocalVariableTypeInference to false only turns off
+            // unnecessary name checking so we can use @var annotation type, which should be allowed because `@` effectively
+            // escapes the name, so there really isn't any conflict with Java's 'var' construct. Just sayin'
+            ReflectUtil.field(this, "allowLocalVariableTypeInference").set(false);
+        } else if (JreUtil.isJava17orLater()) {
+            ReflectUtil.field(ReflectUtil.method("com.sun.tools.javac.comp.TransPattern", "instance", Context.class)
+                    .invokeStatic(context), RESOLVE_FIELD).set(this);
+        }
     }
 
+    /**
+     * Allow augmented classes to access modules as if defined in both the extended class' module and
+     * the extension class' module.
+     */
+    @Override
+    public boolean isAccessible(Env<AttrContext> env, Symbol.TypeSymbol typeSymbol, boolean checkInner) {
+        boolean accessible = super.isAccessible(env, typeSymbol, checkInner);
+        if (accessible) {
+            return true;
+        }
 
-    // Java 9 +
+        if (isJailbreakOnType()) {
+            // handle the case where the class itself is inaccessible:
+            //
+            // // the *type* must be @Jailbreak as well as the constructor
+            // com.foo.@Jailbreak PrivateClass privateThing = new com.foo.@Jailbreak PrivateClass();
+            // privateThing.privateMethod();
+            // ...
+            return true;
+        }
 
-    JavaFileObject sourceFile = env.toplevel.getSourceFile();
-    if( sourceFile instanceof GeneratedJavaStubFileObject )
-    {
-      // Allow augmented classes to access modules as if defined in both the extended class' module and
-      // the extension class' module.
-      accessible = true;
+        if (JreUtil.isJava8()) {
+            return false;
+        }
+
+
+        // Java 9 +
+
+        JavaFileObject sourceFile = env.toplevel.getSourceFile();
+        if (sourceFile instanceof GeneratedJavaStubFileObject) {
+            // Allow augmented classes to access modules as if defined in both the extended class' module and
+            // the extension class' module.
+            accessible = true;
+        }
+
+        return accessible;
     }
 
-    return accessible;
-  }
-
-  private boolean isJailbreakOnType()
-  {
-    JCTree.JCAnnotatedType annotatedType = ((ManAttr)_attr).peekAnnotatedType();
-    if( annotatedType != null )
-    {
-      return annotatedType.toString().contains( "@Jailbreak" );
-    }
-    return false;
-  }
-
-  /**
-   * Allow @Jailbreak to expose otherwise inaccessible features
-   */
-  @Override
-  public boolean isAccessible( Env<AttrContext> env, Type site, Symbol sym, boolean checkInner )
-  {
-    if( env.enclClass == null && JreUtil.isJava20orLater() )
-    {
-      // this check is here to fix an NPE caused by Valhalla build for java20, happens during ExtensionTransformer (env.enclClass is null)
-      // remove this if-stmt if/when valhalla fixes it
-      return sym.owner == site.tsym || sym.name == null || !"<init>".equals( sym.name.toString() );
+    private boolean isJailbreakOnType() {
+        JCTree.JCAnnotatedType annotatedType = ((ManAttr) _attr).peekAnnotatedType();
+        if (annotatedType != null) {
+            return annotatedType.toString().contains("@Jailbreak");
+        }
+        return false;
     }
 
-    boolean accessible = super.isAccessible( env, site, sym, checkInner );
-    if( accessible )
-    {
-      return true;
+    /**
+     * Allow @Jailbreak to expose otherwise inaccessible features
+     */
+    @Override
+    public boolean isAccessible(Env<AttrContext> env, Type site, Symbol sym, boolean checkInner) {
+        if (env.enclClass == null && JreUtil.isJava20orLater()) {
+            // this check is here to fix an NPE caused by Valhalla build for java20, happens during ExtensionTransformer (env.enclClass is null)
+            // remove this if-stmt if/when valhalla fixes it
+            return sym.owner == site.tsym || sym.name == null || !"<init>".equals(sym.name.toString());
+        }
+
+        boolean accessible = super.isAccessible(env, site, sym, checkInner);
+        if (accessible) {
+            return true;
+        }
+
+        if (isJailbreak(sym)) {
+            return true;
+        }
+        return isJailbreak(env.tree);
     }
 
-    if( isJailbreak( sym ) )
-    {
-      return true;
-    }
-    return isJailbreak( env.tree );
-  }
+    private boolean isJailbreak(Symbol sym) {
+        Class<?> extensionTransformer = EXTENSION_TRANSFORMER.get();
+        if (extensionTransformer == null) {
+            return false;
+        }
 
-  private boolean isJailbreak( Symbol sym )
-  {
-    Class<?> extensionTransformer = EXTENSION_TRANSFORMER.get();
-    if( extensionTransformer == null )
-    {
-      return false;
+        return (boolean) ReflectUtil.method(extensionTransformer, "isJailbreakSymbol", Symbol.class)
+                .invokeStatic(sym);
     }
 
-    return (boolean)ReflectUtil.method( extensionTransformer, "isJailbreakSymbol", Symbol.class )
-      .invokeStatic( sym );
-  }
+    private boolean isJailbreak(JCTree tree) {
+        if (!(tree instanceof JCTree.JCMethodInvocation) &&
+                !(tree instanceof JCTree.JCFieldAccess) &&
+                !(tree instanceof JCTree.JCAssign) &&
+                !(tree instanceof JCTree.JCNewClass) &&
+                !(tree instanceof JCTree.JCVariableDecl) &&
+                ((ManAttr) _attr).peekSelect() == null) {
+            return false;
+        }
 
-  private boolean isJailbreak( JCTree tree )
-  {
-    if( !(tree instanceof JCTree.JCMethodInvocation) &&
-        !(tree instanceof JCTree.JCFieldAccess) &&
-        !(tree instanceof JCTree.JCAssign) &&
-        !(tree instanceof JCTree.JCNewClass) &&
-        !(tree instanceof JCTree.JCVariableDecl) &&
-        ((ManAttr)_attr).peekSelect() == null )
-    {
-      return false;
-    }
+        Class<?> extensionTransformer = EXTENSION_TRANSFORMER.get();
+        if (extensionTransformer == null) {
+            return false;
+        }
 
-    Class<?> extensionTransformer = EXTENSION_TRANSFORMER.get();
-    if( extensionTransformer == null )
-    {
-      return false;
+        boolean isJailbreak = (boolean) ReflectUtil.method(extensionTransformer, "isJailbreakReceiver", JCTree.class)
+                .invokeStatic(tree);
+        if (!isJailbreak) {
+            JCTree.JCFieldAccess select = ((ManAttr) _attr).peekSelect();
+            if (select != null && select != tree) {
+                isJailbreak = (boolean) ReflectUtil.method(extensionTransformer, "isJailbreakReceiver", JCTree.JCFieldAccess.class)
+                        .invokeStatic(select);
+            }
+        }
+        return isJailbreak;
     }
-
-    boolean isJailbreak = (boolean)ReflectUtil.method( extensionTransformer, "isJailbreakReceiver", JCTree.class )
-      .invokeStatic( tree );
-    if( !isJailbreak )
-    {
-      JCTree.JCFieldAccess select = ((ManAttr)_attr).peekSelect();
-      if( select != null && select != tree )
-      {
-        isJailbreak = (boolean)ReflectUtil.method( extensionTransformer, "isJailbreakReceiver", JCTree.JCFieldAccess.class )
-          .invokeStatic( select );
-      }
-    }
-    return isJailbreak;
-  }
 }

@@ -22,6 +22,7 @@ import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,62 +37,47 @@ import manifold.rt.api.util.ManStringUtil;
  * <p/>{@code GqlScalars.transformFormatTypeResolvers().forEach(runtimeWiringBuilder::scalar);}
  */
 @SuppressWarnings("unused")
-public class GqlScalars
-{
-  public static Collection<GraphQLScalarType> transformFormatTypeResolvers()
-  {
-    Set<GraphQLScalarType> scalars = new HashSet<>();
-    for( ICoercionProvider formatCoercer: CoercionProviders.get() )
-    {
-      if( formatCoercer instanceof IJsonFormatTypeCoercer )
-      {
-        ((IJsonFormatTypeCoercer)formatCoercer).getFormats().forEach( ( format, type ) ->
-          scalars.add( GraphQLScalarType.newScalar()
-            .name( ManStringUtil.toPascalCase( format ) )
-            .description( "Support values of type: " + type.getTypeName() )
-            .coercing( makeCoercer( type, (IJsonFormatTypeCoercer)formatCoercer ) )
-            .build() ) );
-      }
+public class GqlScalars {
+    public static Collection<GraphQLScalarType> transformFormatTypeResolvers() {
+        Set<GraphQLScalarType> scalars = new HashSet<>();
+        for (ICoercionProvider formatCoercer : CoercionProviders.get()) {
+            if (formatCoercer instanceof IJsonFormatTypeCoercer) {
+                ((IJsonFormatTypeCoercer) formatCoercer).getFormats().forEach((format, type) ->
+                        scalars.add(GraphQLScalarType.newScalar()
+                                .name(ManStringUtil.toPascalCase(format))
+                                .description("Support values of type: " + type.getTypeName())
+                                .coercing(makeCoercer(type, (IJsonFormatTypeCoercer) formatCoercer))
+                                .build()));
+            }
+        }
+        return scalars;
     }
-    return scalars;
-  }
 
-  private static Coercing makeCoercer( Class<?> javaType, IJsonFormatTypeCoercer formatCoercer )
-  {
-    return new Coercing()
-    {
-      @Override
-      public Object parseValue( Object input ) throws CoercingParseValueException
-      {
-        try
-        {
-          return formatCoercer.coerce( input, javaType );
-        }
-        catch( Exception e )
-        {
-          throw new CoercingParseValueException( e );
-        }
-      }
+    private static Coercing makeCoercer(Class<?> javaType, IJsonFormatTypeCoercer formatCoercer) {
+        return new Coercing() {
+            @Override
+            public Object parseValue(Object input) throws CoercingParseValueException {
+                try {
+                    return formatCoercer.coerce(input, javaType);
+                } catch (Exception e) {
+                    throw new CoercingParseValueException(e);
+                }
+            }
 
-      @Override
-      public Object serialize( Object dataFetcherResult ) throws CoercingSerializeException
-      {
-        // The Gql interfaces know how to convert value
-        return dataFetcherResult;
-      }
+            @Override
+            public Object serialize(Object dataFetcherResult) throws CoercingSerializeException {
+                // The Gql interfaces know how to convert value
+                return dataFetcherResult;
+            }
 
-      @Override
-      public Object parseLiteral( Object input ) throws CoercingParseLiteralException
-      {
-        if( input instanceof StringValue && !((StringValue)input).isEqualTo( null ) )
-        {
-          return parseValue( ((StringValue)input).getValue() );
-        }
-        else
-        {
-          throw new CoercingParseLiteralException( "Empty 'StringValue' provided." );
-        }
-      }
-    };
-  }
+            @Override
+            public Object parseLiteral(Object input) throws CoercingParseLiteralException {
+                if (input instanceof StringValue && !((StringValue) input).isEqualTo(null)) {
+                    return parseValue(((StringValue) input).getValue());
+                } else {
+                    throw new CoercingParseLiteralException("Empty 'StringValue' provided.");
+                }
+            }
+        };
+    }
 }

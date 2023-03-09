@@ -19,6 +19,7 @@ package manifold.science.extensions.java.time.LocalDate;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 import manifold.science.measures.Time;
@@ -26,41 +27,36 @@ import manifold.science.measures.TimeUnit;
 import manifold.science.util.Rational;
 
 @Extension
-public class ManLocalDateExt
-{
-  public static LocalDate plus( @This LocalDate thiz, Time time )
-  {
-    if( time.getDisplayUnit().isDateBased() )
-    {
-      // Extract the Period from the date-based time and add that
-      Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
-      int wholeYears = years.wholePart().intValue();
-      Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
-      int wholeMonths = months.wholePart().intValue();
-      Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
-      int wholeDays = days.wholePart().intValue();
-      Period period = Period.of( wholeYears, wholeMonths, wholeDays );
-      return thiz + period;
+public class ManLocalDateExt {
+    public static LocalDate plus(@This LocalDate thiz, Time time) {
+        if (time.getDisplayUnit().isDateBased()) {
+            // Extract the Period from the date-based time and add that
+            Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
+            int wholeYears = years.wholePart().intValue();
+            Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
+            int wholeMonths = months.wholePart().intValue();
+            Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
+            int wholeDays = days.wholePart().intValue();
+            Period period = Period.of(wholeYears, wholeMonths, wholeDays);
+            return thiz + period;
+        }
+
+        return thiz + (TemporalAmount) time;
     }
 
-    return thiz + (TemporalAmount)time;
-  }
+    public static LocalDate minus(@This LocalDate thiz, Time time) {
+        if (time.getDisplayUnit().isDateBased()) {
+            // Extract the Period from the date-based time and add that
+            Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
+            int wholeYears = years.wholePart().intValue();
+            Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
+            int wholeMonths = months.wholePart().intValue();
+            Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
+            int wholeDays = days.wholePart().intValue();
+            Period period = Period.of(wholeYears, wholeMonths, wholeDays);
+            return thiz - period;
+        }
 
-  public static LocalDate minus( @This LocalDate thiz, Time time )
-  {
-    if( time.getDisplayUnit().isDateBased() )
-    {
-      // Extract the Period from the date-based time and add that
-      Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
-      int wholeYears = years.wholePart().intValue();
-      Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
-      int wholeMonths = months.wholePart().intValue();
-      Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
-      int wholeDays = days.wholePart().intValue();
-      Period period = Period.of( wholeYears, wholeMonths, wholeDays );
-      return thiz - period;
+        return thiz - (TemporalAmount) time;
     }
-
-    return thiz - (TemporalAmount)time;
-  }
 }

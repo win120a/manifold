@@ -17,18 +17,16 @@
 package manifold.preprocessor;
 
 #if NOT_DEFINED
-public class OptionalClass extends DoesNotExist
-{
-  public String bar()
-  {
-  }
+
+public class OptionalClass extends DoesNotExist {
+    public String bar() {
+    }
 }
 #else
-public class OptionalClass
-{
-  public String foo()
-  {
-    return "hi";
-  }
+
+public class OptionalClass {
+    public String foo() {
+        return "hi";
+    }
 }
 #endif

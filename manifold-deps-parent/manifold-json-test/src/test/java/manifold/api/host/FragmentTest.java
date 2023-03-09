@@ -21,16 +21,14 @@ import junit.framework.TestCase;
 import abc.Person;
 
 /**
+ *
  */
-public class FragmentTest extends TestCase
-{
-  public void testFromSource()
-  {
-    assertEquals( 39, (int)Person.fromSource().getAge() );
-  }
+public class FragmentTest extends TestCase {
+    public void testFromSource() {
+        assertEquals(39, (int) Person.fromSource().getAge());
+    }
 
-  public void testFragmentFromSource()
-  {
+    public void testFragmentFromSource() {
     /*[>MyObject.json<]
     {
       "name": "Scott",
@@ -40,10 +38,10 @@ public class FragmentTest extends TestCase
       }
     }
     */
-    MyObject sample = MyObject.fromSource();
-    assertEquals( "Scott", sample.getName() );
-    MyObject.location location = sample.getLocation();
-    assertEquals( "fubar", location.getPlanet() );
-    assertEquals( 123456, (int)location.getCoordinates() );
-  }
+        MyObject sample = MyObject.fromSource();
+        assertEquals("Scott", sample.getName());
+        MyObject.location location = sample.getLocation();
+        assertEquals("fubar", location.getPlanet());
+        assertEquals(123456, (int) location.getCoordinates());
+    }
 }

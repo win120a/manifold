@@ -25,10 +25,9 @@ import java.lang.annotation.RetentionPolicy;
  * in your code. It is important to preserve this information for use with IDE tooling.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ActualName
-{
-  /**
-   * @return The actual name as originally specified in the system of record
-   */
-  String value();
+public @interface ActualName {
+    /**
+     * @return The actual name as originally specified in the system of record
+     */
+    String value();
 }

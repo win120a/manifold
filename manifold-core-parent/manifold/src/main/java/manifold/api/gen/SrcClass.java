@@ -19,26 +19,23 @@ package manifold.api.gen;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.host.IModule;
 
 /**
  *
  */
-public class SrcClass extends AbstractSrcClass<SrcClass>
-{
-  public SrcClass( String fqn, Kind kind )
-  {
-    super( fqn, kind );
-  }
+public class SrcClass extends AbstractSrcClass<SrcClass> {
+    public SrcClass(String fqn, Kind kind) {
+        super(fqn, kind);
+    }
 
-  public SrcClass( String fqn, AbstractSrcClass enclosingClass, Kind kind )
-  {
-    super( fqn, enclosingClass, kind );
-  }
+    public SrcClass(String fqn, AbstractSrcClass enclosingClass, Kind kind) {
+        super(fqn, enclosingClass, kind);
+    }
 
 
-  public SrcClass( String fqn, Kind kind, JavaFileManager.Location location, IModule module, DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    super( fqn, null, kind, location, module, errorHandler );
-  }
+    public SrcClass(String fqn, Kind kind, JavaFileManager.Location location, IModule module, DiagnosticListener<JavaFileObject> errorHandler) {
+        super(fqn, null, kind, location, module, errorHandler);
+    }
 }

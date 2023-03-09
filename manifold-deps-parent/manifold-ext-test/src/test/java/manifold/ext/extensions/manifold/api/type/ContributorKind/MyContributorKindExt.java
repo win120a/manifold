@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyContributorKindExt
-{
-  public static String hiContributorKind( @This ContributorKind thiz )
-  {
-    return "contributorKind";
-  }
+public class MyContributorKindExt {
+    public static String hiContributorKind(@This ContributorKind thiz) {
+        return "contributorKind";
+    }
 }

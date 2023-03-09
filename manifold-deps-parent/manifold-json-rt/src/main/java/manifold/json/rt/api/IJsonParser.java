@@ -21,25 +21,24 @@ import manifold.json.rt.parser.DefaultParser;
 import manifold.rt.api.ScriptException;
 
 /**
+ *
  */
-public interface IJsonParser
-{
-  /**
-   * Parse Json text as a standard manifold.rt.api.Bindings object.
-   *
-   * @param jsonText Any Json text, can be an object, a list, or simple value.
-   * @param withBigNumbers Parse decimal numbers as BigDecimals and integers and BigIntegers,
-   *                       otherwise they are Double and Integer.
-   * @param withTokens Store tokens for Json name value pairs.  The token contains positional
-   *                   information for tooling e.g., to facilitate navigation in an IDE.  This
-   *                   parameter should be false for normal use-cases.
-   * @return A JSON value (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   * @throws ScriptException for parse errors
-   */
-  Object parseJson( String jsonText, boolean withBigNumbers, boolean withTokens ) throws ScriptException;
+public interface IJsonParser {
+    /**
+     * Parse Json text as a standard manifold.rt.api.Bindings object.
+     *
+     * @param jsonText       Any Json text, can be an object, a list, or simple value.
+     * @param withBigNumbers Parse decimal numbers as BigDecimals and integers and BigIntegers,
+     *                       otherwise they are Double and Integer.
+     * @param withTokens     Store tokens for Json name value pairs.  The token contains positional
+     *                       information for tooling e.g., to facilitate navigation in an IDE.  This
+     *                       parameter should be false for normal use-cases.
+     * @return A JSON value (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     * @throws ScriptException for parse errors
+     */
+    Object parseJson(String jsonText, boolean withBigNumbers, boolean withTokens) throws ScriptException;
 
-  static IJsonParser getDefaultParser()
-  {
-    return DefaultParser.instance();
-  }
+    static IJsonParser getDefaultParser() {
+        return DefaultParser.instance();
+    }
 }

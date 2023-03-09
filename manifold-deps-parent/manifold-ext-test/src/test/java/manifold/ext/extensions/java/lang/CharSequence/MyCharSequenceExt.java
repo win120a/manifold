@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Self;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyCharSequenceExt
-{
-  public static @Self CharSequence something( @This CharSequence foo, @Self CharSequence arg )
-  {
-    return foo;
-  }
+public class MyCharSequenceExt {
+    public static @Self CharSequence something(@This CharSequence foo, @Self CharSequence arg) {
+        return foo;
+    }
 }

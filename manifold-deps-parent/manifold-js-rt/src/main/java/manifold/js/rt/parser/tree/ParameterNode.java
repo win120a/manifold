@@ -19,39 +19,33 @@ package manifold.js.rt.parser.tree;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ParameterNode extends Node
-{
-  private ArrayList<String> _params;
-  private ArrayList<String> _types;
+public class ParameterNode extends Node {
+    private ArrayList<String> _params;
+    private ArrayList<String> _types;
 
-  public ParameterNode()
-  {
-    super( null );
-    _params = new ArrayList<>();
-    _types = new ArrayList<>();
-  }
+    public ParameterNode() {
+        super(null);
+        _params = new ArrayList<>();
+        _types = new ArrayList<>();
+    }
 
-  //Takes in parameter and type in string form
-  public void addParam( String param, String type )
-  {
-    _params.add( param );
-    String paramType = (type != null && !type.isEmpty()) ? type : "java.lang.Object";
-    _types.add( paramType );
-  }
+    //Takes in parameter and type in string form
+    public void addParam(String param, String type) {
+        _params.add(param);
+        String paramType = (type != null && !type.isEmpty()) ? type : "java.lang.Object";
+        _types.add(paramType);
+    }
 
-  public ArrayList<String> getTypes()
-  {
-    return _types;
-  }
+    public ArrayList<String> getTypes() {
+        return _types;
+    }
 
-  public ArrayList<String> getParams()
-  {
-    return _params;
-  }
+    public ArrayList<String> getParams() {
+        return _params;
+    }
 
-  @Override
-  public String genCode()
-  {
-    return _params.stream().collect( Collectors.joining( "," ) );
-  }
+    @Override
+    public String genCode() {
+        return _params.stream().collect(Collectors.joining(","));
+    }
 }

@@ -21,12 +21,10 @@ import junit.framework.TestCase;
 import java.util.Arrays;
 import java.util.List;
 
-public class StaticVarArgsObjectExtMethodTest extends TestCase
-{
-  public void testStaticVarArgsObjectExtMethod()
-  {
-    // from MyObjectExt
-    List<Integer> result = myStaticVarArgsMethod( 1, 2, 3, 4 );
-    assertEquals( Arrays.asList( 1, 2, 3, 4 ), result );
-  }
+public class StaticVarArgsObjectExtMethodTest extends TestCase {
+    public void testStaticVarArgsObjectExtMethod() {
+        // from MyObjectExt
+        List<Integer> result = myStaticVarArgsMethod(1, 2, 3, 4);
+        assertEquals(Arrays.asList(1, 2, 3, 4), result);
+    }
 }

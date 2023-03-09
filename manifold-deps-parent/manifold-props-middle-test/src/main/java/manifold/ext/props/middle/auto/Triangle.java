@@ -16,26 +16,22 @@
 
 package manifold.ext.props.middle.auto;
 
-public class Triangle extends Shape
-{
-  double area; // handle field having same name as inferred property (and property still working)
+public class Triangle extends Shape {
+    double area; // handle field having same name as inferred property (and property still working)
 
-  public Triangle( double s1, double s2, double s3 )
-  {
-    super( "Triangle", s1, s2, s3 );
-  }
+    public Triangle(double s1, double s2, double s3) {
+        super("Triangle", s1, s2, s3);
+    }
 
-  public double area()
-  {
-    area = 5; // must be direct field assign
-    return area; // must be direct field access
-  }
+    public double area() {
+        area = 5; // must be direct field assign
+        return area; // must be direct field access
+    }
 
-  @Override
-  public double getArea()
-  {
-    double[] sides = getSides();
-    double s = (sides[0] + sides[1] + sides[2]) / 2.0;
-    return Math.sqrt( s * (s - sides[0]) * (s - sides[1]) * (s - sides[2]) );
-  }
+    @Override
+    public double getArea() {
+        double[] sides = getSides();
+        double s = (sides[0] + sides[1] + sides[2]) / 2.0;
+        return Math.sqrt(s * (s - sides[0]) * (s - sides[1]) * (s - sides[2]));
+    }
 }

@@ -21,23 +21,19 @@ package manifold.api.type;
  *
  * @param <M> The model you derive backing production of source code.
  */
-public abstract class JavaTypeManifold<M extends IModel> extends ResourceFileTypeManifold<M>
-{
-  @Override
-  public ISourceKind getSourceKind()
-  {
-    return ISourceKind.Java;
-  }
+public abstract class JavaTypeManifold<M extends IModel> extends ResourceFileTypeManifold<M> {
+    @Override
+    public ISourceKind getSourceKind() {
+        return ISourceKind.Java;
+    }
 
-  @Override
-  public ContributorKind getContributorKind()
-  {
-    return ContributorKind.Primary;
-  }
+    @Override
+    public ContributorKind getContributorKind() {
+        return ContributorKind.Primary;
+    }
 
-  @Override
-  public ClassType getClassType( String fqn )
-  {
-    return ClassType.JavaClass;
-  }
+    @Override
+    public ClassType getClassType(String fqn) {
+        return ClassType.JavaClass;
+    }
 }

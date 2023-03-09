@@ -20,20 +20,19 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class ManStringBuilderExt
-{
-  /**
-   * Implements the index operator for assignment such as {@code text[i] = 'x'}
-   * <p>
-   * The character at the specified {@code index} is set to {@code ch}.
-   * <p>
-   * The index argument must be greater than or equal to {@code 0}, and less than the length of this string.
-   * @param      index   the index of the character to modify.
-   * @param      ch      the new character.
-   * @throws     IndexOutOfBoundsException  if {@code index} is negative or greater than or equal to {@code length()}.
-   */
-  public static void set( @This StringBuilder thiz, int index, char ch )
-  {
-    thiz.setCharAt( index, ch );
-  }
+public class ManStringBuilderExt {
+    /**
+     * Implements the index operator for assignment such as {@code text[i] = 'x'}
+     * <p>
+     * The character at the specified {@code index} is set to {@code ch}.
+     * <p>
+     * The index argument must be greater than or equal to {@code 0}, and less than the length of this string.
+     *
+     * @param index the index of the character to modify.
+     * @param ch    the new character.
+     * @throws IndexOutOfBoundsException if {@code index} is negative or greater than or equal to {@code length()}.
+     */
+    public static void set(@This StringBuilder thiz, int index, char ch) {
+        thiz.setCharAt(index, ch);
+    }
 }

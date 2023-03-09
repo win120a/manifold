@@ -23,25 +23,24 @@ import manifold.preprocessor.definitions.Definitions;
  * Implement this service provider interface to augment the preprocessor's symbol set with custom symbols.
  * See library, manifold-preprocessor-android-syms, for an example.
  */
-public interface SymbolProvider
-{
-  /**
-   * Returns true if the symbol exists in this provider.
-   *
-   * @param rootDefinitions The Definitions
-   * @param sourceFile The path to the source file in context.
-   * @param def The name of the preprocessor definition.
-   * @return true iff the symbol exists in this provider.
-   */
-  boolean isDefined( Definitions rootDefinitions, IFile sourceFile, String def );
+public interface SymbolProvider {
+    /**
+     * Returns true if the symbol exists in this provider.
+     *
+     * @param rootDefinitions The Definitions
+     * @param sourceFile      The path to the source file in context.
+     * @param def             The name of the preprocessor definition.
+     * @return true iff the symbol exists in this provider.
+     */
+    boolean isDefined(Definitions rootDefinitions, IFile sourceFile, String def);
 
-  /**
-   * Returns the string representation of the value of {@code def} if it exists in this provider.
-   *
-   * @param rootDefinitions
-   * @param sourceFile The path to the source file in context.
-   * @param def The name of the preprocessor definition.
-   * @return The string representation of the value of {@code def} or null if it does not exist in thie provider.
-   */
-  String getValue( Definitions rootDefinitions, IFile sourceFile, String def );
+    /**
+     * Returns the string representation of the value of {@code def} if it exists in this provider.
+     *
+     * @param rootDefinitions
+     * @param sourceFile      The path to the source file in context.
+     * @param def             The name of the preprocessor definition.
+     * @return The string representation of the value of {@code def} or null if it does not exist in thie provider.
+     */
+    String getValue(Definitions rootDefinitions, IFile sourceFile, String def);
 }

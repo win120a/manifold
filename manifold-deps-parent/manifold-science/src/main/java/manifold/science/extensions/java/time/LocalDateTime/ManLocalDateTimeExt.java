@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 import manifold.science.measures.Time;
@@ -27,63 +28,56 @@ import manifold.science.measures.TimeUnit;
 import manifold.science.util.Rational;
 
 @Extension
-public class ManLocalDateTimeExt
-{
-  public static LocalDateTime plus( @This LocalDateTime thiz, Time time )
-  {
-    if( time.getDisplayUnit().isDateBased() )
-    {
-      // Extract the Period from the date-based time and add that
-      Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
-      int wholeYears = years.wholePart().intValue();
-      Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
-      int wholeMonths = months.wholePart().intValue();
-      Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
-      int wholeDays = days.wholePart().intValue();
-      Period period = Period.of( wholeYears, wholeMonths, wholeDays );
-      LocalDateTime newDate = thiz + period;
+public class ManLocalDateTimeExt {
+    public static LocalDateTime plus(@This LocalDateTime thiz, Time time) {
+        if (time.getDisplayUnit().isDateBased()) {
+            // Extract the Period from the date-based time and add that
+            Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
+            int wholeYears = years.wholePart().intValue();
+            Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
+            int wholeMonths = months.wholePart().intValue();
+            Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
+            int wholeDays = days.wholePart().intValue();
+            Period period = Period.of(wholeYears, wholeMonths, wholeDays);
+            LocalDateTime newDate = thiz + period;
 
-      // Now add the remaining fractional day part, if non-zero, as a Duration (added to the date-time's time component)
-      Rational seconds = days.fractionPart() * TimeUnit.Day.getSeconds();
-      if( seconds != Rational.ZERO )
-      {
-        long wholeSeconds = seconds.wholePart().longValue();
-        long nanos = (seconds.fractionPart() * 1e+9).longValue();
-        newDate = newDate + Duration.ofSeconds( wholeSeconds, nanos );
-      }
+            // Now add the remaining fractional day part, if non-zero, as a Duration (added to the date-time's time component)
+            Rational seconds = days.fractionPart() * TimeUnit.Day.getSeconds();
+            if (seconds != Rational.ZERO) {
+                long wholeSeconds = seconds.wholePart().longValue();
+                long nanos = (seconds.fractionPart() * 1e+9).longValue();
+                newDate = newDate + Duration.ofSeconds(wholeSeconds, nanos);
+            }
 
-      return newDate;
+            return newDate;
+        }
+
+        return thiz + (TemporalAmount) time;
     }
 
-    return thiz + (TemporalAmount)time;
-  }
+    public static LocalDateTime minus(@This LocalDateTime thiz, Time time) {
+        if (time.getDisplayUnit().isDateBased()) {
+            // Extract the Period from the date-based time and add that
+            Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
+            int wholeYears = years.wholePart().intValue();
+            Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
+            int wholeMonths = months.wholePart().intValue();
+            Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
+            int wholeDays = days.wholePart().intValue();
+            Period period = Period.of(wholeYears, wholeMonths, wholeDays);
+            LocalDateTime newDate = thiz - period;
 
-  public static LocalDateTime minus( @This LocalDateTime thiz, Time time )
-  {
-    if( time.getDisplayUnit().isDateBased() )
-    {
-      // Extract the Period from the date-based time and add that
-      Rational years = time.toBaseNumber() / TimeUnit.Year.getSeconds();
-      int wholeYears = years.wholePart().intValue();
-      Rational months = years.fractionPart() * TimeUnit.Year.getSeconds() / TimeUnit.Month.getSeconds();
-      int wholeMonths = months.wholePart().intValue();
-      Rational days = months.fractionPart() * TimeUnit.Month.getSeconds() / TimeUnit.Day.getSeconds();
-      int wholeDays = days.wholePart().intValue();
-      Period period = Period.of( wholeYears, wholeMonths, wholeDays );
-      LocalDateTime newDate = thiz - period;
+            // Now add the remaining fractional day part, if non-zero, as a Duration (added to the date-time's time component)
+            Rational seconds = days.fractionPart() * TimeUnit.Day.getSeconds();
+            if (seconds != Rational.ZERO) {
+                long wholeSeconds = seconds.wholePart().longValue();
+                long nanos = (seconds.fractionPart() * 1e+9).longValue();
+                newDate = newDate - Duration.ofSeconds(wholeSeconds, nanos);
+            }
 
-      // Now add the remaining fractional day part, if non-zero, as a Duration (added to the date-time's time component)
-      Rational seconds = days.fractionPart() * TimeUnit.Day.getSeconds();
-      if( seconds != Rational.ZERO )
-      {
-        long wholeSeconds = seconds.wholePart().longValue();
-        long nanos = (seconds.fractionPart() * 1e+9).longValue();
-        newDate = newDate - Duration.ofSeconds( wholeSeconds, nanos );
-      }
+            return newDate;
+        }
 
-      return newDate;
+        return thiz - (TemporalAmount) time;
     }
-
-    return thiz - (TemporalAmount)time;
-  }
 }

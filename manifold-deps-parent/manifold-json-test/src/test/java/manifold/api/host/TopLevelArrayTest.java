@@ -20,63 +20,55 @@ import junit.framework.TestCase;
 
 import abc.TopLevelArray;
 
-public class TopLevelArrayTest extends TestCase
-{
-  public void testCreate()
-  {
-    TopLevelArray array = TopLevelArray.create();
-    array.add( TopLevelArray.TopLevelArrayItem.create() );
-    TopLevelArray.TopLevelArrayItem item = array.get( 0 );
-    item.setFoo( "hi" );
-    assertEquals( "hi", item.getFoo() );
-  }
+public class TopLevelArrayTest extends TestCase {
+    public void testCreate() {
+        TopLevelArray array = TopLevelArray.create();
+        array.add(TopLevelArray.TopLevelArrayItem.create());
+        TopLevelArray.TopLevelArrayItem item = array.get(0);
+        item.setFoo("hi");
+        assertEquals("hi", item.getFoo());
+    }
 
-  public void testLoadJson()
-  {
-    TopLevelArray array = TopLevelArray.load().fromJson( makeJsonArray() );
-    assertEquals( 2, array.size() );
-    assertEquals( "hi", array.get(0).getFoo() );
-    assertEquals( "bye", array.get(1).getFoo() );
-  }
+    public void testLoadJson() {
+        TopLevelArray array = TopLevelArray.load().fromJson(makeJsonArray());
+        assertEquals(2, array.size());
+        assertEquals("hi", array.get(0).getFoo());
+        assertEquals("bye", array.get(1).getFoo());
+    }
 
-  public void testLoadYaml()
-  {
-    TopLevelArray array = TopLevelArray.load().fromYaml( makeYamlArray() );
-    assertEquals( 2, array.size() );
-    assertEquals( "hi", array.get(0).getFoo() );
-    assertEquals( "bye", array.get(1).getFoo() );
-  }
+    public void testLoadYaml() {
+        TopLevelArray array = TopLevelArray.load().fromYaml(makeYamlArray());
+        assertEquals(2, array.size());
+        assertEquals("hi", array.get(0).getFoo());
+        assertEquals("bye", array.get(1).getFoo());
+    }
 
-  public void testWriteJson()
-  {
-    String jsonArray = makeJsonArray();
-    TopLevelArray array = TopLevelArray.load().fromJson( jsonArray );
-    assertEquals( jsonArray, array.write().toJson() );
-  }
+    public void testWriteJson() {
+        String jsonArray = makeJsonArray();
+        TopLevelArray array = TopLevelArray.load().fromJson(jsonArray);
+        assertEquals(jsonArray, array.write().toJson());
+    }
 
-  public void testWriteYaml()
-  {
-    TopLevelArray array = TopLevelArray.load().fromJson( makeJsonArray() );
-    assertEquals( makeYamlArray(), array.write().toYaml() );
-  }
+    public void testWriteYaml() {
+        TopLevelArray array = TopLevelArray.load().fromJson(makeJsonArray());
+        assertEquals(makeYamlArray(), array.write().toYaml());
+    }
 
-  private String makeJsonArray()
-  {
-    return
-       "[\n" +
-       "  {\n" +
-       "    \"foo\": \"hi\"\n" +
-       "  },\n" +
-       "  {\n" +
-       "    \"foo\": \"bye\"\n" +
-       "  }\n" +
-       "]";
-  }
+    private String makeJsonArray() {
+        return
+                "[\n" +
+                        "  {\n" +
+                        "    \"foo\": \"hi\"\n" +
+                        "  },\n" +
+                        "  {\n" +
+                        "    \"foo\": \"bye\"\n" +
+                        "  }\n" +
+                        "]";
+    }
 
-  private String makeYamlArray()
-  {
-    return
-      "- foo: hi\n" +
-      "- foo: bye\n";
-  }
+    private String makeYamlArray() {
+        return
+                "- foo: hi\n" +
+                        "- foo: bye\n";
+    }
 }

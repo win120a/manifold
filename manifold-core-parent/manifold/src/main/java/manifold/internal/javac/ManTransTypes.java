@@ -34,86 +34,73 @@ import manifold.util.concurrent.LocklessLazyVar;
 
 import static manifold.internal.javac.ManAttr.AUTO_TYPE;
 
-public class ManTransTypes extends TransTypes
-{
-  private static final String TRANS_TYPES_FIELD = "transTypes";
+public class ManTransTypes extends TransTypes {
+    private static final String TRANS_TYPES_FIELD = "transTypes";
 
-  private int _translateCount;
+    private int _translateCount;
 
-  public static TransTypes instance( Context ctx )
-  {
-    TransTypes transTypes = ctx.get( transTypesKey );
-    if( !(transTypes instanceof ManTransTypes) )
-    {
-      ctx.put( transTypesKey, (TransTypes)null );
-      transTypes = new ManTransTypes( ctx );
+    public static TransTypes instance(Context ctx) {
+        TransTypes transTypes = ctx.get(transTypesKey);
+        if (!(transTypes instanceof ManTransTypes)) {
+            ctx.put(transTypesKey, (TransTypes) null);
+            transTypes = new ManTransTypes(ctx);
+        }
+
+        return transTypes;
     }
 
-    return transTypes;
-  }
-
-  private ManTransTypes( Context ctx )
-  {
-    super( ctx );
-    ReflectUtil.field( JavaCompiler.instance( ctx ), TRANS_TYPES_FIELD ).set( this );
-    ReflectUtil.field( LambdaToMethod.instance( ctx ), TRANS_TYPES_FIELD ).set( this );
-  }
-
-  /**
-   * Override to keep track of when/if translate() is in scope, if ManTypes#memberType() should not try to substitute
-   * the qualifier type for @Self because the qualifier is not really a call site, rather it is the declaring class
-   * of the method being checked for bridge method possibilities etc.  Thus we need to let the normal signature flow
-   * through.
-   */
-  @Override
-  public JCTree translateTopLevelClass( JCTree cdef, TreeMaker make )
-  {
-    _translateCount++;
-    try
-    {
-      return super.translateTopLevelClass( cdef, make );
-    }
-    finally
-    {
-      _translateCount--;
-    }
-  }
-  public boolean isTranslating()
-  {
-    return _translateCount > 0;
-  }
-
-  private final LocklessLazyVar<?> java9Kind_TYP = LocklessLazyVar.make(
-    () -> ReflectUtil.field( Kinds.class.getTypeName() + "$Kind", "TYP" ).getStatic() );
-  public void visitIdent( JCTree.JCIdent tree)
-  {
-    boolean isTypeId = JreUtil.isJava8()
-      ? ReflectUtil.field( tree.sym, "kind" ).get().equals( ReflectUtil.field( Kinds.class, "TYP" ).getStatic() )
-      : ReflectUtil.field( tree.sym, "kind" ).get() == java9Kind_TYP.get();
-    if( isTypeId && tree.type.isPrimitive() && isAutoType( tree ) )
-    {
-      // Map 'auto' to primitive as-is avoiding otherwise errant erasure logic
-      result = tree;
-      return;
+    private ManTransTypes(Context ctx) {
+        super(ctx);
+        ReflectUtil.field(JavaCompiler.instance(ctx), TRANS_TYPES_FIELD).set(this);
+        ReflectUtil.field(LambdaToMethod.instance(ctx), TRANS_TYPES_FIELD).set(this);
     }
 
-    Type botType = Symtab.instance( JavacPlugin.instance().getContext() ).botType;
-    if( tree.type == botType )
-    {
-      // error: 'auto' can't infer from only 'null' expressions
-
-      IDynamicJdk.instance().logError( Log.instance( JavacPlugin.instance().getContext() ), tree.pos(),
-        "proc.messager", IssueMsg.MSG_AUTO_CANNOT_INFER_FROM_NULL.get() );
+    /**
+     * Override to keep track of when/if translate() is in scope, if ManTypes#memberType() should not try to substitute
+     * the qualifier type for @Self because the qualifier is not really a call site, rather it is the declaring class
+     * of the method being checked for bridge method possibilities etc.  Thus we need to let the normal signature flow
+     * through.
+     */
+    @Override
+    public JCTree translateTopLevelClass(JCTree cdef, TreeMaker make) {
+        _translateCount++;
+        try {
+            return super.translateTopLevelClass(cdef, make);
+        } finally {
+            _translateCount--;
+        }
     }
-    else
-    {
-      super.visitIdent( tree );
-    }
-  }
 
-  private boolean isAutoType( JCTree.JCIdent tree )
-  {
-    return ManClassUtil.getShortClassName( AUTO_TYPE ).equals( tree.name.toString() ) ||
-      AUTO_TYPE.equals( tree.name.toString() );
-  }
+    public boolean isTranslating() {
+        return _translateCount > 0;
+    }
+
+    private final LocklessLazyVar<?> java9Kind_TYP = LocklessLazyVar.make(
+            () -> ReflectUtil.field(Kinds.class.getTypeName() + "$Kind", "TYP").getStatic());
+
+    public void visitIdent(JCTree.JCIdent tree) {
+        boolean isTypeId = JreUtil.isJava8()
+                ? ReflectUtil.field(tree.sym, "kind").get().equals(ReflectUtil.field(Kinds.class, "TYP").getStatic())
+                : ReflectUtil.field(tree.sym, "kind").get() == java9Kind_TYP.get();
+        if (isTypeId && tree.type.isPrimitive() && isAutoType(tree)) {
+            // Map 'auto' to primitive as-is avoiding otherwise errant erasure logic
+            result = tree;
+            return;
+        }
+
+        Type botType = Symtab.instance(JavacPlugin.instance().getContext()).botType;
+        if (tree.type == botType) {
+            // error: 'auto' can't infer from only 'null' expressions
+
+            IDynamicJdk.instance().logError(Log.instance(JavacPlugin.instance().getContext()), tree.pos(),
+                    "proc.messager", IssueMsg.MSG_AUTO_CANNOT_INFER_FROM_NULL.get());
+        } else {
+            super.visitIdent(tree);
+        }
+    }
+
+    private boolean isAutoType(JCTree.JCIdent tree) {
+        return ManClassUtil.getShortClassName(AUTO_TYPE).equals(tree.name.toString()) ||
+                AUTO_TYPE.equals(tree.name.toString());
+    }
 }

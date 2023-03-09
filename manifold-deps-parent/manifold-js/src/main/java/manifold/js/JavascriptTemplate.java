@@ -36,70 +36,61 @@ import org.mozilla.javascript.ScriptableObject;
 
 import static manifold.js.JavascriptProgram.*;
 
-public class JavascriptTemplate
-{
-  static SrcClass genClass( JavascriptModel model, String fqn, JSTNode jstNode )
-  {
-    SrcClass clazz = new SrcClass( fqn, SrcClass.Kind.Class )
-      .addImport( JsRuntime.class );
+public class JavascriptTemplate {
+    static SrcClass genClass(JavascriptModel model, String fqn, JSTNode jstNode) {
+        SrcClass clazz = new SrcClass(fqn, SrcClass.Kind.Class)
+                .addImport(JsRuntime.class);
 
-    IFile file = loadSrcForName( model, fqn, JavascriptTypeManifold.JS );
-    String url;
-    try
-    {
-      url = file.toURI().toURL().toString();
+        IFile file = loadSrcForName(model, fqn, JavascriptTypeManifold.JS);
+        String url;
+        try {
+            url = file.toURI().toURL().toString();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        String source = ResourceFileTypeManifold.getContent(file);
+        source = ManEscapeUtil.escapeForJavaStringLiteral(source);
+
+        clazz.addField(new SrcField("TEMPLATE_NODE", JSTNode.class)
+                .addAnnotation(new SrcAnnotationExpression(DisableStringLiteralTemplates.class))
+                .modifiers(Modifier.STATIC | Modifier.FINAL)
+                .initializer(JsRuntime.class.getSimpleName() + ".initNode(\"" + fqn + "\",\"" + source + "\",\"" + url + "\")"));
+
+        clazz.addField(new SrcField("SCOPE", ScriptableObject.class)
+                .modifiers(Modifier.STATIC | Modifier.FINAL)
+                .initializer(JsRuntime.class.getSimpleName() + ".initEngine(TEMPLATE_NODE)"));
+
+        AbstractSrcMethod<SrcMethod> srcMethod = new SrcMethod()
+                .name("renderToString")
+                .modifiers(Modifier.PUBLIC | Modifier.STATIC)
+                .returns(String.class);
+
+        List<SrcParameter> srcParameters = makeSrcParameters(jstNode, srcMethod);
+        srcMethod.body("return " + JavascriptTemplate.class.getTypeName() +
+                ".renderToStringImpl(SCOPE, TEMPLATE_NODE" + generateArgList(srcParameters) + ");");
+        clazz.addMethod(srcMethod);
+
+        return clazz;
     }
-    catch( MalformedURLException e )
-    {
-      throw new RuntimeException( e );
+
+    //Calls the generated renderToString function with raw strings from template
+    @SuppressWarnings("unused")
+    public static String renderToStringImpl(ScriptableObject scope, JSTNode templateNode, Object... args) {
+        try {
+            //make argument list including the raw string list
+            Object[] argsWithStrings = Arrays.copyOf(args, args.length + 1);
+
+            List rawStrings = templateNode.getChildren(RawStringNode.class)
+                    .stream()
+                    .map(node -> node.genCode())
+                    .collect(Collectors.toList());
+
+            argsWithStrings[argsWithStrings.length - 1] = rawStrings;
+
+            Function renderToString = (Function) scope.get("renderToString", scope);
+            return (String) renderToString.call(Context.getCurrentContext(), scope, scope, argsWithStrings);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    String source = ResourceFileTypeManifold.getContent( file );
-    source = ManEscapeUtil.escapeForJavaStringLiteral( source );
-
-    clazz.addField( new SrcField( "TEMPLATE_NODE", JSTNode.class )
-      .addAnnotation( new SrcAnnotationExpression( DisableStringLiteralTemplates.class ) )
-      .modifiers( Modifier.STATIC | Modifier.FINAL )
-      .initializer( JsRuntime.class.getSimpleName() + ".initNode(\"" + fqn + "\",\"" + source + "\",\"" + url + "\")" ) );
-
-    clazz.addField( new SrcField( "SCOPE", ScriptableObject.class )
-      .modifiers( Modifier.STATIC | Modifier.FINAL )
-      .initializer( JsRuntime.class.getSimpleName() + ".initEngine(TEMPLATE_NODE)" ) );
-
-    AbstractSrcMethod<SrcMethod> srcMethod = new SrcMethod()
-      .name( "renderToString" )
-      .modifiers( Modifier.PUBLIC | Modifier.STATIC )
-      .returns( String.class );
-
-    List<SrcParameter> srcParameters = makeSrcParameters( jstNode, srcMethod );
-    srcMethod.body( "return " + JavascriptTemplate.class.getTypeName() +
-                    ".renderToStringImpl(SCOPE, TEMPLATE_NODE" + generateArgList( srcParameters ) + ");" );
-    clazz.addMethod( srcMethod );
-
-    return clazz;
-  }
-
-  //Calls the generated renderToString function with raw strings from template
-  @SuppressWarnings("unused")
-  public static String renderToStringImpl( ScriptableObject scope, JSTNode templateNode, Object... args )
-  {
-    try
-    {
-      //make argument list including the raw string list
-      Object[] argsWithStrings = Arrays.copyOf( args, args.length + 1 );
-
-      List rawStrings = templateNode.getChildren( RawStringNode.class )
-        .stream()
-        .map( node -> node.genCode() )
-        .collect( Collectors.toList() );
-
-      argsWithStrings[argsWithStrings.length - 1] = rawStrings;
-
-      Function renderToString = (Function)scope.get( "renderToString", scope );
-      return (String)renderToString.call( Context.getCurrentContext(), scope, scope, argsWithStrings );
-    }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 }

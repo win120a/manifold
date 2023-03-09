@@ -20,44 +20,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  */
-public class SrcStatementBlock extends SrcStatement<SrcStatementBlock>
-{
-  private List<SrcStatement> _statements = new ArrayList<>();
+public class SrcStatementBlock extends SrcStatement<SrcStatementBlock> {
+    private List<SrcStatement> _statements = new ArrayList<>();
 
-  public SrcStatementBlock addStatement( SrcStatement stmt )
-  {
-    _statements.add( stmt );
-    return this;
-  }
-
-  public SrcStatementBlock addStatement( String rawText )
-  {
-    _statements.add( new SrcRawStatement().rawText( rawText ) );
-    return this;
-  }
-
-  @Override
-  public StringBuilder render( StringBuilder sb, int indent )
-  {
-    return render( sb, indent, true );
-  }
-
-  public StringBuilder render( StringBuilder sb, int indent, boolean sameLine )
-  {
-    if( sameLine )
-    {
-      sb.append( " {\n" );
+    public SrcStatementBlock addStatement(SrcStatement stmt) {
+        _statements.add(stmt);
+        return this;
     }
-    else
-    {
-      sb.append( indent( sb, indent ) ).append( "{\n" );
+
+    public SrcStatementBlock addStatement(String rawText) {
+        _statements.add(new SrcRawStatement().rawText(rawText));
+        return this;
     }
-    for( SrcStatement stmt : _statements )
-    {
-      stmt.render( sb, indent + INDENT );
+
+    @Override
+    public StringBuilder render(StringBuilder sb, int indent) {
+        return render(sb, indent, true);
     }
-    sb.append( indent( sb, indent ) ).append( "}\n" );
-    return sb;
-  }
+
+    public StringBuilder render(StringBuilder sb, int indent, boolean sameLine) {
+        if (sameLine) {
+            sb.append(" {\n");
+        } else {
+            sb.append(indent(sb, indent)).append("{\n");
+        }
+        for (SrcStatement stmt : _statements) {
+            stmt.render(sb, indent + INDENT);
+        }
+        sb.append(indent(sb, indent)).append("}\n");
+        return sb;
+    }
 }

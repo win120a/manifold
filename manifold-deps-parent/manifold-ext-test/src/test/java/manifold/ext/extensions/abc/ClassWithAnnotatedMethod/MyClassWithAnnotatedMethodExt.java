@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyClassWithAnnotatedMethodExt
-{
-  public static ClassWithAnnotatedMethod myExtensionMethod( @This ClassWithAnnotatedMethod thiz )
-  {
-    return thiz;
-  }
+public class MyClassWithAnnotatedMethodExt {
+    public static ClassWithAnnotatedMethod myExtensionMethod(@This ClassWithAnnotatedMethod thiz) {
+        return thiz;
+    }
 }

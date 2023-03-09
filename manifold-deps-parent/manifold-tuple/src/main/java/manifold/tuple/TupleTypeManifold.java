@@ -47,56 +47,47 @@ import static manifold.tuple.TupleTypeProvider.BASE_NAME;
 /**
  * Tuples
  */
-public class TupleTypeManifold extends BaseService implements ITypeManifold
-{
-  private IModule _module;
-  private final Map<String, Set<File>> _fqnToEnclosingSourceFile;
+public class TupleTypeManifold extends BaseService implements ITypeManifold {
+    private IModule _module;
+    private final Map<String, Set<File>> _fqnToEnclosingSourceFile;
 
-  public TupleTypeManifold()
-  {
-    _fqnToEnclosingSourceFile = new ConcurrentHashMap<>();
-  }
+    public TupleTypeManifold() {
+        _fqnToEnclosingSourceFile = new ConcurrentHashMap<>();
+    }
 
-  @Override
-  public void init( IModule module )
-  {
-    _module = module;
-  }
+    @Override
+    public void init(IModule module) {
+        _module = module;
+    }
 
-  @Override
-  public IModule getModule()
-  {
-    return _module;
-  }
+    @Override
+    public IModule getModule() {
+        return _module;
+    }
 
-   @Override
-  public ISourceKind getSourceKind()
-  {
-    return ISourceKind.Java;
-  }
+    @Override
+    public ISourceKind getSourceKind() {
+        return ISourceKind.Java;
+    }
 
-  @Override
-  public ContributorKind getContributorKind()
-  {
-    return ContributorKind.Primary;
-  }
+    @Override
+    public ContributorKind getContributorKind() {
+        return ContributorKind.Primary;
+    }
 
-  @Override
-  public boolean isTopLevelType( String fqn )
-  {
-    return isType( fqn );
-  }
+    @Override
+    public boolean isTopLevelType(String fqn) {
+        return isType(fqn);
+    }
 
-  @Override
-  public ClassType getClassType( String fqn )
-  {
-    return ClassType.JavaClass;
-  }
+    @Override
+    public ClassType getClassType(String fqn) {
+        return ClassType.JavaClass;
+    }
 
-  @Override
-  public List<IFile> findFilesForType( String fqn )
-  {
-    return Collections.emptyList();
+    @Override
+    public List<IFile> findFilesForType(String fqn) {
+        return Collections.emptyList();
 //## todo: this doesn't really work, if there are more than one classes defining/referencing a tuple and one is deleted, the tuple .class file is deleted and not rebuilt for an incremental build.
 //   Maybe we can force any remaining enclosing classes to rebuild by always adding them to the list of resource files that need compiling??
 //    Set<File> enclosingFiles = _fqnToEnclosingSourceFile.get( fqn );
@@ -105,150 +96,128 @@ public class TupleTypeManifold extends BaseService implements ITypeManifold
 //        .map( f -> JavacPlugin.instance().getHost().getFileSystem().getIFile( f ) )
 //        .collect( Collectors.toList() )
 //      : Collections.emptyList();
-  }
-
-  @SuppressWarnings( "unused" )
-  public void addEnclosingSourceFile( String fqn, URI sourceFile )
-  {
-    Set<File> files = _fqnToEnclosingSourceFile.computeIfAbsent( fqn, k -> new HashSet<>() );
-    files.add( new File( sourceFile ) );
-  }
-
-  @Override
-  public void clear()
-  {
-  }
-
-  @Override
-  public boolean isType( String fqn )
-  {
-    return fqn.contains( '.' + BASE_NAME );
-  }
-
-  @Override
-  public boolean isPackage( String pkg )
-  {
-    return !getTypeNames( pkg ).isEmpty();
-  }
-
-  @Override
-  public String getPackage( String fqn )
-  {
-    return isType( fqn ) ? ManClassUtil.getPackage( fqn ) : null;
-  }
-
-  @Override
-  public String contribute( JavaFileManager.Location location, String fqn, boolean genStubs, String existing, DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    SrcClass srcClass = new SrcClass( fqn, AbstractSrcClass.Kind.Class )
-      .imports( List.class, ArrayList.class )
-      .modifiers( Modifier.PUBLIC )  // non-final to support structural interface casts (until structural assignability is impled)
-      .superClass( GeneratedTuple.class )
-      .addField( new SrcField( "_orderedLabels",new  SrcType( List.class ).addTypeParam( String.class ) )
-        .modifiers( Modifier.PRIVATE ) )
-      .addMethod( new SrcMethod()
-        .modifiers( Modifier.PUBLIC )
-        .addAnnotation( new SrcAnnotationExpression( Override.class ) )
-        .name( "orderedLabels" )
-        .returns( new SrcType( List.class ).addTypeParam( String.class ) )
-        .body( "return _orderedLabels;" ) );
-    SrcConstructor srcConstructor = new SrcConstructor( srcClass )
-      .modifiers( Modifier.PUBLIC );
-    ClassLoader prevLoader = Thread.currentThread().getContextClassLoader();
-    ClassLoader newLoader = getClass().getClassLoader();
-    if( newLoader != null )
-    {
-      Thread.currentThread().setContextClassLoader( newLoader );
     }
-    Map<String, String> fieldsMap;
-    try
-    {
-      fieldsMap = ITupleTypeProvider.INSTANCE.get().getFields( fqn );
+
+    @SuppressWarnings("unused")
+    public void addEnclosingSourceFile(String fqn, URI sourceFile) {
+        Set<File> files = _fqnToEnclosingSourceFile.computeIfAbsent(fqn, k -> new HashSet<>());
+        files.add(new File(sourceFile));
     }
-    finally
-    {
-      Thread.currentThread().setContextClassLoader( prevLoader );
+
+    @Override
+    public void clear() {
     }
-    if( fieldsMap == null )
-    {
-      throw new IllegalStateException( "Missing field mapping for tuple: " + fqn );
+
+    @Override
+    public boolean isType(String fqn) {
+        return fqn.contains('.' + BASE_NAME);
     }
-    SrcStatementBlock body = new SrcStatementBlock()
-      .addStatement( "List<String> orderedLabels = new ArrayList<>();" );
-    for( Map.Entry<String, String> entry: fieldsMap.entrySet() )
-    {
-      String name = entry.getKey();
-      String type = entry.getValue();
-      SrcField field = new SrcField( name, type )
-        .modifiers( Modifier.PUBLIC );
-      srcClass.addField( field );
-      srcConstructor.addParam( new SrcParameter( name, type ).modifiers( Modifier.FINAL ) );
-      body
-        .addStatement( "this." + name + " = " + name + ";" )
-        .addStatement( "orderedLabels.add( \"" + name + "\" );" );
+
+    @Override
+    public boolean isPackage(String pkg) {
+        return !getTypeNames(pkg).isEmpty();
     }
-    body.addStatement( "_orderedLabels = orderedLabels;" );
-    srcConstructor.body( body );
-    srcClass.addConstructor( srcConstructor );
 
-    //todo: generate equals, hashcode, toString instead of the reflection based stuff in the base class
-    return srcClass.render().toString();
-  }
-
-  @Override
-  public Collection<String> getAllTypeNames()
-  {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public Collection<TypeName> getTypeNames( String namespace )
-  {
-    ClassLoader prevLoader = Thread.currentThread().getContextClassLoader();
-    ClassLoader newLoader = getClass().getClassLoader();
-    if( newLoader != null )
-    {
-      Thread.currentThread().setContextClassLoader( newLoader );
+    @Override
+    public String getPackage(String fqn) {
+        return isType(fqn) ? ManClassUtil.getPackage(fqn) : null;
     }
-    try
-    {
-      return ITupleTypeProvider.INSTANCE.get().getTypes().stream()
-        .filter( fqn -> ManClassUtil.getPackage( fqn ).equals( namespace ) )
-        .map( fqn -> new TypeName( fqn, _module, TypeName.Kind.TYPE, TypeName.Visibility.PUBLIC ) )
-        .collect( Collectors.toSet() );
+
+    @Override
+    public String contribute(JavaFileManager.Location location, String fqn, boolean genStubs, String existing, DiagnosticListener<JavaFileObject> errorHandler) {
+        SrcClass srcClass = new SrcClass(fqn, AbstractSrcClass.Kind.Class)
+                .imports(List.class, ArrayList.class)
+                .modifiers(Modifier.PUBLIC)  // non-final to support structural interface casts (until structural assignability is impled)
+                .superClass(GeneratedTuple.class)
+                .addField(new SrcField("_orderedLabels", new SrcType(List.class).addTypeParam(String.class))
+                        .modifiers(Modifier.PRIVATE))
+                .addMethod(new SrcMethod()
+                        .modifiers(Modifier.PUBLIC)
+                        .addAnnotation(new SrcAnnotationExpression(Override.class))
+                        .name("orderedLabels")
+                        .returns(new SrcType(List.class).addTypeParam(String.class))
+                        .body("return _orderedLabels;"));
+        SrcConstructor srcConstructor = new SrcConstructor(srcClass)
+                .modifiers(Modifier.PUBLIC);
+        ClassLoader prevLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = getClass().getClassLoader();
+        if (newLoader != null) {
+            Thread.currentThread().setContextClassLoader(newLoader);
+        }
+        Map<String, String> fieldsMap;
+        try {
+            fieldsMap = ITupleTypeProvider.INSTANCE.get().getFields(fqn);
+        } finally {
+            Thread.currentThread().setContextClassLoader(prevLoader);
+        }
+        if (fieldsMap == null) {
+            throw new IllegalStateException("Missing field mapping for tuple: " + fqn);
+        }
+        SrcStatementBlock body = new SrcStatementBlock()
+                .addStatement("List<String> orderedLabels = new ArrayList<>();");
+        for (Map.Entry<String, String> entry : fieldsMap.entrySet()) {
+            String name = entry.getKey();
+            String type = entry.getValue();
+            SrcField field = new SrcField(name, type)
+                    .modifiers(Modifier.PUBLIC);
+            srcClass.addField(field);
+            srcConstructor.addParam(new SrcParameter(name, type).modifiers(Modifier.FINAL));
+            body
+                    .addStatement("this." + name + " = " + name + ";")
+                    .addStatement("orderedLabels.add( \"" + name + "\" );");
+        }
+        body.addStatement("_orderedLabels = orderedLabels;");
+        srcConstructor.body(body);
+        srcClass.addConstructor(srcConstructor);
+
+        //todo: generate equals, hashcode, toString instead of the reflection based stuff in the base class
+        return srcClass.render().toString();
     }
-    finally
-    {
-      Thread.currentThread().setContextClassLoader( prevLoader );
+
+    @Override
+    public Collection<String> getAllTypeNames() {
+        return Collections.emptyList();
     }
-  }
 
-  //
-  // IFileConnected (not file connected...)
-  //
+    @Override
+    public Collection<TypeName> getTypeNames(String namespace) {
+        ClassLoader prevLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = getClass().getClassLoader();
+        if (newLoader != null) {
+            Thread.currentThread().setContextClassLoader(newLoader);
+        }
+        try {
+            return ITupleTypeProvider.INSTANCE.get().getTypes().stream()
+                    .filter(fqn -> ManClassUtil.getPackage(fqn).equals(namespace))
+                    .map(fqn -> new TypeName(fqn, _module, TypeName.Kind.TYPE, TypeName.Visibility.PUBLIC))
+                    .collect(Collectors.toSet());
+        } finally {
+            Thread.currentThread().setContextClassLoader(prevLoader);
+        }
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return false;
-  }
+    //
+    // IFileConnected (not file connected...)
+    //
 
-  @Override
-  public boolean handlesFile( IFile file )
-  {
-    return false;
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return false;
+    }
 
-  @Override
-  public String[] getTypesForFile( IFile file )
-  {
-    return new String[0];
-  }
+    @Override
+    public boolean handlesFile(IFile file) {
+        return false;
+    }
 
-  @Override
-  public RefreshKind refreshedFile( IFile file, String[] types, RefreshKind kind )
-  {
-    return null;
-  }
+    @Override
+    public String[] getTypesForFile(IFile file) {
+        return new String[0];
+    }
+
+    @Override
+    public RefreshKind refreshedFile(IFile file, String[] types, RefreshKind kind) {
+        return null;
+    }
 
 }

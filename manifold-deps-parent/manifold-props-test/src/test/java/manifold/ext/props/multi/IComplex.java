@@ -16,7 +16,6 @@
 
 package manifold.ext.props.multi;
 
-public interface IComplex extends ISimple
-{
-  String getType();
+public interface IComplex extends ISimple {
+    String getType();
 }

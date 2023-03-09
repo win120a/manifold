@@ -22,19 +22,17 @@ import abc.MyProperties;
 import gw.lang.SystemProperties;
 
 /**
+ *
  */
-public class PropertiesTest extends TestCase
-{
-  public void testProperties()
-  {
-    assertEquals( "Hello", MyProperties.MyProperty.toString() );
-    assertEquals( "Sub Property", MyProperties.MyProperty.Sub );
-    assertNotNull( SystemProperties.java.version );
-  }
+public class PropertiesTest extends TestCase {
+    public void testProperties() {
+        assertEquals("Hello", MyProperties.MyProperty.toString());
+        assertEquals("Sub Property", MyProperties.MyProperty.Sub);
+        assertNotNull(SystemProperties.java.version);
+    }
 
-  public void testFragrment()
-  {
-    //[>MyPropertiesRightHere.properties<] Foo=bar
-    assertEquals( "bar", MyPropertiesRightHere.Foo );
-  }
+    public void testFragrment() {
+        //[>MyPropertiesRightHere.properties<] Foo=bar
+        assertEquals("bar", MyPropertiesRightHere.Foo);
+    }
 }

@@ -17,102 +17,88 @@
 package manifold.preprocessor.statement;
 
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.TokenType;
 import manifold.preprocessor.expression.EmptyExpression;
 import manifold.preprocessor.expression.Expression;
 
-public class IfStatement extends Statement
-{
-  private final Expression _expr;
-  private final List<Statement> _ifBlock;
-  private final List<IfStatement> _elifs;
-  private final List<Statement> _elseBlock;
-  private final int _elseStart;
+public class IfStatement extends Statement {
+    private final Expression _expr;
+    private final List<Statement> _ifBlock;
+    private final List<IfStatement> _elifs;
+    private final List<Statement> _elseBlock;
+    private final int _elseStart;
 
-  public IfStatement( TokenType tokenType, int start, int end, Expression expr,
-                      List<Statement> ifBlock, List<IfStatement> elifs, List<Statement> elseBlock, int elseStart )
-  {
-    super( tokenType, start, end );
-    _expr = expr;
-    _ifBlock = ifBlock;
-    _elifs = elifs;
-    _elseStart = elseStart;
-    _elseBlock = elseBlock;
-  }
-
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-    preserveMaskedOutSpace( result, source, getTokenStart(), _expr.getEndOffset() );
-
-    boolean ifCond = visible && evalExpr( definitions );
-    for( Statement stmt: _ifBlock )
-    {
-      stmt.execute( result, source, ifCond, definitions );
+    public IfStatement(TokenType tokenType, int start, int end, Expression expr,
+                       List<Statement> ifBlock, List<IfStatement> elifs, List<Statement> elseBlock, int elseStart) {
+        super(tokenType, start, end);
+        _expr = expr;
+        _ifBlock = ifBlock;
+        _elifs = elifs;
+        _elseStart = elseStart;
+        _elseBlock = elseBlock;
     }
 
-    boolean elifPassed = false;
-    for( IfStatement elif: _elifs )
-    {
-      boolean elifCond = visible && !elifPassed && !ifCond && elif.evalExpr( definitions );
-      elifPassed = elifPassed || elifCond;
-      elif.execute( result, source, elifCond, definitions );
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+        preserveMaskedOutSpace(result, source, getTokenStart(), _expr.getEndOffset());
+
+        boolean ifCond = visible && evalExpr(definitions);
+        for (Statement stmt : _ifBlock) {
+            stmt.execute(result, source, ifCond, definitions);
+        }
+
+        boolean elifPassed = false;
+        for (IfStatement elif : _elifs) {
+            boolean elifCond = visible && !elifPassed && !ifCond && elif.evalExpr(definitions);
+            elifPassed = elifPassed || elifCond;
+            elif.execute(result, source, elifCond, definitions);
+        }
+
+        if (_elseStart >= 0) {
+            preserveMaskedOutSpace(result, source, _elseStart, _elseStart + "#else".length());
+        }
+
+        for (Statement stmt : _elseBlock) {
+            stmt.execute(result, source, visible && !ifCond && !elifPassed, definitions);
+        }
+
+        int endIfStart = getTokenEnd() - "#endif".length();
+        if (endIfStart >= 0 && source.subSequence(endIfStart, getTokenEnd()).toString().equals("#endif")) {
+            preserveMaskedOutSpace(result, source, endIfStart, getTokenEnd());
+        }
     }
 
-    if( _elseStart >= 0 )
-    {
-      preserveMaskedOutSpace( result, source, _elseStart, _elseStart + "#else".length() );
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+        if (!visible) {
+            return;
+        }
+
+        boolean ifCond = evalExpr(definitions);
+        for (Statement stmt : _ifBlock) {
+            stmt.execute(result, ifCond, definitions);
+        }
+
+        boolean elifPassed = false;
+        for (IfStatement elif : _elifs) {
+            boolean elifCond = !elifPassed && !ifCond && elif.evalExpr(definitions);
+            elifPassed = elifPassed || elifCond;
+            elif.execute(result, elifCond, definitions);
+        }
+
+        for (Statement stmt : _elseBlock) {
+            stmt.execute(result, !ifCond && !elifPassed, definitions);
+        }
     }
 
-    for( Statement stmt: _elseBlock )
-    {
-      stmt.execute( result, source, visible && !ifCond && !elifPassed, definitions );
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        return true;
     }
 
-    int endIfStart = getTokenEnd() - "#endif".length();
-    if( endIfStart >= 0 && source.subSequence( endIfStart, getTokenEnd() ).toString().equals( "#endif" ) )
-    {
-      preserveMaskedOutSpace( result, source, endIfStart, getTokenEnd() );
+    private boolean evalExpr(Definitions definitions) {
+        return !(_expr instanceof EmptyExpression) && !_expr.hasErrors() && _expr.evaluate(definitions);
     }
-  }
-
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-    if( !visible )
-    {
-      return;
-    }
-
-    boolean ifCond = evalExpr( definitions );
-    for( Statement stmt: _ifBlock )
-    {
-      stmt.execute( result, ifCond, definitions );
-    }
-
-    boolean elifPassed = false;
-    for( IfStatement elif: _elifs )
-    {
-      boolean elifCond = !elifPassed && !ifCond && elif.evalExpr( definitions );
-      elifPassed = elifPassed || elifCond;
-      elif.execute( result, elifCond, definitions );
-    }
-
-    for( Statement stmt: _elseBlock )
-    {
-      stmt.execute( result, !ifCond && !elifPassed, definitions );
-    }
-  }
-
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    return true;
-  }
-
-  private boolean evalExpr( Definitions definitions )
-  {
-    return !(_expr instanceof EmptyExpression) && !_expr.hasErrors() && _expr.evaluate( definitions );
-  }
 }

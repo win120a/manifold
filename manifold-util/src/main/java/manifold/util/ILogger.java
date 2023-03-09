@@ -19,37 +19,36 @@ package manifold.util;
 /**
  * Logger-independent logging system.
  */
-public interface ILogger
-{
-  String getName();
+public interface ILogger {
+    String getName();
 
-  void debug( Object o );
+    void debug(Object o);
 
-  void debug( Object o, Throwable throwable );
+    void debug(Object o, Throwable throwable);
 
-  boolean isDebugEnabled();
+    boolean isDebugEnabled();
 
-  void trace( Object o );
+    void trace(Object o);
 
-  void trace( Object o, Throwable throwable );
+    void trace(Object o, Throwable throwable);
 
-  boolean isTraceEnabled();
+    boolean isTraceEnabled();
 
-  void info( Object o );
+    void info(Object o);
 
-  void info( Object o, Throwable throwable );
+    void info(Object o, Throwable throwable);
 
-  boolean isInfoEnabled();
+    boolean isInfoEnabled();
 
-  void warn( Object o );
+    void warn(Object o);
 
-  void warn( Object o, Throwable throwable );
+    void warn(Object o, Throwable throwable);
 
-  void error( Object o );
+    void error(Object o);
 
-  void error( Object o, Throwable throwable );
+    void error(Object o, Throwable throwable);
 
-  void fatal( Object o );
+    void fatal(Object o);
 
-  void fatal( Object o, Throwable throwable );
+    void fatal(Object o, Throwable throwable);
 }

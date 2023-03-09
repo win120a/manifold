@@ -1,16 +1,17 @@
 package manifold.ext;
 
 import abc.IMyStructuralInterface;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
 
 /**
+ *
  */
-public class Simple2Test extends TestCase
-{
-  public void testMe()
-  {
+public class Simple2Test extends TestCase {
+    public void testMe() {
 //    List<String> l2 = new ArrayList<>();
 //    assertSame( l2, l2.find( l2 ) );
 //
@@ -21,6 +22,6 @@ public class Simple2Test extends TestCase
 //    IMyStructuralInterface iface = abc.benis_png.get();
 //    assertEquals( 32, iface.getIconWidth() );
 //    assertEquals( "benis32", iface.myMethod( "benis" ) );
-  }
+    }
 
 }

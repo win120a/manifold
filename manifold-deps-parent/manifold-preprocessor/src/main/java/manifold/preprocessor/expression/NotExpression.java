@@ -18,32 +18,28 @@ package manifold.preprocessor.expression;
 
 import java.util.Collections;
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 
-public class NotExpression extends Expression
-{
-  private final Expression _expr;
+public class NotExpression extends Expression {
+    private final Expression _expr;
 
-  NotExpression( Expression expr, int start, int end )
-  {
-    super( start, end );
-    _expr = expr;
-  }
+    NotExpression(Expression expr, int start, int end) {
+        super(start, end);
+        _expr = expr;
+    }
 
-  @Override
-  public List<Expression> getChildren()
-  {
-    return Collections.singletonList( _expr );
-  }
+    @Override
+    public List<Expression> getChildren() {
+        return Collections.singletonList(_expr);
+    }
 
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return !_expr.evaluate( definitions );
-  }
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return !_expr.evaluate(definitions);
+    }
 
-  public String toString()
-  {
-    return "!" + _expr;
-  }
+    public String toString() {
+        return "!" + _expr;
+    }
 }

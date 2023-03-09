@@ -16,14 +16,11 @@
 
 package manifold.api.util.cache;
 
-public class StringCache
-{
-  public static String get( String rawString )
-  {
-    if( rawString == null )
-    {
-      return null;
+public class StringCache {
+    public static String get(String rawString) {
+        if (rawString == null) {
+            return null;
+        }
+        return StringPool.get(rawString);
     }
-    return StringPool.get( rawString );
-  }
 }

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+
 import manifold.api.fs.IDirectory;
 import manifold.api.fs.IFile;
 import manifold.api.fs.IResource;
@@ -41,213 +42,175 @@ import manifold.util.concurrent.LocklessLazyVar;
  * definitions are not available to other files.  Similarly, parent definitions masked with {@code #undef} are
  * not affected in other files.
  */
-public class Definitions
-{
-  public static final String BUILD_PROPERTIES = "build.properties";
+public class Definitions {
+    public static final String BUILD_PROPERTIES = "build.properties";
 
-  private final IFile _definitionsSource;
-  private final LocklessLazyVar<Definitions> _parent;
-  private final Map<String, String> _localDefs;
-  private final Map<String, String> _localUnDefs;
-  private final Definitions _root;
+    private final IFile _definitionsSource;
+    private final LocklessLazyVar<Definitions> _parent;
+    private final Map<String, String> _localDefs;
+    private final Map<String, String> _localUnDefs;
+    private final Definitions _root;
 
-  public Definitions( IFile definitionsSource )
-  {
-    this( null, definitionsSource, null );
-  }
+    public Definitions(IFile definitionsSource) {
+        this(null, definitionsSource, null);
+    }
 
-  protected Definitions( Definitions root, IFile definitionsSource, Map<String, String> definitions )
-  {
-    _root = root == null ? this : root;
-    _definitionsSource = definitionsSource;
-    _parent = LocklessLazyVar.make( () -> loadParentDefinitions() );
-    _localDefs = definitions == null ? new HashMap<>() : definitions;
-    _localUnDefs = new HashMap<>();
-  }
+    protected Definitions(Definitions root, IFile definitionsSource, Map<String, String> definitions) {
+        _root = root == null ? this : root;
+        _definitionsSource = definitionsSource;
+        _parent = LocklessLazyVar.make(() -> loadParentDefinitions());
+        _localDefs = definitions == null ? new HashMap<>() : definitions;
+        _localUnDefs = new HashMap<>();
+    }
 
-  protected Definitions getRoot()
-  {
-    return _root;
-  }
+    protected Definitions getRoot() {
+        return _root;
+    }
 
-  protected IFile getSourceFile()
-  {
-    return _definitionsSource;
-  }
+    protected IFile getSourceFile() {
+        return _definitionsSource;
+    }
 
-  protected Definitions getParent()
-  {
-    return _parent.get();
-  }
+    protected Definitions getParent() {
+        return _parent.get();
+    }
 
-  protected Definitions loadParentDefinitions()
-  {
-    if( _definitionsSource != null )
-    {
-      IFile source = _definitionsSource;
-      if( source.exists() )
-      {
-        Definitions buildPropertiesDefinitions = findBuildProperties( source );
-        if( buildPropertiesDefinitions != null )
-        {
-          return buildPropertiesDefinitions;
+    protected Definitions loadParentDefinitions() {
+        if (_definitionsSource != null) {
+            IFile source = _definitionsSource;
+            if (source.exists()) {
+                Definitions buildPropertiesDefinitions = findBuildProperties(source);
+                if (buildPropertiesDefinitions != null) {
+                    return buildPropertiesDefinitions;
+                }
+            }
         }
-      }
+
+        return makeEnvironmentDefinitions();
     }
 
-    return makeEnvironmentDefinitions();
-  }
+    private Definitions makeEnvironmentDefinitions() {
+        return
+                new Definitions(getRoot(), null, getRoot().loadEnvironmentDefinitions()) {
+                    @Override
+                    protected Definitions loadParentDefinitions() {
+                        return new ServiceDefinitions(getRoot());
+                    }
+                };
+    }
 
-  private Definitions makeEnvironmentDefinitions()
-  {
-    return
-      new Definitions( getRoot(), null, getRoot().loadEnvironmentDefinitions() )
-      {
-        @Override
-        protected Definitions loadParentDefinitions()
-        {
-          return new ServiceDefinitions( getRoot() );
+    protected Map<String, String> loadEnvironmentDefinitions() {
+        return EnvironmentDefinitions.instance().getEnv();
+    }
+
+    private Definitions findBuildProperties(IResource source) {
+        if (source == null) {
+            return null;
         }
-      };
-  }
 
-  protected Map<String, String> loadEnvironmentDefinitions()
-  {
-    return EnvironmentDefinitions.instance().getEnv();
-  }
+        if (source instanceof IFile && source.exists()) {
+            if (source.getName().equalsIgnoreCase(BUILD_PROPERTIES)) {
+                // go up two since we already have the build.properties for its own parent
+                source = source.getParent();
+            }
+            source = source.getParent();
+            if (source == null) {
+                return null;
+            }
+        }
 
-  private Definitions findBuildProperties( IResource source )
-  {
-    if( source == null )
-    {
-      return null;
+        if (((IDirectory) source).hasChildFile(BUILD_PROPERTIES)) {
+            return makeBuildDefinitions(((IDirectory) source).file(BUILD_PROPERTIES));
+        }
+        return findBuildProperties(source.getParent());
     }
 
-    if( source instanceof IFile && source.exists() )
-    {
-      if( source.getName().equalsIgnoreCase( BUILD_PROPERTIES ) )
-      {
-        // go up two since we already have the build.properties for its own parent
-        source = source.getParent();
-      }
-      source = source.getParent();
-      if( source == null )
-      {
-        return null;
-      }
+    private Definitions makeBuildDefinitions(IFile source) {
+        Properties properties = new Properties();
+        try (InputStream input = source.openInputStream()) {
+            properties.load(input);
+            //noinspection unchecked
+            return new Definitions(getRoot(), source, (Map) properties);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    if( ((IDirectory)source).hasChildFile( BUILD_PROPERTIES ) )
-    {
-      return makeBuildDefinitions( ((IDirectory)source).file( BUILD_PROPERTIES ) );
-    }
-    return findBuildProperties( source.getParent() );
-  }
-
-  private Definitions makeBuildDefinitions( IFile source )
-  {
-    Properties properties = new Properties();
-    try( InputStream input = source.openInputStream() )
-    {
-      properties.load( input );
-      //noinspection unchecked
-      return new Definitions( getRoot(), source, (Map)properties );
-    }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
-
-  public void clear()
-  {
-    _localDefs.clear();
-    _localUnDefs.clear();
-  }
-
-  /**
-   * @return True if there is a definition having name {@code def}, regardless of its value.
-   */
-  public boolean isDefined( String def )
-  {
-    if( _localUnDefs.containsKey( def ) )
-    {
-      return false;
+    public void clear() {
+        _localDefs.clear();
+        _localUnDefs.clear();
     }
 
-    if( _localDefs.containsKey( def ) )
-    {
-      return true;
+    /**
+     * @return True if there is a definition having name {@code def}, regardless of its value.
+     */
+    public boolean isDefined(String def) {
+        if (_localUnDefs.containsKey(def)) {
+            return false;
+        }
+
+        if (_localDefs.containsKey(def)) {
+            return true;
+        }
+
+        Definitions parent = getParent();
+        return parent != null && parent.isDefined(def);
     }
 
-    Definitions parent = getParent();
-    return parent != null && parent.isDefined( def );
-  }
+    public String getValue(String def) {
+        if (_localUnDefs.containsKey(def)) {
+            return null;
+        }
 
-  public String getValue( String def )
-  {
-    if( _localUnDefs.containsKey( def ) )
-    {
-      return null;
+        if (_localDefs.containsKey(def)) {
+            return _localDefs.get(def);
+        }
+
+        Definitions parent = getParent();
+        return parent == null ? null : parent.getValue(def);
     }
 
-    if( _localDefs.containsKey( def ) )
-    {
-      return _localDefs.get( def );
+    /**
+     * Define {@code def} in the source file's local definition space.
+     */
+    public String define(String def) {
+        return define(def, "");
     }
 
-    Definitions parent = getParent();
-    return parent == null ? null : parent.getValue( def );
-  }
-
-  /**
-   * Define {@code def} in the source file's local definition space.
-   */
-  public String define( String def )
-  {
-    return define( def, "" );
-  }
-
-  /**
-   * Define {@code def} in the source file's local definition space with {@code value}.
-   */
-  public String define( String def, String value )
-  {
-    _localUnDefs.remove( def );
-    return _localDefs.put( def, value );
-  }
-
-  /**
-   * Remove {@code def} from the File's local definition space. Note if {@code def} is defined in a parent scope
-   * e.g., a properties file, it remains defined.  In other words {@code #undef} applies exclusively to the source
-   * file scope.
-   */
-  public String undef( String def )
-  {
-    _localUnDefs.put( def, "" );
-    return _localDefs.remove( def );
-  }
-
-
-  @Override
-  public boolean equals( Object o )
-  {
-    if( this == o )
-    {
-      return true;
+    /**
+     * Define {@code def} in the source file's local definition space with {@code value}.
+     */
+    public String define(String def, String value) {
+        _localUnDefs.remove(def);
+        return _localDefs.put(def, value);
     }
-    if( o == null || getClass() != o.getClass() )
-    {
-      return false;
-    }
-    Definitions that = (Definitions)o;
-    return _localDefs.equals( that._localDefs ) &&
-           _localUnDefs.equals( that._localUnDefs );
-  }
 
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash( _localDefs, _localUnDefs );
-  }
+    /**
+     * Remove {@code def} from the File's local definition space. Note if {@code def} is defined in a parent scope
+     * e.g., a properties file, it remains defined.  In other words {@code #undef} applies exclusively to the source
+     * file scope.
+     */
+    public String undef(String def) {
+        _localUnDefs.put(def, "");
+        return _localDefs.remove(def);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Definitions that = (Definitions) o;
+        return _localDefs.equals(that._localDefs) &&
+                _localUnDefs.equals(that._localUnDefs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_localDefs, _localUnDefs);
+    }
 }

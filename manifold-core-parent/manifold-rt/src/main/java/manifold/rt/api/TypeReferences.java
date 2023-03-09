@@ -20,10 +20,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ *
  */
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
-public @interface TypeReferences
-{
-  TypeReference[] value();
+public @interface TypeReferences {
+    TypeReference[] value();
 }

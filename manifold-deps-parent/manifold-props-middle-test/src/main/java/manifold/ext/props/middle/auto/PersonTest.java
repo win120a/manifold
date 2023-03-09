@@ -16,14 +16,12 @@
 
 package manifold.ext.props.middle.auto;
 
-public class PersonTest
-{
-  // tests that properties are inferred in inner classes of .class files
-  public void testPerson()
-  {
-    IPerson person = null;
-    person.address.city = "hi";
+public class PersonTest {
+    // tests that properties are inferred in inner classes of .class files
+    public void testPerson() {
+        IPerson person = null;
+        person.address.city = "hi";
 
-    int year = person.address.date.year;
-  }
+        int year = person.address.date.year;
+    }
 }

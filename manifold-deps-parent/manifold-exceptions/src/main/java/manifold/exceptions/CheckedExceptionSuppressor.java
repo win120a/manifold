@@ -21,19 +21,16 @@ import manifold.api.type.ICompilerComponent;
 import manifold.internal.javac.JavacPlugin;
 import manifold.internal.javac.TypeProcessor;
 
-public class CheckedExceptionSuppressor implements ICompilerComponent
-{
-  @Override
-  public void init( BasicJavacTask javacTask, TypeProcessor typeProcessor )
-  {
-  }
+public class CheckedExceptionSuppressor implements ICompilerComponent {
+    @Override
+    public void init(BasicJavacTask javacTask, TypeProcessor typeProcessor) {
+    }
 
-  @Override
-  public boolean isSuppressed( String issueKey )
-  {
-    return JavacPlugin.instance() != null &&
-           issueKey != null &&
-           (issueKey.contains( "unreported.exception." ) ||
-            issueKey.contains( "incompatible.thrown.types" ));
-  }
+    @Override
+    public boolean isSuppressed(String issueKey) {
+        return JavacPlugin.instance() != null &&
+                issueKey != null &&
+                (issueKey.contains("unreported.exception.") ||
+                        issueKey.contains("incompatible.thrown.types"));
+    }
 }

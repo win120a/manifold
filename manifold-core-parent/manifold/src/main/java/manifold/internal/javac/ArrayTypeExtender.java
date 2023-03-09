@@ -23,39 +23,33 @@ import com.sun.tools.javac.util.Context;
 import manifold.rt.api.Array;
 import manifold.util.ReflectUtil;
 
-public class ArrayTypeExtender
-{
-  /**
-   * Array types in Java all share the same symbol, {@link Symtab#arrayClass}. For example, {@code int[]}, {@code String[]},
-   * {@code Foo[]}, and {@code long[][]} all share the same symbol instance. Also, Java has no base type for the array
-   * class; there's no "java.lang.Array" to add extension methods to. Therefore, Manifold provides a substitute type for
-   * the sole purpose of adding extension methods, namely {@code manifold.rt.api.Array}. Extension classes extending
-   * this class effectively extend Java's array class.
-   */
-  public static void extend( Context context, CompilationUnitTree compilingClass )
-  {
-    Symbol.ClassSymbol ourArrayClass = IDynamicJdk.instance().getTypeElement( context, compilingClass, Array.class.getTypeName() );
-    if( ourArrayClass == null )
-    {
-      return;
-    }
-
-    if( (int)ReflectUtil.field( ReflectUtil.field( ourArrayClass, "members_field" ).get(), "nelems" ).get() > 1 )
-    {
-      Symbol.ClassSymbol arrayClass = Symtab.instance( context ).arrayClass;
-      for( Symbol sym : IDynamicJdk.instance().getMembers( ourArrayClass ) )
-      {
-        // Add extensions directly to array class
-        if( sym instanceof Symbol.MethodSymbol && sym.hasAnnotations() )
-        {
-          Symbol clone = sym.clone( arrayClass );
-          // copy annotations (they are not cloned for some reason)
-          ReflectUtil.field( clone, "metadata" ).set( ReflectUtil.field( sym, "metadata" ).get() );
-          // now enter the method symbol into the array type directly
-          ReflectUtil.method( ReflectUtil.field( arrayClass, "members_field" ).get(), "enter", Symbol.class )
-            .invoke( clone );
+public class ArrayTypeExtender {
+    /**
+     * Array types in Java all share the same symbol, {@link Symtab#arrayClass}. For example, {@code int[]}, {@code String[]},
+     * {@code Foo[]}, and {@code long[][]} all share the same symbol instance. Also, Java has no base type for the array
+     * class; there's no "java.lang.Array" to add extension methods to. Therefore, Manifold provides a substitute type for
+     * the sole purpose of adding extension methods, namely {@code manifold.rt.api.Array}. Extension classes extending
+     * this class effectively extend Java's array class.
+     */
+    public static void extend(Context context, CompilationUnitTree compilingClass) {
+        Symbol.ClassSymbol ourArrayClass = IDynamicJdk.instance().getTypeElement(context, compilingClass, Array.class.getTypeName());
+        if (ourArrayClass == null) {
+            return;
         }
-      }
+
+        if ((int) ReflectUtil.field(ReflectUtil.field(ourArrayClass, "members_field").get(), "nelems").get() > 1) {
+            Symbol.ClassSymbol arrayClass = Symtab.instance(context).arrayClass;
+            for (Symbol sym : IDynamicJdk.instance().getMembers(ourArrayClass)) {
+                // Add extensions directly to array class
+                if (sym instanceof Symbol.MethodSymbol && sym.hasAnnotations()) {
+                    Symbol clone = sym.clone(arrayClass);
+                    // copy annotations (they are not cloned for some reason)
+                    ReflectUtil.field(clone, "metadata").set(ReflectUtil.field(sym, "metadata").get());
+                    // now enter the method symbol into the array type directly
+                    ReflectUtil.method(ReflectUtil.field(arrayClass, "members_field").get(), "enter", Symbol.class)
+                            .invoke(clone);
+                }
+            }
+        }
     }
-  }
 }

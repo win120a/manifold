@@ -18,25 +18,24 @@ package manifold.api.yaml;
 
 import java.util.Arrays;
 import java.util.List;
+
 import manifold.api.host.IModule;
 import manifold.api.json.AbstractJsonTypeManifold;
 
 /**
+ *
  */
-public class YamlTypeManifold extends AbstractJsonTypeManifold<YamlModel>
-{
-  @SuppressWarnings("WeakerAccess")
-  public static final List<String> FILE_EXTENSION = Arrays.asList( "yaml", "yml" );
+public class YamlTypeManifold extends AbstractJsonTypeManifold<YamlModel> {
+    @SuppressWarnings("WeakerAccess")
+    public static final List<String> FILE_EXTENSION = Arrays.asList("yaml", "yml");
 
-  @Override
-  public void init( IModule module )
-  {
-    init( module, ( fqn, files ) -> new YamlModel( getModule().getHost(), fqn, files ) );
-  }
+    @Override
+    public void init(IModule module) {
+        init(module, (fqn, files) -> new YamlModel(getModule().getHost(), fqn, files));
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return FILE_EXTENSION.contains( fileExtension );
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return FILE_EXTENSION.contains(fileExtension);
+    }
 }

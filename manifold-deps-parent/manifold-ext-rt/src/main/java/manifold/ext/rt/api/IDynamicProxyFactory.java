@@ -16,7 +16,6 @@
 
 package manifold.ext.rt.api;
 
-public interface IDynamicProxyFactory
-{
-  IProxyFactory makeProxyFactory( Class iface, Class rootClass );
+public interface IDynamicProxyFactory {
+    IProxyFactory makeProxyFactory(Class iface, Class rootClass);
 }

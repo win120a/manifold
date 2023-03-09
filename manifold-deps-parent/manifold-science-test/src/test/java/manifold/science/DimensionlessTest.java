@@ -22,14 +22,12 @@ import org.junit.Test;
 import static manifold.science.measures.CommonDimensionlessUnit.*;
 import static org.junit.Assert.assertEquals;
 
-public class DimensionlessTest
-{
-  @Test
-  public void testDimensionlessConstantUnit()
-  {
-    assertEquals( 5 * DimensionlessConstants.pi, 5pi );
-    assertEquals( 5 * DimensionlessConstants.phi, 5phi );
-    assertEquals( 5 * DimensionlessConstants.kA, 5kA );
-    assertEquals( 5 * DimensionlessConstants.mol, 5mol );
-  }
+public class DimensionlessTest {
+    @Test
+    public void testDimensionlessConstantUnit() {
+        assertEquals(5 * DimensionlessConstants.pi, 5pi);
+        assertEquals(5 * DimensionlessConstants.phi, 5phi);
+        assertEquals(5 * DimensionlessConstants.kA, 5kA);
+        assertEquals(5 * DimensionlessConstants.mol, 5mol);
+    }
 }

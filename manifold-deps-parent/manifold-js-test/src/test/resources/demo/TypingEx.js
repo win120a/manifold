@@ -1,24 +1,59 @@
+import java
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.lang.Integer
-import java.lang.Double
+.
+util.HashMap;
+import java
 
-class TypingClass () {
-   constructor(a : String) {
-     this.foo = a;
+.
+util.ArrayList;
+import java
 
-   }
-   doubleToStringReturnCoercionTest(x : Double, y: Double) : String {
-       return x + y ;
-   }
+.
+lang.Integer
+import java
 
-   returnsDouble(x : Double) : Double {
-       return x;
-   }
+.
+lang.Double
 
-   returnsWrongType(x : String) : Double {
-       return x;
-   }
+class TypingClass
+
+()
+{
+    constructor(a
+:
+    String
+)
+    {
+        this.foo = a;
+
+    }
+    doubleToStringReturnCoercionTest(x
+:
+    Double, y
+:
+    Double
+) :
+    String
+    {
+        return x + y;
+    }
+
+    returnsDouble(x
+:
+    Double
+) :
+    Double
+    {
+        return x;
+    }
+
+    returnsWrongType(x
+:
+    String
+) :
+    Double
+    {
+        return x;
+    }
 
 }

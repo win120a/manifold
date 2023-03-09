@@ -17,20 +17,20 @@
 package manifold.json.test.extensions.java.util.Map;
 
 import java.util.Map;
+
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyMapExt
-{
-  public static <K,V> String fuebar(@This Map<K,V> thiz) {
-    return "fuebar";
-  }
-
-  @Extension
-  public static class Entry {
-    public static <K,V> String innerFoo(@This Map.Entry<K,V> thiz) {
-      return "innerFoo";
+public class MyMapExt {
+    public static <K, V> String fuebar(@This Map<K, V> thiz) {
+        return "fuebar";
     }
-  }
+
+    @Extension
+    public static class Entry {
+        public static <K, V> String innerFoo(@This Map.Entry<K, V> thiz) {
+            return "innerFoo";
+        }
+    }
 }

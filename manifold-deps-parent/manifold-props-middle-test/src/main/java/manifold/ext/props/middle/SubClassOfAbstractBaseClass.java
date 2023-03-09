@@ -19,14 +19,16 @@ package manifold.ext.props.middle;
 import manifold.ext.props.rt.api.override;
 import manifold.ext.props.rt.api.var;
 
-public class SubClassOfAbstractBaseClass extends AbstractBaseClass
-{
-  @override @var String abstractProp;
-  @override @var String abstractReadonly;
+public class SubClassOfAbstractBaseClass extends AbstractBaseClass {
+    @override
+    @var
+    String abstractProp;
+    @override
+    @var
+    String abstractReadonly;
 
-  public SubClassOfAbstractBaseClass( String abstractProp, String abstractReadonly )
-  {
-    this.abstractProp = abstractProp;
-    this.abstractReadonly = abstractReadonly;
-  }
+    public SubClassOfAbstractBaseClass(String abstractProp, String abstractReadonly) {
+        this.abstractProp = abstractProp;
+        this.abstractReadonly = abstractReadonly;
+    }
 }

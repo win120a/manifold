@@ -21,14 +21,12 @@ import manifold.util.concurrent.LocklessLazyVar;
 
 import java.util.*;
 
-public class Bootstraps
-{
-  private static final LocklessLazyVar<Set<IBootstrap>> BOOTSTRAPS = LocklessLazyVar.make( () ->
-    ServiceUtil.loadRegisteredServices(
-      new LinkedHashSet<>(), IBootstrap.class, Bootstraps.class.getClassLoader() ) );
+public class Bootstraps {
+    private static final LocklessLazyVar<Set<IBootstrap>> BOOTSTRAPS = LocklessLazyVar.make(() ->
+            ServiceUtil.loadRegisteredServices(
+                    new LinkedHashSet<>(), IBootstrap.class, Bootstraps.class.getClassLoader()));
 
-  public static Set<IBootstrap> get()
-  {
-    return BOOTSTRAPS.get();
-  }
+    public static Set<IBootstrap> get() {
+        return BOOTSTRAPS.get();
+    }
 }

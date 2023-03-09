@@ -17,27 +17,34 @@
 package manifold.api.fs;
 
 import java.util.function.Supplier;
+
 import manifold.internal.javac.HostKind;
 
 /**
  * A fragment of a file that is to be treated separate from the enclosing file.  Facilitates embedding structured
  * content in a Java source file as opposed to using a separate resource file.
  */
-public interface IFileFragment extends IFile
-{
-  IFile getEnclosingFile();
-  String getScope();
-  int getOffset();
-  void setOffset( Supplier<Integer> offset );
-  int getLength();
-  HostKind getHostKind();
+public interface IFileFragment extends IFile {
+    IFile getEnclosingFile();
 
-  /** The file element hosting the fragment e.g., a comment or string literal */
-  Object getContainer();
-  void setContainer( Object container );
+    String getScope();
 
-  default IFile getPhysicalFile()
-  {
-    return getEnclosingFile().getPhysicalFile();
-  }
+    int getOffset();
+
+    void setOffset(Supplier<Integer> offset);
+
+    int getLength();
+
+    HostKind getHostKind();
+
+    /**
+     * The file element hosting the fragment e.g., a comment or string literal
+     */
+    Object getContainer();
+
+    void setContainer(Object container);
+
+    default IFile getPhysicalFile() {
+        return getEnclosingFile().getPhysicalFile();
+    }
 }

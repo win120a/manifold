@@ -35,22 +35,22 @@ import java.util.Collection;
  *   <li>Manifold can communicate back to the IDE the set of types via IjChangedResourceFiles#getTypesToFile()</li>
  * </ul>
  */
-public interface IIncrementalCompileDriver
-{
-  /**
-   * Is the compilation incremental, or is this a rebuild (full build)?
-   * @return true if an incremental build, otherwise false indicating a rebuild.
-   */
-  boolean isIncremental();
+public interface IIncrementalCompileDriver {
+    /**
+     * Is the compilation incremental, or is this a rebuild (full build)?
+     *
+     * @return true if an incremental build, otherwise false indicating a rebuild.
+     */
+    boolean isIncremental();
 
-  /**
-   * Manifold's javac plugin calls this method after the ANALYZE phase of the class annotated with this method.  Typically
-   * the class annotated with this method is temporary and generated on the fly and within the IDE hosting the compiler.
-   * The IDE keeps track of resource files that have changed.  Returns all changed resources files (skips Java files);
-   * Manifold will figure out whether or not each resource file maps to a Type Manifold and, if so, finds the type[s] produced from
-   * the file. In turn the javac plugin associates types corresponding with the file via IjChangedResourceFiles#getTypesToFile().
-   *
-   * @return The resource files that have changed since the last make/build.
-   */
-  Collection<File> getChangedFiles();
+    /**
+     * Manifold's javac plugin calls this method after the ANALYZE phase of the class annotated with this method.  Typically
+     * the class annotated with this method is temporary and generated on the fly and within the IDE hosting the compiler.
+     * The IDE keeps track of resource files that have changed.  Returns all changed resources files (skips Java files);
+     * Manifold will figure out whether or not each resource file maps to a Type Manifold and, if so, finds the type[s] produced from
+     * the file. In turn the javac plugin associates types corresponding with the file via IjChangedResourceFiles#getTypesToFile().
+     *
+     * @return The resource files that have changed since the last make/build.
+     */
+    Collection<File> getChangedFiles();
 }

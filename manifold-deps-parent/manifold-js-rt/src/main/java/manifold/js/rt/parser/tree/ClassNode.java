@@ -24,29 +24,29 @@ public class ClassNode extends Node {
     /*Boiler plate code segments taken from babel.js*/
     //Used for defining object properties
     private static final String CREATE_CLASS = "var _createClass = function () { " +
-        "function defineProperties(target, props) { for (var i = 0; i < props.length; i++) " +
-        "{ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; " +
-        "descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; " +
-        "Object.defineProperty(target, descriptor.key, descriptor); } } " +
-        "return function (Constructor, protoProps, staticProps) { if (protoProps) " +
-        "defineProperties(Constructor.prototype, protoProps); if (staticProps) " +
-        "defineProperties(Constructor, staticProps); return Constructor; }; }();\n";
+            "function defineProperties(target, props) { for (var i = 0; i < props.length; i++) " +
+            "{ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; " +
+            "descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; " +
+            "Object.defineProperty(target, descriptor.key, descriptor); } } " +
+            "return function (Constructor, protoProps, staticProps) { if (protoProps) " +
+            "defineProperties(Constructor.prototype, protoProps); if (staticProps) " +
+            "defineProperties(Constructor, staticProps); return Constructor; }; }();\n";
 
     //Used to make sure classes can not be called as a function
     private static final String CLASS_CALL_CHECK = "function _classCallCheck(instance, Constructor) { " +
-        "if (!(instance instanceof Constructor)) { " +
-        "throw new TypeError(\"Cannot call a class as a function\") } }\n";
+            "if (!(instance instanceof Constructor)) { " +
+            "throw new TypeError(\"Cannot call a class as a function\") } }\n";
 
     //name of generated supertype object
     public static final String SUPERTYPE_OBJECT = "_superClassObject";
 
     private String _superClass = null;
 
-    public ClassNode(String name ) {
+    public ClassNode(String name) {
         super(name);
     }
 
-    public ClassNode(String name, String superClass ) {
+    public ClassNode(String name, String superClass) {
         super(name);
         _superClass = superClass;
     }
@@ -54,8 +54,9 @@ public class ClassNode extends Node {
     public void setSuperClass(String superClass) {
         _superClass = superClass;
     }
+
     public String getSuperClass() {
-        return  _superClass;
+        return _superClass;
     }
 
 
@@ -65,13 +66,13 @@ public class ClassNode extends Node {
         if (!getChildren(PropertyNode.class).isEmpty()) code.append(CREATE_CLASS); //Defines getters and setters
 
         code.append("var ").append(getName()).append(" = function(")
-                .append((getSuperClass() == null? "" : "_" + getSuperClass()))
+                .append((getSuperClass() == null ? "" : "_" + getSuperClass()))
                 .append(") { ");
 
         String constructorCode;
         if (getChildren(ConstructorNode.class).isEmpty()) {
             //Gen default constructor if no child found
-            constructorCode = "\n\t" + new ConstructorNode(getName() ).genCode();
+            constructorCode = "\n\t" + new ConstructorNode(getName()).genCode();
         } else {
             //Should only have one constructor
             constructorCode = "\n\t" + getFirstChild(ConstructorNode.class).genCode();
@@ -106,7 +107,7 @@ public class ClassNode extends Node {
         code.append(genPropertyObjectCode(getChildren(PropertyNode.class)));
 
         code.append("\n\treturn " + getName() + ";\n}(")
-                .append((getSuperClass() == null? "" : getSuperClass())) //Possibly give superclass as arg
+                .append((getSuperClass() == null ? "" : getSuperClass())) //Possibly give superclass as arg
                 .append(");");
 
         code.append("\n" + getName() + ";");
@@ -121,7 +122,7 @@ public class ClassNode extends Node {
     }
 
 
-    private String genPropertyObjectCode (List<PropertyNode> propertyNodes) {
+    private String genPropertyObjectCode(List<PropertyNode> propertyNodes) {
         //Wrapper to hold getters and setters for the same property
         class PropertyNodeWrapper {
             private String _name;
@@ -140,8 +141,8 @@ public class ClassNode extends Node {
 
             public String genCode() {
                 return "\n\t\t" + "{key: \"" + _name + "\"," +
-                        (_setter != null?_setter.genCode()+",":"") +
-                        (_getter != null?_getter.genCode():"") +
+                        (_setter != null ? _setter.genCode() + "," : "") +
+                        (_getter != null ? _getter.genCode() : "") +
                         "}";
             }
         }
@@ -160,8 +161,7 @@ public class ClassNode extends Node {
                     wrapper = staticPropertyNodeBucket.get(node.getName());
                     if (wrapper == null) wrapper = new PropertyNodeWrapper(node.getName());
                     staticPropertyNodeBucket.put(node.getName(), wrapper);
-                }
-                else  {
+                } else {
                     wrapper = propertyNodeBucket.get(node.getName());
                     if (wrapper == null) wrapper = new PropertyNodeWrapper(node.getName());
                     propertyNodeBucket.put(node.getName(), wrapper);
@@ -172,15 +172,15 @@ public class ClassNode extends Node {
             //Combine the properties into an array
             String nonStaticProps = (propertyNodeBucket.isEmpty()) ? "null" :
                     "[" + String.join(",", propertyNodeBucket.values().stream()
-                        .map(prop->prop.genCode())
-                        .collect(Collectors.toList())) + "]";
+                            .map(prop -> prop.genCode())
+                            .collect(Collectors.toList())) + "]";
             String staticProps = (staticPropertyNodeBucket.isEmpty()) ? "null" :
                     "[" + String.join(",", staticPropertyNodeBucket.values().stream()
-                            .map(prop->prop.genCode())
+                            .map(prop -> prop.genCode())
                             .collect(Collectors.toList())) + "]";
             propCode += nonStaticProps + "," + staticProps + ");";
         }
-        return  propCode;
+        return propCode;
     }
 
     @Override

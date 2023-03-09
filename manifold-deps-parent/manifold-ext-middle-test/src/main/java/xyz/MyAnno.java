@@ -19,8 +19,7 @@ package xyz;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention( RetentionPolicy.CLASS )
-public @interface MyAnno
-{
-  MyEnum value();
+@Retention(RetentionPolicy.CLASS)
+public @interface MyAnno {
+    MyEnum value();
 }

@@ -30,33 +30,32 @@ import java.util.function.Supplier;
  * @param <R> The query result type mirroring the fields and structure of the query
  */
 @Structural
-public interface GqlQuery<R extends GqlQueryResult> extends GqlType
-{
-  /**
-   * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
-   * and to GET or POST the query.
-   *
-   * @param url The endpoint of the request as a URL.
-   * @return The request executor in terms of the query result type.
-   */
-  Executor<R> request( String url );
+public interface GqlQuery<R extends GqlQueryResult> extends GqlType {
+    /**
+     * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
+     * and to GET or POST the query.
+     *
+     * @param url The endpoint of the request as a URL.
+     * @return The request executor in terms of the query result type.
+     */
+    Executor<R> request(String url);
 
-  /**
-   * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
-   * and to GET or POST the query.
-   *
-   * @param endpoint The endpoint of the request as proxy-enabled URL.
-   * @return The request executor in terms of the query result type.
-   */
-  Executor<R> request( Endpoint endpoint );
+    /**
+     * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
+     * and to GET or POST the query.
+     *
+     * @param endpoint The endpoint of the request as proxy-enabled URL.
+     * @return The request executor in terms of the query result type.
+     */
+    Executor<R> request(Endpoint endpoint);
 
-  /**
-   * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
-   * and to GET or POST the query.
-   *
-   * @param requester A callback allowing the caller to supply a Requester, typically to the request can be reused
-   *                  across multiple query executions.
-   * @return The request executor in terms of the query result type.
-   */
-  Executor<R> request( Supplier<Requester<Bindings>> requester );
+    /**
+     * Provides an HTTP request executor for the query. Use it to configure an HTTP request headers, authorization, etc.
+     * and to GET or POST the query.
+     *
+     * @param requester A callback allowing the caller to supply a Requester, typically to the request can be reused
+     *                  across multiple query executions.
+     * @return The request executor in terms of the query result type.
+     */
+    Executor<R> request(Supplier<Requester<Bindings>> requester);
 }

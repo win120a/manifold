@@ -21,29 +21,23 @@ import manifold.json.rt.api.IJsonBindingsBacked;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public interface BuiltType<T> extends IJsonBindingsBacked
-{
-  default Class<T> findBuiltTypeFrom( Class builderClass )
-  {
-    Class<?>[] interfaces = getClass().getInterfaces();
-    for( Class<?> e : interfaces )
-    {
-      for( Type iface : e.getGenericInterfaces() )
-      {
-        if( iface.getTypeName().startsWith( builderClass.getTypeName() ) &&
-          iface instanceof ParameterizedType )
-        {
-          Type typeArg = ((ParameterizedType)iface).getActualTypeArguments()[0];
-          if( typeArg instanceof ParameterizedType )
-          {
-            typeArg = ((ParameterizedType)typeArg).getRawType();
-          }
-          //noinspection unchecked
-          return (Class<T>)typeArg;
+public interface BuiltType<T> extends IJsonBindingsBacked {
+    default Class<T> findBuiltTypeFrom(Class builderClass) {
+        Class<?>[] interfaces = getClass().getInterfaces();
+        for (Class<?> e : interfaces) {
+            for (Type iface : e.getGenericInterfaces()) {
+                if (iface.getTypeName().startsWith(builderClass.getTypeName()) &&
+                        iface instanceof ParameterizedType) {
+                    Type typeArg = ((ParameterizedType) iface).getActualTypeArguments()[0];
+                    if (typeArg instanceof ParameterizedType) {
+                        typeArg = ((ParameterizedType) typeArg).getRawType();
+                    }
+                    //noinspection unchecked
+                    return (Class<T>) typeArg;
+                }
+            }
         }
-      }
+        throw new IllegalStateException();
     }
-    throw new IllegalStateException();
-  }
 }
 

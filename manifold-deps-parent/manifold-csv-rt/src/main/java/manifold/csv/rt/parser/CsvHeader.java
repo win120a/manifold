@@ -18,10 +18,8 @@ package manifold.csv.rt.parser;
 
 import java.util.List;
 
-public class CsvHeader extends CsvRecord
-{
-  public CsvHeader( List<CsvField> fields )
-  {
-    super( fields );
-  }
+public class CsvHeader extends CsvRecord {
+    public CsvHeader(List<CsvField> fields) {
+        super(fields);
+    }
 }

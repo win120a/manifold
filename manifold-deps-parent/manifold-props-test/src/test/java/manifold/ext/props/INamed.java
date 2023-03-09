@@ -18,9 +18,9 @@ package manifold.ext.props;
 
 import manifold.ext.props.rt.api.var;
 
-public interface INamed
-{
-  @var String name;
+public interface INamed {
+    @var
+    String name;
 
 //  @set String foo = "hi";
 }

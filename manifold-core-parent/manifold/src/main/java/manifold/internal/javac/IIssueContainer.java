@@ -19,14 +19,14 @@ package manifold.internal.javac;
 import java.util.List;
 
 /**
+ *
  */
-public interface IIssueContainer
-{
-  List<IIssue> getIssues();
+public interface IIssueContainer {
+    List<IIssue> getIssues();
 
-  List<IIssue> getWarnings();
+    List<IIssue> getWarnings();
 
-  List<IIssue> getErrors();
+    List<IIssue> getErrors();
 
-  boolean isEmpty();
+    boolean isEmpty();
 }

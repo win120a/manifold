@@ -21,23 +21,19 @@ import manifold.science.measures.Time;
 import manifold.science.measures.TimeUnit;
 import manifold.science.util.Rational;
 
-public final class TimeVector extends Vector<Time, TimeUnit, TimeVector>
-{
-  public TimeVector( Time magnitude, Angle angle )
-  {
-    super( magnitude, angle );
-  }
+public final class TimeVector extends Vector<Time, TimeUnit, TimeVector> {
+    public TimeVector(Time magnitude, Angle angle) {
+        super(magnitude, angle);
+    }
 
-  @Override
-  public TimeVector make( Time magnitude, Angle angle )
-  {
-    return new TimeVector( magnitude, angle );
-  }
+    @Override
+    public TimeVector make(Time magnitude, Angle angle) {
+        return new TimeVector(magnitude, angle);
+    }
 
-  @Override
-  public TimeVector copy( Rational magnitude )
-  {
-    return new TimeVector(
-      new Time( magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit() ), getAngle() );
-  }
+    @Override
+    public TimeVector copy(Rational magnitude) {
+        return new TimeVector(
+                new Time(magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit()), getAngle());
+    }
 }

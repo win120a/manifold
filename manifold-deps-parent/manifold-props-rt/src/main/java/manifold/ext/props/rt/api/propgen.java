@@ -30,16 +30,22 @@ import java.lang.annotation.Target;
  * compilation immediately after the declaring type's .class file is loaded. Similarly, when a property does not have a
  * backing field, {@link var}, {@link get}, and {@link set} are used to recreate the erased symbol.
  */
-@Target( {ElementType.FIELD, ElementType.METHOD} )
-@Retention( RetentionPolicy.CLASS )
-public @interface propgen
-{
-  String name();
-  long flags();
-  var[] var() default {};
-  val[] val() default {};
-  get[] get() default {};
-  set[] set() default {};
-  Abstract[] Abstract() default {};
-  Final[] Final() default {};
+@Target({ElementType.FIELD, ElementType.METHOD})
+@Retention(RetentionPolicy.CLASS)
+public @interface propgen {
+    String name();
+
+    long flags();
+
+    var[] var() default {};
+
+    val[] val() default {};
+
+    get[] get() default {};
+
+    set[] set() default {};
+
+    Abstract[] Abstract() default {};
+
+    Final[] Final() default {};
 }

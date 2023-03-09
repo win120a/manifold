@@ -20,6 +20,7 @@ import java.util.Set;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.fs.IFile;
 import manifold.ext.AbstractExtensionProducer;
 
@@ -40,43 +41,36 @@ import manifold.ext.AbstractExtensionProducer;
  * As such this class adds methods favoriteFood() and favoriteCar() to String, and favoriteFood() to Map.
  * The methods return a String value corresponding with Cheeseburger, Alfieri, and Pizza.
  */
-public class ExtensionProducerSampleTypeManifold extends AbstractExtensionProducer<Model>
-{
-  private static final String FILE_EXT = "favs";
+public class ExtensionProducerSampleTypeManifold extends AbstractExtensionProducer<Model> {
+    private static final String FILE_EXT = "favs";
 
-  @Override
-  protected Model createModel( String extensionFqn, Set<IFile> files )
-  {
-    return new Model( getModule().getHost(), extensionFqn, files );
-  }
+    @Override
+    protected Model createModel(String extensionFqn, Set<IFile> files) {
+        return new Model(getModule().getHost(), extensionFqn, files);
+    }
 
-  @Override
-  protected String getFileExt()
-  {
-    return FILE_EXT;
-  }
+    @Override
+    protected String getFileExt() {
+        return FILE_EXT;
+    }
 
-  protected Set<String> getExtendedTypes( IFile file )
-  {
-    return Model.getExtendedTypes( file );
-  }
+    protected Set<String> getExtendedTypes(IFile file) {
+        return Model.getExtendedTypes(file);
+    }
 
-  @Override
-  protected String makeExtensionClassName( String extendedClassFqn )
-  {
-    return Model.makeExtensionClassName( extendedClassFqn );
-  }
+    @Override
+    protected String makeExtensionClassName(String extendedClassFqn) {
+        return Model.makeExtensionClassName(extendedClassFqn);
+    }
 
-  @Override
-  protected String deriveExtendedClassFrom( String extensionClassFqn )
-  {
-    return Model.deriveExtendedClassFrom( extensionClassFqn );
-  }
+    @Override
+    protected String deriveExtendedClassFrom(String extensionClassFqn) {
+        return Model.deriveExtendedClassFrom(extensionClassFqn);
+    }
 
-  @Override
-  protected String contribute( JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, Model model,
-                               DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    return model.makeSource( topLevelFqn, location, getModule(), errorHandler );
-  }
+    @Override
+    protected String contribute(JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, Model model,
+                                DiagnosticListener<JavaFileObject> errorHandler) {
+        return model.makeSource(topLevelFqn, location, getModule(), errorHandler);
+    }
 }

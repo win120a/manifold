@@ -25,68 +25,65 @@ import static manifold.collections.api.range.RangeFun.inside;
 import static manifold.collections.api.range.RangeFun.outside;
 import static org.junit.Assert.*;
 
-public class RangeFunTest
-{
-  @Test
-  public void testInt()
-  {
-    int check = 1;
-    for( int i: 1 to 10 )
-    {
-      assertEquals( check++, i );
+public class RangeFunTest {
+    @Test
+    public void testInt() {
+        int check = 1;
+        for (int i : 1 to 10 )
+        {
+            assertEquals(check++, i);
+        }
+        assertEquals(11, check);
+
+        check = 1;
+        for (int i : 1 to 10 step 2 )
+        {
+            assertEquals(check, i);
+            check += 2;
+        }
+        assertEquals(11, check);
+
+        assertTrue(5inside 2to 10);
+        assertTrue(5inside 10to 2);
+
+        assertFalse(5inside 6to 10);
+        assertFalse(5inside 10to 6);
+
+        assertTrue(5outside(6to 10));
+        assertTrue(5outside 10to 6);
+
+        assertFalse(5outside(-6)to 10);
+        assertFalse(5outside 10to(-6));
+
+        assertTrue(foo(8));
     }
-    assertEquals( 11, check );
 
-    check = 1;
-    for( int i: 1 to 10 step 2 )
-    {
-      assertEquals( check, i );
-      check += 2;
+    boolean foo(int i) {
+        return true;
     }
-    assertEquals( 11, check );
 
-    assertTrue( 5 inside 2 to 10 );
-    assertTrue( 5 inside 10 to 2 );
-
-    assertFalse( 5 inside 6 to 10 );
-    assertFalse( 5 inside 10 to 6 );
-    
-    assertTrue( 5 outside (6 to 10) );
-    assertTrue( 5 outside 10 to 6 );
-
-    assertFalse( 5 outside (-6) to 10 );
-    assertFalse( 5 outside 10 to (-6) );
-
-    assertTrue( foo (8) );
-  }
-
-  boolean foo(int i) { return true;}
-
-  @Test
-  public void testLong()
-  {
-    long lcheck = 1;
-    for( long l: 1l to 10l )
-    {
-      assertEquals( lcheck++, l );
+    @Test
+    public void testLong() {
+        long lcheck = 1;
+        for (long l : 1l to 10l )
+        {
+            assertEquals(lcheck++, l);
+        }
+        assertEquals(11, lcheck);
     }
-    assertEquals( 11, lcheck );
-  }
 
-  @Test
-  public void testDouble()
-  {
-    double dcheck = 1;
-    for( double d: 1d to 10d )
-    {
-      assertEquals( dcheck++, d, 0 );
+    @Test
+    public void testDouble() {
+        double dcheck = 1;
+        for (double d : 1d to 10d )
+        {
+            assertEquals(dcheck++, d, 0);
+        }
+        assertEquals(dcheck, 11, 0);
     }
-    assertEquals( dcheck, 11, 0 );
-  }
 
-  @Test
-  public void testComparable()
-  {
-    assertTrue( "scott" inside "N" to "z(" );
-  }
+    @Test
+    public void testComparable() {
+        assertTrue("scott"inside"N"to"z(");
+    }
 }

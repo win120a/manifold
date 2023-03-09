@@ -16,6 +16,7 @@ public class IsCollisionClass {
     public Object getObject() {
         return object;
     }
+
     public void setObject(Object value) {
         object = value;
     }

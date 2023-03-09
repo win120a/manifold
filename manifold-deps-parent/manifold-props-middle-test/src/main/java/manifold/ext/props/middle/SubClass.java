@@ -19,13 +19,13 @@ package manifold.ext.props.middle;
 import manifold.ext.props.rt.api.get;
 import manifold.ext.props.rt.api.override;
 
-public class SubClass extends BaseClass
-{
-  @override @get String fullName;
+public class SubClass extends BaseClass {
+    @override
+    @get
+    String fullName;
 
-  @Override
-  public String getFullName()
-  {
-    return lastName + ", " + firstName;
-  }
+    @Override
+    public String getFullName() {
+        return lastName + ", " + firstName;
+    }
 }

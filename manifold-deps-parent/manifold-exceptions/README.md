@@ -6,6 +6,7 @@ try/catch/wrap/rethrow nonsense. This is how most modern JVM languages behave, n
 the same.
 
 ## Table of Contents
+
 * [No More Catch-n-Wrap](#no-more-catch-n-wrap)
 * [Lambdas](#lambdas)
 * [IDE Support](#ide-support)
@@ -16,8 +17,10 @@ the same.
 * [Author](#author)
 
 ## No More Catch-n-Wrap
+
 The vast majority of checked exceptions go unhandled, instead they are caught, wrapped in unchecked exceptions, and
 rethrown like this:
+
 ```java
 URL url;
 try {
@@ -28,24 +31,31 @@ catch(MalformedURLException e) {
 }
 process(url);
 ```
+
 This code alone explains why the designers of modern languages such as Scala, Kotlin, and others chose not to follow
-Java's example.  The `exceptions` plugin option provides you with the same choice.  With it enabled you can write the
+Java's example. The `exceptions` plugin option provides you with the same choice. With it enabled you can write the
 same code like this:
+
 ```java
 process(new URL("http://manifold.systems"));
 ```
+
 Sells itself.
 
 ## Lambdas
+
 Perhaps the most offensive checked exception use-cases involve lambdas:
+
 ```java
 List<String> strings = ...;
 List<URL> urls = strings.stream()
   .map(URL::new) // Unhandled exception error: MalformedURLException
   .collect(Collectors.toList());
 ```
-The checked exception prevents concise lambda usage here.  With Manifold, however, you are free to write code as you
+
+The checked exception prevents concise lambda usage here. With Manifold, however, you are free to write code as you
 like:
+
 ```java
 List<String> strings = ...;
 List<URL> urls = strings.stream()
@@ -53,9 +63,10 @@ List<URL> urls = strings.stream()
   .collect(Collectors.toList());
 ```
 
-# IDE Support 
+# IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -85,7 +96,7 @@ about checked exceptions.
 
 ## Building this project
 
-The `manifold-exceptions` project is defined with Maven.  To build it install Maven and run the following command.
+The `manifold-exceptions` project is defined with Maven. To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -98,15 +109,16 @@ versions 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
->Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest.  
+version (8 - 19), the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -144,7 +156,9 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyProject'
 ```
@@ -214,7 +228,7 @@ rootProject.name = 'MyProject'
 
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 # Versioning
 

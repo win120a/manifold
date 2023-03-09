@@ -16,63 +16,52 @@
 
 package manifold.ext.props.middle.auto;
 
-public abstract class Shape
-{
-  private final String name;
-  private final double[] sides;
-  private String color = "White";
-  private double scale = 1;
+public abstract class Shape {
+    private final String name;
+    private final double[] sides;
+    private String color = "White";
+    private double scale = 1;
 
-  public Shape( String name, double... sides )
-  {
-    this.name = name;
-    this.sides = sides;
-  }
-
-  public String getName()
-  {
-    return name;
-  }
-
-  public double[] getSides()
-  {
-    return sides;
-  }
-
-  public abstract double getArea();
-
-  public boolean isEquilateral()
-  {
-    double test = 0;
-    for( double s : sides )
-    {
-      if( test == 0 )
-      {
-        test = s;
-      }
-      else if( s != test )
-      {
-        return false;
-      }
+    public Shape(String name, double... sides) {
+        this.name = name;
+        this.sides = sides;
     }
-    return true;
-  }
 
-  public String getColor()
-  {
-    return color;
-  }
-  public void setColor( String color )
-  {
-    this.color = color;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public double getScale()
-  {
-    return scale;
-  }
-  public void setScale( double scale )
-  {
-    this.scale = scale;
-  }
+    public double[] getSides() {
+        return sides;
+    }
+
+    public abstract double getArea();
+
+    public boolean isEquilateral() {
+        double test = 0;
+        for (double s : sides) {
+            if (test == 0) {
+                test = s;
+            } else if (s != test) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
 }

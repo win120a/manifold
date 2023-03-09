@@ -4,6 +4,7 @@ import com.sun.source.util.JavacTask;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.api.JavacTool;
 import com.sun.tools.javac.file.JavacFileManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -39,9 +40,9 @@ import org.junit.Test;
 import static org.junit.Assert.fail;
 
 /**
+ *
  */
-public class CompilationTest
-{
+public class CompilationTest {
 //  @Test
 //  @Ignore("Causes problems with gradle test invocation")
 //  public void testCompilation() throws ClassNotFoundException, IllegalAccessException, InstantiationException

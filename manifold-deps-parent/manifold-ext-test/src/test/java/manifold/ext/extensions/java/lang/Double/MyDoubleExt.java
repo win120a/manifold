@@ -23,10 +23,8 @@ import manifold.ext.rt.api.This;
 import java.util.List;
 
 @Extension
-public class MyDoubleExt
-{
-  public static String myMethod( @This Double thiz, @Anything List<@Anything String> list )
-  {
-    return "myMethod";
-  }
+public class MyDoubleExt {
+    public static String myMethod(@This Double thiz, @Anything List<@Anything String> list) {
+        return "myMethod";
+    }
 }

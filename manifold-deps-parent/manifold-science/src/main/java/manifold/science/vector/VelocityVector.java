@@ -21,23 +21,19 @@ import manifold.science.measures.Velocity;
 import manifold.science.measures.VelocityUnit;
 import manifold.science.util.Rational;
 
-public final class VelocityVector extends Vector<Velocity, VelocityUnit, VelocityVector>
-{
-  public VelocityVector( Velocity magnitude, Angle angle )
-  {
-    super( magnitude, angle );
-  }
+public final class VelocityVector extends Vector<Velocity, VelocityUnit, VelocityVector> {
+    public VelocityVector(Velocity magnitude, Angle angle) {
+        super(magnitude, angle);
+    }
 
-  @Override
-  public VelocityVector make( Velocity magnitude, Angle angle )
-  {
-    return new VelocityVector( magnitude, angle );
-  }
+    @Override
+    public VelocityVector make(Velocity magnitude, Angle angle) {
+        return new VelocityVector(magnitude, angle);
+    }
 
-  @Override
-  public VelocityVector copy( Rational magnitude )
-  {
-    return new VelocityVector(
-      new Velocity( magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit() ), getAngle() );
-  }
+    @Override
+    public VelocityVector copy(Rational magnitude) {
+        return new VelocityVector(
+                new Velocity(magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit()), getAngle());
+    }
 }

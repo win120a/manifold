@@ -21,23 +21,19 @@ import manifold.science.measures.Length;
 import manifold.science.measures.LengthUnit;
 import manifold.science.util.Rational;
 
-public final class LengthVector extends Vector<Length, LengthUnit, LengthVector>
-{
-  public LengthVector( Length magnitude, Angle angle )
-  {
-    super( magnitude, angle );
-  }
+public final class LengthVector extends Vector<Length, LengthUnit, LengthVector> {
+    public LengthVector(Length magnitude, Angle angle) {
+        super(magnitude, angle);
+    }
 
-  @Override
-  public LengthVector make( Length magnitude, Angle angle )
-  {
-    return new LengthVector( magnitude, angle );
-  }
+    @Override
+    public LengthVector make(Length magnitude, Angle angle) {
+        return new LengthVector(magnitude, angle);
+    }
 
-  @Override
-  public LengthVector copy( Rational magnitude )
-  {
-    return new LengthVector(
-      new Length( magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit() ), getAngle() );
-  }
+    @Override
+    public LengthVector copy(Rational magnitude) {
+        return new LengthVector(
+                new Length(magnitude, getMagnitude().getBaseUnit(), getMagnitude().getDisplayUnit()), getAngle());
+    }
 }

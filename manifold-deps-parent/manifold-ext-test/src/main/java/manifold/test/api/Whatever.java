@@ -18,19 +18,18 @@ package manifold.test.api;
 
 import manifold.ext.rt.api.Self;
 
-public class Whatever
-{
-  public static void main( String[] args ) throws Exception
-  {
-    adsf( null, null );
-  }
-  public static Object adsf(Class<?> cls, Object obj) throws Exception
-  {
-    Whatever.getme(new Whatever());
-    return null;
-  }
-  public static @Self Object getme(@Self Object inst) {
-    System.out.println("hi");
-    return null;
-  }
+public class Whatever {
+    public static void main(String[] args) throws Exception {
+        adsf(null, null);
+    }
+
+    public static Object adsf(Class<?> cls, Object obj) throws Exception {
+        Whatever.getme(new Whatever());
+        return null;
+    }
+
+    public static @Self Object getme(@Self Object inst) {
+        System.out.println("hi");
+        return null;
+    }
 }

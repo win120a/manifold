@@ -20,28 +20,25 @@ import manifold.api.fs.IFile;
 import manifold.api.json.codegen.schema.TypeAttributes;
 
 /**
+ *
  */
-public class ErrantType extends JsonStructureType
-{
-  private int _offset;
+public class ErrantType extends JsonStructureType {
+    private int _offset;
 
-  public ErrantType( IFile file, String errantTypeName )
-  {
-    super( null, file, errantTypeName, new TypeAttributes() );
-  }
+    public ErrantType(IFile file, String errantTypeName) {
+        super(null, file, errantTypeName, new TypeAttributes());
+    }
 
-  @Override
-  public String getIdentifier()
-  {
-    return "Object";
-  }
+    @Override
+    public String getIdentifier() {
+        return "Object";
+    }
 
-  public int getOffset()
-  {
-    return _offset;
-  }
-  public void setPosition( int offset )
-  {
-    _offset = offset;
-  }
+    public int getOffset() {
+        return _offset;
+    }
+
+    public void setPosition(int offset) {
+        _offset = offset;
+    }
 }

@@ -19,9 +19,10 @@ package manifold.ext.extensions.java.lang.Iterable;
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.Structural;
 
-/** Make Iterable a structural interface to test Iterable in foreach stmt */
+/**
+ * Make Iterable a structural interface to test Iterable in foreach stmt
+ */
 @Extension
 @Structural
-public class MyIterableExt
-{
+public class MyIterableExt {
 }

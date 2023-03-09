@@ -1,63 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>systems.manifold</groupId>
-    <artifactId>manifold-deps-parent</artifactId>
-    <version>2023.1.3-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>systems.manifold</groupId>
+        <artifactId>manifold-deps-parent</artifactId>
+        <version>2023.1.3-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>manifold-delegation-test</artifactId>
+    <artifactId>manifold-delegation-test</artifactId>
 
-  <name>Manifold :: DelegationTest</name>
-  
-  <dependencies>
-    <dependency>
-      <groupId>systems.manifold</groupId>
-      <artifactId>manifold-delegation-rt</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-<!-- todo: use this when/if this is addressed: https://github.com/google/compile-testing/issues/346   -->
-<!--    <dependency>-->
-<!--      <groupId>com.google.testing.compile</groupId>-->
-<!--      <artifactId>compile-testing</artifactId>-->
-<!--      <version>0.21.0</version>-->
-<!--    </dependency>-->
-  </dependencies>
+    <name>Manifold :: DelegationTest</name>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-delegation-rt</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- todo: use this when/if this is addressed: https://github.com/google/compile-testing/issues/346   -->
+        <!--    <dependency>-->
+        <!--      <groupId>com.google.testing.compile</groupId>-->
+        <!--      <artifactId>compile-testing</artifactId>-->
+        <!--      <version>0.21.0</version>-->
+        <!--    </dependency>-->
+    </dependencies>
 
-        <!-- version 3.8.0+ is necessary to support Java 10+ -->
-        <version>3.8.0</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
 
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <compilerArgs>
-            <!--Add the Manifold plugin-->
-            <arg>-Xplugin:Manifold</arg>
-          </compilerArgs>
+                <!-- version 3.8.0+ is necessary to support Java 10+ -->
+                <version>3.8.0</version>
 
-          <!-- Add Manifold compile-time dependencies in the processor path -->
-          <annotationProcessorPaths>
-            <path>
-              <groupId>systems.manifold</groupId>
-              <artifactId>manifold-delegation</artifactId>
-              <version>${project.version}</version>
-            </path>
-          </annotationProcessorPaths>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <!--Add the Manifold plugin-->
+                        <arg>-Xplugin:Manifold</arg>
+                    </compilerArgs>
 
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+                    <!-- Add Manifold compile-time dependencies in the processor path -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>systems.manifold</groupId>
+                            <artifactId>manifold-delegation</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

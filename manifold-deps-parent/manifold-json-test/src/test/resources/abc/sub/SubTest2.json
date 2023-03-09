@@ -3,6 +3,8 @@
   "$id": "http://marksto.name/schemas/sub/SubTest2",
   "type": "object",
   "properties": {
-    "test2": { "$ref": "../Test2.json" }
+    "test2": {
+      "$ref": "../Test2.json"
+    }
   }
 }

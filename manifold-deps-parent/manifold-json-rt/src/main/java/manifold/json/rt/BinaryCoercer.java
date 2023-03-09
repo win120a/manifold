@@ -33,58 +33,49 @@ import static manifold.ext.rt.api.ICallHandler.UNHANDLED;
  * <p>
  * These formats are defined in <a href="https://github.com/OAI/OpenAPI-Specification/blob/3.0.0-rc0/versions/3.0.md#schemaObject">OpenAPI Specification</a>
  */
-public class BinaryCoercer implements IJsonFormatTypeCoercer
-{
-  private static final Map<String,Class<?>> ALL = new HashMap<String, Class<?>>() {{
-    put( "binary", OctetEncoding.class );
-    put( "byte", Base64Encoding.class );
-  }};
+public class BinaryCoercer implements IJsonFormatTypeCoercer {
+    private static final Map<String, Class<?>> ALL = new HashMap<String, Class<?>>() {{
+        put("binary", OctetEncoding.class);
+        put("byte", Base64Encoding.class);
+    }};
 
-  @Override
-  public Map<String, Class<?>> getFormats()
-  {
-    return ALL;
-  }
-
-  @Override
-  public Object coerce( Object value, Type type )
-  {
-    //
-    // From JSON value to Java value
-    //
-    if( type == OctetEncoding.class && value instanceof String )
-    {
-      return OctetEncoding.encoded( (String)value );
-    }
-    if( type == Base64Encoding.class && value instanceof String )
-    {
-      return Base64Encoding.encoded( (String)value );
+    @Override
+    public Map<String, Class<?>> getFormats() {
+        return ALL;
     }
 
-    //
-    // From Java value to JSON value
-    //
-    if( value instanceof OctetEncoding ||
-        value instanceof Base64Encoding )
-    {
-      if( type == String.class )
-      {
-        return value.toString();
-      }
+    @Override
+    public Object coerce(Object value, Type type) {
+        //
+        // From JSON value to Java value
+        //
+        if (type == OctetEncoding.class && value instanceof String) {
+            return OctetEncoding.encoded((String) value);
+        }
+        if (type == Base64Encoding.class && value instanceof String) {
+            return Base64Encoding.encoded((String) value);
+        }
+
+        //
+        // From Java value to JSON value
+        //
+        if (value instanceof OctetEncoding ||
+                value instanceof Base64Encoding) {
+            if (type == String.class) {
+                return value.toString();
+            }
+        }
+
+        return UNHANDLED;
     }
 
-    return UNHANDLED;
-  }
+    @Override
+    public Object toBindingValue(Object value) {
+        if (value instanceof OctetEncoding ||
+                value instanceof Base64Encoding) {
+            return value.toString();
+        }
 
-  @Override
-  public Object toBindingValue( Object value )
-  {
-    if( value instanceof OctetEncoding ||
-        value instanceof Base64Encoding )
-    {
-      return value.toString();
+        return UNHANDLED;
     }
-
-    return UNHANDLED;
-  }
 }

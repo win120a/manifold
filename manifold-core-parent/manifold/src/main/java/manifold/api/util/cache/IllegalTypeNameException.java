@@ -16,10 +16,8 @@
 
 package manifold.api.util.cache;
 
-public class IllegalTypeNameException extends RuntimeException
-{
-  public IllegalTypeNameException( String msg )
-  {
-    super( msg );
-  }
+public class IllegalTypeNameException extends RuntimeException {
+    public IllegalTypeNameException(String msg) {
+        super(msg);
+    }
 }

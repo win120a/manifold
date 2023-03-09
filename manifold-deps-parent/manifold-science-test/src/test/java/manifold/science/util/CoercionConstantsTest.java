@@ -18,49 +18,47 @@ package manifold.science.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 import static manifold.science.util.CoercionConstants.*;
 
-public class CoercionConstantsTest
-{
-  @Test
-  public void testSimple()
-  {
-    assertEquals( Rational.get( "1.2" ), 1.2f r );
-    assertEquals( Rational.get( "1.2" ), 1.2d r );
-    assertEquals( Rational.get( "1.2" ), 1.2 r );
+public class CoercionConstantsTest {
+    @Test
+    public void testSimple() {
+        assertEquals(Rational.get("1.2"), 1.2fr);
+        assertEquals(Rational.get("1.2"), 1.2dr);
+        assertEquals(Rational.get("1.2"), 1.2r);
 
-    assertEquals( new BigDecimal( "1.2" ), 1.2f bd );
-    assertEquals( new BigDecimal( "1.2" ), 1.2d bd );
-    assertEquals( new BigDecimal( "1.2" ), 1.2 bd );
+        assertEquals(new BigDecimal("1.2"), 1.2fbd);
+        assertEquals(new BigDecimal("1.2"), 1.2dbd);
+        assertEquals(new BigDecimal("1.2"), 1.2bd);
 
-    assertEquals( new BigInteger( "22" ), 22 bi );
-  }
+        assertEquals(new BigInteger("22"), 22bi);
+    }
 
-  @Test
-  public void testPreservePrecisionBeyondDoubleLiteral()
-  {
-    // first, establish that double loses precision
-    assertEquals( "3.0080111026763916", "" + 3.0080111026763916015 );
-    // now test that rational coercion preserves precision even though coded as a double literal 
-    assertEquals( "3.0080111026763916015" r, 3.0080111026763916015 r );
-    assertEquals( "3.0080111026763916015" r, 3.0080111026763916015d r );
-    assertEquals( "3.0080111026763916015", (3.0080111026763916015 r).toDecimalString() );
+    @Test
+    public void testPreservePrecisionBeyondDoubleLiteral() {
+        // first, establish that double loses precision
+        assertEquals("3.0080111026763916", "" + 3.0080111026763916015);
+        // now test that rational coercion preserves precision even though coded as a double literal
+        assertEquals("3.0080111026763916015"r, 3.0080111026763916015r);
+        assertEquals("3.0080111026763916015"r, 3.0080111026763916015dr);
+        assertEquals("3.0080111026763916015", (3.0080111026763916015r).toDecimalString() );
 
-    // first, establish that double loses precision
-    assertEquals( "3.0080111026763916", "" + 3.0080111026763916015 );
-    // now test that rational coercion preserves precision even though coded as a double literal
-    assertEquals( "3.0080111026763916015" bd, 3.0080111026763916015 bd );
-    assertEquals( "3.0080111026763916015" bd, 3.0080111026763916015d bd );
-    assertEquals( "3.0080111026763916015", (3.0080111026763916015 bd).toPlainString() );
-  }
+        // first, establish that double loses precision
+        assertEquals("3.0080111026763916", "" + 3.0080111026763916015);
+        // now test that rational coercion preserves precision even though coded as a double literal
+        assertEquals("3.0080111026763916015"bd, 3.0080111026763916015bd);
+        assertEquals("3.0080111026763916015"bd, 3.0080111026763916015dbd);
+        assertEquals("3.0080111026763916015", (3.0080111026763916015bd).toPlainString() );
+    }
 
-  @Test
-  public void testPreservePrecisionBeyondFloatLiteral()
-  {
-    assertEquals( "3.0080111026763916015" r, 3.0080111026763916015f r );
-    assertEquals( "3.0080111026763916015", (3.0080111026763916015f r).toDecimalString() );
-  }
+    @Test
+    public void testPreservePrecisionBeyondFloatLiteral() {
+        assertEquals("3.0080111026763916015"r, 3.0080111026763916015fr);
+        assertEquals("3.0080111026763916015", (3.0080111026763916015fr).toDecimalString() );
+    }
 }

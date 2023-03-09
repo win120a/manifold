@@ -18,16 +18,15 @@ package manifold.tuple;
 
 import manifold.ext.rt.api.auto;
 
-public class Abc
-{
-  public auto refCycle()
-  {
-    Foo foo = new Foo();
-    return foo.labeledMultiReturn();
-  }
+public class Abc {
+    public auto refCycle() {
+        Foo foo = new Foo();
+        return foo.labeledMultiReturn();
+    }
 
-  public auto callMethod()
-  {
-    return new Object() {public int myField = 5;};
-  }
+    public auto callMethod() {
+        return new Object() {
+            public int myField = 5;
+        };
+    }
 }

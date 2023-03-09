@@ -24,30 +24,31 @@ import java.lang.reflect.Type;
  * <p>
  * See {@code IJsonFormatTypeCoercer}
  */
-public interface ICoercionProvider
-{
-  /**
-   * Coerce {@code value} to {@code type}.  Return {@link ICallHandler#UNHANDLED} if not coerced.
-   * It is imperative that this method coerces only between the JSON types and Java types it explicitly
-   * handles otherwise you may inadvertently perform a coercion that is incorrect that is better handled
-   * by another coercion provider.
-   * @param value A value to coerce, typically a String.
-   * @param type The type to convert to.
-   * @return A value of the specified {@code type} or {@link ICallHandler#UNHANDLED} if this provider does not handle
-   * the coercion.
-   */
-  Object coerce( Object value, Type type );
+public interface ICoercionProvider {
+    /**
+     * Coerce {@code value} to {@code type}.  Return {@link ICallHandler#UNHANDLED} if not coerced.
+     * It is imperative that this method coerces only between the JSON types and Java types it explicitly
+     * handles otherwise you may inadvertently perform a coercion that is incorrect that is better handled
+     * by another coercion provider.
+     *
+     * @param value A value to coerce, typically a String.
+     * @param type  The type to convert to.
+     * @return A value of the specified {@code type} or {@link ICallHandler#UNHANDLED} if this provider does not handle
+     * the coercion.
+     */
+    Object coerce(Object value, Type type);
 
-  /**
-   * Coerce {@code value} parameter to a value suitable for a {@link manifold.rt.api.Bindings} e.g., a JSON bindings.
-   * It is imperative that this method coerces only between the JSON types and Java types it explicitly
-   * handles otherwise you may inadvertently perform a coercion that is incorrect that is better handled
-   * by another coercion provider.
-   * @param value A value to coerce.
-   * @return A value suitable for a {@link manifold.rt.api.Bindings} or {@link ICallHandler#UNHANDLED}
-   * if this provider does not handle the coercion.  For example, the coerced value is typically a String when dealing
-   * with JSON Schema formats such as {@code "date-time"} where the value persists in the bindings as a String, but
-   * surfaces as a {@link java.time.LocalDateTime} in the Java API.
-   */
-  Object toBindingValue( Object value );
+    /**
+     * Coerce {@code value} parameter to a value suitable for a {@link manifold.rt.api.Bindings} e.g., a JSON bindings.
+     * It is imperative that this method coerces only between the JSON types and Java types it explicitly
+     * handles otherwise you may inadvertently perform a coercion that is incorrect that is better handled
+     * by another coercion provider.
+     *
+     * @param value A value to coerce.
+     * @return A value suitable for a {@link manifold.rt.api.Bindings} or {@link ICallHandler#UNHANDLED}
+     * if this provider does not handle the coercion.  For example, the coerced value is typically a String when dealing
+     * with JSON Schema formats such as {@code "date-time"} where the value persists in the bindings as a String, but
+     * surfaces as a {@link java.time.LocalDateTime} in the Java API.
+     */
+    Object toBindingValue(Object value);
 }

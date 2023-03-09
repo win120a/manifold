@@ -17,10 +17,10 @@
 package manifold.preprocessor;
 
 #define AAA
-#define BBB
-#define CCC
+        #define BBB
+        #define CCC
 
-#undef AAA
+        #undef AAA
 
 import org.junit.Test;
 
@@ -28,121 +28,111 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class SimplePreprocessorTest
-{
-  @Test
-  public void testSimple()
-  {
+public class SimplePreprocessorTest {
+    @Test
+    public void testSimple() {
     #if AAA
-    String answer = "AAA";
+        String answer = "AAA";
     #elif BBB
-    String answer = "BBB";
+        String answer = "BBB";
     #elif CCC
-    String answer = "CCC";
+        String answer = "CCC";
     #else
-    String answer = "DDD";
+        String answer = "DDD";
     #endif
 
-    assertEquals( "BBB", answer );
-  }
+        assertEquals("BBB", answer);
+    }
 
-  @Test
-  public void testNestedIf()
-  {
+    @Test
+    public void testNestedIf() {
   #if BBB
     #if AAA
     /*
     masked comment
      */
-    // line comment 
-    """
-    text block
-    """
-    String answer = "AAA";
+        // line comment
+        """
+                text block
+                """
+        String answer = "AAA";
     #elif BBB
         #if AAA
-    String answer = "AAA";
+        String answer = "AAA";
         #elif BBB
-    String answer = "BBB"; // ding!
+        String answer = "BBB"; // ding!
         #elif CCC
-    String answer = "CCC";
+        String answer = "CCC";
         #else
-    String answer = "DDD";
+        String answer = "DDD";
         #endif
     #elif CCC
-    String answer = "CCC";
+        String answer = "CCC";
     #else
-    String answer = "DDD";
+        String answer = "DDD";
     #endif
   #endif
 
-    assertEquals( "BBB", answer );
-  }
+        assertEquals("BBB", answer);
+    }
 
-  @Test
-  public void testNestedIf2()
-  {
-    assertEquals( "abcd", nested() );
-  }
+    @Test
+    public void testNestedIf2() {
+        assertEquals("abcd", nested());
+    }
 
-  @Test
-  public void testEnvironmentDefinitions()
-  {
-    boolean success=false;
+    @Test
+    public void testEnvironmentDefinitions() {
+        boolean success = false;
     #if JAVA_9_OR_LATER
-    fail();
+        fail();
     #elif JAVA_8
-    success = true;
+        success = true;
     #else
-    fail();
+        fail();
     #endif
-    assertTrue(success);
-  }
+        assertTrue(success);
+    }
 
-  @Test
-  public void testBuildProps()
-  {
-    boolean success=false;
+    @Test
+    public void testBuildProps() {
+        boolean success = false;
     #if NOT_MY_BUILD_PROP
-    fail();
+        fail();
     #elif MY_BUILD_PROP
-    success = true;
+        success = true;
     #else
-    fail();
+        fail();
     #endif
-    assertTrue(success);
-  }
+        assertTrue(success);
+    }
 
-  @Test
-  public void testMethodBoundary()
-  {
+    @Test
+    public void testMethodBoundary() {
     #if BBB
-    String hello = "hi";
+        String hello = "hi";
     #else comment out the method 's closing brace
-  }
+    }
     #endif
-  }
+}
 
-  @Test
-  public void testOptionalClass()
-  {
-    assertEquals( "hi", new OptionalClass().foo() );
-  }
+    @Test
+    public void testOptionalClass() {
+        assertEquals("hi", new OptionalClass().foo());
+    }
 
-  @Test
-  public void testOperatorOverloadingNotEnabled()
-  {
-    short a = 0;
-    // tests that visitAssignop() is not enabled in ParseProcessor, otherwise this fails if manifold-ext is not enabled
-    // (it transforms what ParseProcessor does to be legal)
-    a += (byte)1;
-    assertEquals( 1, a );
-  }
-  
-  private String nested()
-  {
+    @Test
+    public void testOperatorOverloadingNotEnabled() {
+        short a = 0;
+        // tests that visitAssignop() is not enabled in ParseProcessor, otherwise this fails if manifold-ext is not enabled
+        // (it transforms what ParseProcessor does to be legal)
+        a += (byte) 1;
+        assertEquals(1, a);
+    }
+
+    private String nested() {
     #if BBB
-      StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
       #if BBB
         sb.append("a");
       #else
@@ -154,10 +144,10 @@ public class SimplePreprocessorTest
       #elif BBB
         sb.append("c");
       #endif
-      sb.append("d");
+        sb.append("d");
     #elif CCC
-      sb.append("double dog wrong");
+        sb.append("double dog wrong");
     #endif
-    return sb.toString();
-  }
+        return sb.toString();
+    }
 }

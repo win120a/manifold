@@ -16,8 +16,8 @@
 
 package abc;
 
-public class SubClass extends SuperClass<SubClass>{
-  public SubClass() {
-    super(SubClass.class);
-  }
+public class SubClass extends SuperClass<SubClass> {
+    public SubClass() {
+        super(SubClass.class);
+    }
 }

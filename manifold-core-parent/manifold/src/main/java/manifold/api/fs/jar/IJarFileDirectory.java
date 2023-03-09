@@ -18,9 +18,8 @@ package manifold.api.fs.jar;
 
 import manifold.api.fs.IDirectory;
 
-public interface IJarFileDirectory extends IDirectory
-{
-  JarEntryDirectoryImpl getOrCreateDirectory( String relativeName );
+public interface IJarFileDirectory extends IDirectory {
+    JarEntryDirectoryImpl getOrCreateDirectory(String relativeName);
 
-  JarEntryFileImpl getOrCreateFile( String relativeName );
+    JarEntryFileImpl getOrCreateFile(String relativeName);
 }

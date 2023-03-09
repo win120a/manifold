@@ -25,7 +25,6 @@ import java.lang.annotation.RetentionPolicy;
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
 @Deprecated
-public @interface Precompiles
-{
-  Precompile[] value();
+public @interface Precompiles {
+    Precompile[] value();
 }

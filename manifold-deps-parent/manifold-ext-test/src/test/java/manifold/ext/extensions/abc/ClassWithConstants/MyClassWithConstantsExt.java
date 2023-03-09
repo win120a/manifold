@@ -21,10 +21,8 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.This;
 
 @Extension
-public class MyClassWithConstantsExt
-{
-  public static String myMethod( @This ClassWithConstants thiz )
-  {
-    return "myMethod";
-  }
+public class MyClassWithConstantsExt {
+    public static String myMethod(@This ClassWithConstants thiz) {
+        return "myMethod";
+    }
 }

@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *   
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -18,47 +18,39 @@ package manifold.json.rt;
 
 import manifold.json.rt.api.IJsonBindingsTranslator;
 
-public class JsonBindingsTranslator implements IJsonBindingsTranslator
-{
-  @Override
-  public String getName()
-  {
-    return "JSON";
-  }
+public class JsonBindingsTranslator implements IJsonBindingsTranslator {
+    @Override
+    public String getName() {
+        return "JSON";
+    }
 
-  @Override
-  public String fromBindings( Object bindingsValue )
-  {
-    return Json.toJson( bindingsValue );
-  }
+    @Override
+    public String fromBindings(Object bindingsValue) {
+        return Json.toJson(bindingsValue);
+    }
 
-  @Override
-  public void fromBindings( Object bindingsValue, StringBuilder target )
-  {
-    Json.toJson( target, 0, bindingsValue );
-  }
+    @Override
+    public void fromBindings(Object bindingsValue, StringBuilder target) {
+        Json.toJson(target, 0, bindingsValue);
+    }
 
-  @Override
-  public void fromBindings( Object bindingsValue, String name, StringBuilder target, int indent )
-  {
-    Json.toJson( target, indent, bindingsValue );
-  }
+    @Override
+    public void fromBindings(Object bindingsValue, String name, StringBuilder target, int indent) {
+        Json.toJson(target, indent, bindingsValue);
+    }
 
-  @Override
-  public Object toBindings( String translation )
-  {
-    return Json.fromJson( translation );
-  }
+    @Override
+    public Object toBindings(String translation) {
+        return Json.fromJson(translation);
+    }
 
-  @Override
-  public Object toBindings( String translation, boolean withTokens )
-  {
-    return Json.fromJson( translation, false, withTokens );
-  }
+    @Override
+    public Object toBindings(String translation, boolean withTokens) {
+        return Json.fromJson(translation, false, withTokens);
+    }
 
-  @Override
-  public Object toBindings( String translation, boolean withBigNumbers, boolean withTokens )
-  {
-    return Json.fromJson( translation, withBigNumbers, withTokens );
-  }
+    @Override
+    public Object toBindings(String translation, boolean withBigNumbers, boolean withTokens) {
+        return Json.fromJson(translation, withBigNumbers, withTokens);
+    }
 }

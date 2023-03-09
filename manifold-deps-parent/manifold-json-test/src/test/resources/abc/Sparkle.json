@@ -23,16 +23,26 @@
   "properties": {
     "thing": {
       "allOf": [
-        {"oneOf": [
-          {"$ref": "#/definitions/ThingOne"},
-          {"$ref": "#/definitions/ThingTwo"}
-
-        ]},
-        {"properties": {
-          "discriminator": {
-            "enum": ["ThingOne", "ThingTwo"]
+        {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ThingOne"
+            },
+            {
+              "$ref": "#/definitions/ThingTwo"
+            }
+          ]
+        },
+        {
+          "properties": {
+            "discriminator": {
+              "enum": [
+                "ThingOne",
+                "ThingTwo"
+              ]
+            }
           }
-        }}
+        }
       ]
     }
   }

@@ -17,9 +17,9 @@
 package abc;
 
 public class SuperClass<T extends SuperClass<T>> {
-  private final Class<T> _classT;
+    private final Class<T> _classT;
 
-  public SuperClass(Class<T> classT) {
-    _classT = classT;
-  }
+    public SuperClass(Class<T> classT) {
+        _classT = classT;
+    }
 }

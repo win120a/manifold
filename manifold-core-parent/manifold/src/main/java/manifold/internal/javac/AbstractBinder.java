@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * <pre>
  * expression (velocity: length/time): 5 mi/hr
- * 
+ *
  *   (bad)   (good)
  *     ÷        ?
  *    / \      / \
@@ -41,111 +41,93 @@ import java.util.List;
  * ==>  ((5(mi/hr)))
  * </pre>
  */
-public abstract class AbstractBinder<MS, B extends E, E, O>
-{
-  abstract protected MS findBinderMethod( Node<E, O> left, Node<E, O> right );
+public abstract class AbstractBinder<MS, B extends E, E, O> {
+    abstract protected MS findBinderMethod(Node<E, O> left, Node<E, O> right);
 
-  abstract protected Node<E, O> makeBinaryExpression( Node<E, O> left, Node<E, O> right, MS binderMethod );
+    abstract protected Node<E, O> makeBinaryExpression(Node<E, O> left, Node<E, O> right, MS binderMethod);
 
-  @SuppressWarnings("WeakerAccess")
-  public B bind( ArrayList<Node<E, O>> operands )
-  {
-    if( operands.isEmpty() )
-    {
-      return null;
-    }
-
-    if( operands.size() == 1 )
-    {
-      //noinspection unchecked
-      return (B)operands.get( 0 ).getExpr();
-    }
-
-    for( Root root = nextRoot( operands, 0 ); root != null;
-         root = nextRoot( operands, root._index + 1 ) )
-    {
-      //noinspection unchecked
-      ArrayList<Node<E, O>> reduced = (ArrayList<Node<E, O>>)operands.clone();
-      root.replaceWithPair( reduced );
-      B solution = bind( reduced );
-      if( solution != null )
-      {
-        return solution;
-      }
-    }
-    return null;
-  }
-
-  private Root nextRoot( List<Node<E, O>> operands, int startIndex )
-  {
-    Node<E, O> left = null;
-    for( int i = startIndex; i < operands.size(); i++ )
-    {
-      Node<E, O> right = operands.get( i );
-      if( left != null )
-      {
-        MS binderMethod = findBinderMethod( left, right );
-        if( binderMethod != null )
-        {
-          return new Root( i - 1, binderMethod );
+    @SuppressWarnings("WeakerAccess")
+    public B bind(ArrayList<Node<E, O>> operands) {
+        if (operands.isEmpty()) {
+            return null;
         }
-      }
-      left = right;
-    }
-    return null;
-  }
 
-  private class Root
-  {
-    int _index;
-    MS _binderMethod;
+        if (operands.size() == 1) {
+            //noinspection unchecked
+            return (B) operands.get(0).getExpr();
+        }
 
-    Root( int index, MS binderMethod )
-    {
-      _index = index;
-      _binderMethod = binderMethod;
-    }
-
-    private void replaceWithPair( List<Node<E, O>> operands )
-    {
-      Node<E, O> left = operands.get( _index );
-      operands.remove( _index );
-      Node<E, O> right = operands.get( _index );
-      Node<E, O> rootExpr = makeBinaryExpression( left, right, _binderMethod );
-      operands.set( _index, rootExpr );
-    }
-  }
-
-  public static class Node<E, O>
-  {
-    E _expr;
-    O _operatorLeft;
-
-    public Node( E expr )
-    {
-      this( expr, null );
+        for (Root root = nextRoot(operands, 0); root != null;
+             root = nextRoot(operands, root._index + 1)) {
+            //noinspection unchecked
+            ArrayList<Node<E, O>> reduced = (ArrayList<Node<E, O>>) operands.clone();
+            root.replaceWithPair(reduced);
+            B solution = bind(reduced);
+            if (solution != null) {
+                return solution;
+            }
+        }
+        return null;
     }
 
-    public Node( E expr, O operatorLeft )
-    {
-      _expr = expr;
-      _operatorLeft = operatorLeft;
+    private Root nextRoot(List<Node<E, O>> operands, int startIndex) {
+        Node<E, O> left = null;
+        for (int i = startIndex; i < operands.size(); i++) {
+            Node<E, O> right = operands.get(i);
+            if (left != null) {
+                MS binderMethod = findBinderMethod(left, right);
+                if (binderMethod != null) {
+                    return new Root(i - 1, binderMethod);
+                }
+            }
+            left = right;
+        }
+        return null;
     }
 
-    public E getExpr()
-    {
-      return _expr;
+    private class Root {
+        int _index;
+        MS _binderMethod;
+
+        Root(int index, MS binderMethod) {
+            _index = index;
+            _binderMethod = binderMethod;
+        }
+
+        private void replaceWithPair(List<Node<E, O>> operands) {
+            Node<E, O> left = operands.get(_index);
+            operands.remove(_index);
+            Node<E, O> right = operands.get(_index);
+            Node<E, O> rootExpr = makeBinaryExpression(left, right, _binderMethod);
+            operands.set(_index, rootExpr);
+        }
     }
 
-    @SuppressWarnings("unused")
-    public O getOperatorLeft()
-    {
-      return _operatorLeft;
+    public static class Node<E, O> {
+        E _expr;
+        O _operatorLeft;
+
+        public Node(E expr) {
+            this(expr, null);
+        }
+
+        public Node(E expr, O operatorLeft) {
+            _expr = expr;
+            _operatorLeft = operatorLeft;
+        }
+
+        public E getExpr() {
+            return _expr;
+        }
+
+        @SuppressWarnings("unused")
+        public O getOperatorLeft() {
+            return _operatorLeft;
+        }
+
+        @SuppressWarnings("unused")
+        public void setOperatorLeft(O value) {
+            _operatorLeft = value;
+        }
     }
-    @SuppressWarnings("unused")
-    public void setOperatorLeft( O value )
-    {
-      _operatorLeft = value;
-    }
-  }
 }

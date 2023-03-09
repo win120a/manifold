@@ -20,15 +20,14 @@ import abc.*;
 import abc.sub.*;
 import junit.framework.TestCase;
 
-public class RelativePackageTest extends TestCase
-{
-  public void testSubPkgFromParentPkg() {
-    Test1 test = Test1.builder().withSubTest(SubTest1.builder().withId("hi").build()).build();
-    assertEquals( "hi", test.getSubTest().getId() );
-  }
+public class RelativePackageTest extends TestCase {
+    public void testSubPkgFromParentPkg() {
+        Test1 test = Test1.builder().withSubTest(SubTest1.builder().withId("hi").build()).build();
+        assertEquals("hi", test.getSubTest().getId());
+    }
 
-  public void testParentPkgFromSubPkg() {
-    SubTest2 subtest = SubTest2.builder().withTest2(Test2.create()).build();
-    assertNotNull( subtest.getTest2() );
-  }
+    public void testParentPkgFromSubPkg() {
+        SubTest2 subtest = SubTest2.builder().withTest2(Test2.create()).build();
+        assertNotNull(subtest.getTest2());
+    }
 }

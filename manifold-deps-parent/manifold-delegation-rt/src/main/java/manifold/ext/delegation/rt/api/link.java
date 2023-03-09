@@ -43,20 +43,19 @@ import java.lang.annotation.Target;
  * }
  * </code></pre>
  */
-@Target( ElementType.FIELD )
-@Retention( RetentionPolicy.RUNTIME )
-public @interface link
-{
-  /**
-   * Specify interfaces to link. This value overrides the declared type of the field. If no interfaces are specified (default),
-   * the linked interfaces are derived from the field's declared type.
-   */
-  Class<?>[] value() default {};
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface link {
+    /**
+     * Specify interfaces to link. This value overrides the declared type of the field. If no interfaces are specified (default),
+     * the linked interfaces are derived from the field's declared type.
+     */
+    Class<?>[] value() default {};
 
-  /**
-   * If true, indicates this link is shared where interface overlap exists with other links. Otherwise, overlapping interfaces
-   * are not linked and the class must implement them directly, or it must be declared abstract. If two or more links declare
-   * to share the same interface, a compiler error results.
-   */
-  boolean share() default false;
+    /**
+     * If true, indicates this link is shared where interface overlap exists with other links. Otherwise, overlapping interfaces
+     * are not linked and the class must implement them directly, or it must be declared abstract. If two or more links declare
+     * to share the same interface, a compiler error results.
+     */
+    boolean share() default false;
 }

@@ -16,7 +16,6 @@
 
 package manifold.ext.props.multi;
 
-public interface IBoth extends IComplex, ISimple
-{
-  String getType();
+public interface IBoth extends IComplex, ISimple {
+    String getType();
 }

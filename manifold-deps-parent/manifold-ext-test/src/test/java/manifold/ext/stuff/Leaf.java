@@ -1,5 +1,4 @@
 package manifold.ext.stuff;
 
-public class Leaf extends Middle
-{
+public class Leaf extends Middle {
 }

@@ -20,22 +20,26 @@ import java.util.List;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.host.IModule;
 import manifold.api.json.AbstractJsonTypeManifold;
 import manifold.api.json.JsonIssue;
 
 /**
+ *
  */
-public interface IJsonParentType extends IJsonType
-{
-  void addChild( String name, IJsonParentType child );
+public interface IJsonParentType extends IJsonType {
+    void addChild(String name, IJsonParentType child);
 
-  IJsonType findChild( String name );
+    IJsonType findChild(String name);
 
-  List<JsonIssue> getIssues();
-  void addIssue( JsonIssue issue );
+    List<JsonIssue> getIssues();
 
-  void prepareToRender( JavaFileManager.Location location, IModule module, DiagnosticListener<JavaFileObject> errorHandler );
-  void renderInner( AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable );
-  void render( AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable );
+    void addIssue(JsonIssue issue);
+
+    void prepareToRender(JavaFileManager.Location location, IModule module, DiagnosticListener<JavaFileObject> errorHandler);
+
+    void renderInner(AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable);
+
+    void render(AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable);
 }

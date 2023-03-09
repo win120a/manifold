@@ -19,16 +19,13 @@ package manifold.preprocessor.expression;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TerminalExpression extends Expression
-{
-  public TerminalExpression( int startOffset, int endOffset )
-  {
-    super( startOffset, endOffset );
-  }
+public abstract class TerminalExpression extends Expression {
+    public TerminalExpression(int startOffset, int endOffset) {
+        super(startOffset, endOffset);
+    }
 
-  @Override
-  public List<Expression> getChildren()
-  {
-    return Collections.emptyList();
-  }
+    @Override
+    public List<Expression> getChildren() {
+        return Collections.emptyList();
+    }
 }

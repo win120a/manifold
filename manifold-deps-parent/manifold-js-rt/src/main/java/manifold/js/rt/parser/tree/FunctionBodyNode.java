@@ -17,12 +17,10 @@
 package manifold.js.rt.parser.tree;
 
 
-public class FunctionBodyNode extends Node
-{
+public class FunctionBodyNode extends Node {
 
-  public FunctionBodyNode(String name)
-  {
-    super( name );
-  }
+    public FunctionBodyNode(String name) {
+        super(name);
+    }
 
 }

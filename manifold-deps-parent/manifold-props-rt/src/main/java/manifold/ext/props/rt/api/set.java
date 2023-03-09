@@ -30,26 +30,26 @@ import java.lang.annotation.Target;
  * <pre><code>
  * {@literal @}var @set(Protected) String name; // a read-write property with public getter access and protected setter access
  * </code></pre>
+ *
  * @see set
  * @see val
  * @see var
  */
-@Target( {ElementType.FIELD} )
-@Retention( RetentionPolicy.CLASS )
-public @interface set
-{
-  /**
-   * Use this argument to override the property's declared access.
-   */
-  PropOption[] value() default {};
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.CLASS)
+public @interface set {
+    /**
+     * Use this argument to override the property's declared access.
+     */
+    PropOption[] value() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the property's generated setter method.
-   */
-  any[] annos() default {};
+    /**
+     * Use this argument to specify annotations to apply to the property's generated setter method.
+     */
+    any[] annos() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the property's generated setter parameter.
-   */
-  any[] param() default {};
+    /**
+     * Use this argument to specify annotations to apply to the property's generated setter parameter.
+     */
+    any[] param() default {};
 }

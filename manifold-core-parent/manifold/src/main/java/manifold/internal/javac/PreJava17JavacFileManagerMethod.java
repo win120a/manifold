@@ -19,10 +19,9 @@ package manifold.internal.javac;
 import javax.tools.JavaFileManager;
 import java.nio.file.Path;
 
-public interface PreJava17JavacFileManagerMethod
-{
-  // This method exists so that a bridge method will be generated for the Iterable return type for Java 9 - 16.
-  // Since we compile with Java 8 and this method does not exist in Java 8, we have to trick the compiler into
-  // creating the bridge method in this way.
-  Iterable<? extends Path> getLocationAsPaths( JavaFileManager.Location location );
+public interface PreJava17JavacFileManagerMethod {
+    // This method exists so that a bridge method will be generated for the Iterable return type for Java 9 - 16.
+    // Since we compile with Java 8 and this method does not exist in Java 8, we have to trick the compiler into
+    // creating the bridge method in this way.
+    Iterable<? extends Path> getLocationAsPaths(JavaFileManager.Location location);
 }

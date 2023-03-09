@@ -16,7 +16,6 @@
 
 package manifold.ext.props.multi;
 
-public interface ISimple
-{
-  CharSequence getType();
+public interface ISimple {
+    CharSequence getType();
 }

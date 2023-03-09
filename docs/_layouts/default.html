@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Manifold - plugs into Java, provides powerful features like Type-safe Metaprogramming, Extension Methods, Operator Overloading, Units, Templates, and a Preprocessor</title>
+    <title>Manifold - plugs into Java, provides powerful features like Type-safe Metaprogramming, Extension Methods,
+        Operator Overloading, Units, Templates, and a Preprocessor</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Manifold - a Java language extension">
     <meta name="author" content="Scott McKinney">
-    <meta property="og:title" content="Manifold is a Java compiler plugin, its features include Metaprogramming, Properties, Extension Methods, Operator Overloading, Templates, a Preprocessor, and more.">
+    <meta property="og:title"
+          content="Manifold is a Java compiler plugin, its features include Metaprogramming, Properties, Extension Methods, Operator Overloading, Templates, a Preprocessor, and more.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="http://manifold.systems">
     <meta property="og:site_name" content="Manifold">
@@ -24,8 +26,11 @@
     <link href="/css/site.css" rel="stylesheet" type="text/css">
     <link href="/css/prism.css" rel="stylesheet" type="text/css">
     <link href="/css/gifplayer.css" rel="stylesheet" type="text/css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
     <script src="/js/jquery.gifplayer.js"></script>
     <script src="/js/prism.js"></script>
     <script src="/js/site.js"></script>
@@ -33,11 +38,15 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-156011851-1"></script>
     <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'UA-156011851-1');
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-156011851-1');
     </script>
 
 </head>
@@ -45,106 +54,154 @@
 <body>
 
 <div class="container">
-<nav class="navbar navbar-fixed-top navbar-dark">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand exo" href="/">
-                <img src="/images/logo_white_64px.png"> Manifold
-            </a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-<!--                <li><a href="/">Home</a></li>-->
-<!--                <li class="dropdown">-->
-<!--                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Docs<span class="caret"></span></a>-->
-<!--                    <ul class="dropdown-menu">-->
-<!--                        <li><a href="/docs.html">Overview</a></li>-->
-<!--                        <li role="separator" class="divider"></li>-->
-<!--                        <li><a href="/projects.html">Project Guide</a></li>-->
-<!--&lt;!&ndash;                        <li role="separator" class="divider"></li>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <li><a href="/cheatsheet.html">Cheat Sheet</a></li>&ndash;&gt;-->
-<!--                        &lt;!&ndash;<li><a href="/manifold-js.html">The Javascript Manifold</a></li>&ndash;&gt;-->
-<!--                    </ul>-->
-<!--                </li>-->
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                        <table>
-                            <tr>
-                                <td>
-                                    <ul>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-core-parent/manifold">Manifold&nbsp;:&nbsp;Core</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext">Manifold&nbsp;:&nbsp;Extensions</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-delegation">Manifold&nbsp;:&nbsp;Delegation</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-graphql">Manifold&nbsp;:&nbsp;GraphQL</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-json">Manifold&nbsp;:&nbsp;JSON</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-csv">Manifold&nbsp;:&nbsp;CSV</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-yaml">Manifold&nbsp;:&nbsp;YAML</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-properties">Manifold&nbsp;:&nbsp;Property&nbsp;Files</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-image">Manifold&nbsp;:&nbsp;Image&nbsp;Files</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-darkj">Manifold&nbsp;:&nbsp;Dark&nbsp;Java</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-js">Manifold&nbsp;:&nbsp;JavaScript</a></li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-props">Manifold&nbsp;:&nbsp;Properties</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-tuple">Manifold&nbsp;:&nbsp;Tuples</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-templates">Manifold&nbsp;:&nbsp;Templates</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-strings">Manifold&nbsp;:&nbsp;Strings</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-exceptions">Manifold&nbsp;:&nbsp;Exceptions</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-preprocessor">Manifold&nbsp;:&nbsp;Preprocessor</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-science">Manifold&nbsp;:&nbsp;Science</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-collections">Manifold&nbsp;:&nbsp;Collections</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-io">Manifold&nbsp;:&nbsp;I/O</a></li>
-                        <li><a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-text">Manifold&nbsp;:&nbsp;Text</a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </table>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="/faq.html">FAQ</a></li>
-                <li><a href="/articles/articles.html">Articles</a></li>
-<!--                <li><a href="/roadmap.html">Roadmap</a></li>-->
-                <!--<li><a href="https://gitter.im/manifold-io/Lobby#">Chat</a></li>-->
-<!--                <li><a href="/news.html">News</a></li>-->
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <!--<li><a href="https://twitter.com/manifoldsystems"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>-->
-                <li><a href="mailto:info@manifold.systems"><i class="fa fa-envelope" aria-hidden="true"></i></a></li>
-                <li><a href="https://join.slack.com/t/manifold-group/shared_invite/zt-e0bq8xtu-93ASQa~a8qe0KDhOoD6Bgg"><i class="fa fa-comments" aria-hidden="true"></i></a></li>
-<!--                <li><a href="https://github.com/manifold-systems/manifold/issues"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></a></li>-->
-                <li><a href="https://github.com/manifold-systems/manifold"><i class="fa fa-github" aria-hidden="true"></i></a></li>
-                <!--<li><iframe src="https://ghbtns.com/github-btn.html?user=manifold-systems&repo=manifold&type=star&count=false&size=large" style="margin-top: 10px;" frameborder="0" scrolling="0" width="160px" height="30px"></iframe></li>-->
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
+    <nav class="navbar navbar-fixed-top navbar-dark">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand exo" href="/">
+                    <img src="/images/logo_white_64px.png"> Manifold
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!--                <li><a href="/">Home</a></li>-->
+                    <!--                <li class="dropdown">-->
+                    <!--                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Docs<span class="caret"></span></a>-->
+                    <!--                    <ul class="dropdown-menu">-->
+                    <!--                        <li><a href="/docs.html">Overview</a></li>-->
+                    <!--                        <li role="separator" class="divider"></li>-->
+                    <!--                        <li><a href="/projects.html">Project Guide</a></li>-->
+                    <!--&lt;!&ndash;                        <li role="separator" class="divider"></li>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                        <li><a href="/cheatsheet.html">Cheat Sheet</a></li>&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;<li><a href="/manifold-js.html">The Javascript Manifold</a></li>&ndash;&gt;-->
+                    <!--                    </ul>-->
+                    <!--                </li>-->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Projects<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-core-parent/manifold">Manifold&nbsp;:&nbsp;Core</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext">Manifold&nbsp;:&nbsp;Extensions</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-delegation">Manifold&nbsp;:&nbsp;Delegation</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-graphql">Manifold&nbsp;:&nbsp;GraphQL</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-json">Manifold&nbsp;:&nbsp;JSON</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-csv">Manifold&nbsp;:&nbsp;CSV</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-yaml">Manifold&nbsp;:&nbsp;YAML</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-properties">Manifold&nbsp;:&nbsp;Property&nbsp;Files</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-image">Manifold&nbsp;:&nbsp;Image&nbsp;Files</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-darkj">Manifold&nbsp;:&nbsp;Dark&nbsp;Java</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-js">Manifold&nbsp;:&nbsp;JavaScript</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-props">Manifold&nbsp;:&nbsp;Properties</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-tuple">Manifold&nbsp;:&nbsp;Tuples</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-templates">Manifold&nbsp;:&nbsp;Templates</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-strings">Manifold&nbsp;:&nbsp;Strings</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-exceptions">Manifold&nbsp;:&nbsp;Exceptions</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-preprocessor">Manifold&nbsp;:&nbsp;Preprocessor</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-science">Manifold&nbsp;:&nbsp;Science</a>
+                                                </li>
+                                                <li role="separator" class="divider"></li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-collections">Manifold&nbsp;:&nbsp;Collections</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-io">Manifold&nbsp;:&nbsp;I/O</a>
+                                                </li>
+                                                <li>
+                                                    <a href="https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-text">Manifold&nbsp;:&nbsp;Text</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="/faq.html">FAQ</a></li>
+                    <li><a href="/articles/articles.html">Articles</a></li>
+                    <!--                <li><a href="/roadmap.html">Roadmap</a></li>-->
+                    <!--<li><a href="https://gitter.im/manifold-io/Lobby#">Chat</a></li>-->
+                    <!--                <li><a href="/news.html">News</a></li>-->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <!--<li><a href="https://twitter.com/manifoldsystems"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>-->
+                    <li><a href="mailto:info@manifold.systems"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                    </li>
+                    <li>
+                        <a href="https://join.slack.com/t/manifold-group/shared_invite/zt-e0bq8xtu-93ASQa~a8qe0KDhOoD6Bgg"><i
+                                class="fa fa-comments" aria-hidden="true"></i></a></li>
+                    <!--                <li><a href="https://github.com/manifold-systems/manifold/issues"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></a></li>-->
+                    <li><a href="https://github.com/manifold-systems/manifold"><i class="fa fa-github"
+                                                                                  aria-hidden="true"></i></a></li>
+                    <!--<li><iframe src="https://ghbtns.com/github-btn.html?user=manifold-systems&repo=manifold&type=star&count=false&size=large" style="margin-top: 10px;" frameborder="0" scrolling="0" width="160px" height="30px"></iframe></li>-->
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 </div>
 
 <div class="container">
 
-{{ content }}
+    {{ content }}
 
 </div>
 

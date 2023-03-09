@@ -27,6 +27,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.PARAMETER)
-public @interface ThisClass
-{
+public @interface ThisClass {
 }

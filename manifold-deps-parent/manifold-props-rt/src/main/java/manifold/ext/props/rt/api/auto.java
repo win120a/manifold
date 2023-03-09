@@ -26,14 +26,13 @@ import java.lang.annotation.Target;
  * <p/>
  * Tags a property field as auto-generated during property inference.
  */
-@Target( ElementType.FIELD )
-@Retention( RetentionPolicy.CLASS )
-public @interface auto
-{
-  /**
-   * Applies to an existing field having the same name as an inferred property. Stores the declared
-   * access privilege (public, protected, package, or private) of the original field. The default
-   * value of -1 indicates the field did not exist prior to the inference.
-   */
-  int declaredAccess() default -1;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.CLASS)
+public @interface auto {
+    /**
+     * Applies to an existing field having the same name as an inferred property. Stores the declared
+     * access privilege (public, protected, package, or private) of the original field. The default
+     * value of -1 indicates the field did not exist prior to the inference.
+     */
+    int declaredAccess() default -1;
 }

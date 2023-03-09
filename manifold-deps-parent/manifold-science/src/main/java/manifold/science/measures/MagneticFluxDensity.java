@@ -19,38 +19,31 @@ package manifold.science.measures;
 import manifold.science.api.AbstractMeasure;
 import manifold.science.util.Rational;
 
-public final class MagneticFluxDensity extends AbstractMeasure<MagneticFluxDensityUnit, MagneticFluxDensity>
-{
-  public MagneticFluxDensity( Rational value, MagneticFluxDensityUnit unit, MagneticFluxDensityUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+public final class MagneticFluxDensity extends AbstractMeasure<MagneticFluxDensityUnit, MagneticFluxDensity> {
+    public MagneticFluxDensity(Rational value, MagneticFluxDensityUnit unit, MagneticFluxDensityUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public MagneticFluxDensity( Rational value, MagneticFluxDensityUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public MagneticFluxDensity(Rational value, MagneticFluxDensityUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public MagneticFluxDensityUnit getBaseUnit()
-  {
-    return MagneticFluxDensityUnit.BASE;
-  }
+    @Override
+    public MagneticFluxDensityUnit getBaseUnit() {
+        return MagneticFluxDensityUnit.BASE;
+    }
 
-  @Override
-  public MagneticFluxDensity make( Rational value, MagneticFluxDensityUnit unit, MagneticFluxDensityUnit displayUnit )
-  {
-    return new MagneticFluxDensity( value, unit, displayUnit );
-  }
+    @Override
+    public MagneticFluxDensity make(Rational value, MagneticFluxDensityUnit unit, MagneticFluxDensityUnit displayUnit) {
+        return new MagneticFluxDensity(value, unit, displayUnit);
+    }
 
-  @Override
-  public MagneticFluxDensity make( Rational value, MagneticFluxDensityUnit unit )
-  {
-    return new MagneticFluxDensity( value, unit );
-  }
+    @Override
+    public MagneticFluxDensity make(Rational value, MagneticFluxDensityUnit unit) {
+        return new MagneticFluxDensity(value, unit);
+    }
 
-  public MagneticFlux times( Area area )
-  {
-    return new MagneticFlux( toBaseNumber() * area.toBaseNumber(), MagneticFluxUnit.BASE, getDisplayUnit().getMagneticFluxUnit() );
-  }
+    public MagneticFlux times(Area area) {
+        return new MagneticFlux(toBaseNumber() * area.toBaseNumber(), MagneticFluxUnit.BASE, getDisplayUnit().getMagneticFluxUnit());
+    }
 }

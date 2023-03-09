@@ -19,15 +19,19 @@ package manifold.ext.props.middle;
 import manifold.ext.props.rt.api.val;
 import manifold.ext.props.rt.api.var;
 
-public class BaseClass
-{
-  @var String backedProp;
+public class BaseClass {
+    @var
+    String backedProp;
 
-  @var String firstName;
-  @var String lastName;
+    @var
+    String firstName;
+    @var
+    String lastName;
 
-  @val String fullName;
-  public String getFullName() {
-    return firstName + ' ' + lastName;
-  }
+    @val
+    String fullName;
+
+    public String getFullName() {
+        return firstName + ' ' + lastName;
+    }
 }

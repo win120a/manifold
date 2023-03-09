@@ -59,102 +59,107 @@ import manifold.science.api.Dimension;
  * </code></pre>
  * Note unlike floating point literals, these expressions retain the precision of literal decimal values.
  */
-public interface UnitConstants
-{
-  LengthUnit mum = LengthUnit.Micro;
-  LengthUnit mm = LengthUnit.Milli;
-  LengthUnit cm = LengthUnit.Centi;
-  LengthUnit m = LengthUnit.Meter;
-  LengthUnit km = LengthUnit.Kilometer;
-  LengthUnit in = LengthUnit.Inch;
-  LengthUnit ft = LengthUnit.Foot;
-  LengthUnit yd = LengthUnit.Yard;
-  LengthUnit mi = LengthUnit.Mile;
+public interface UnitConstants {
+    LengthUnit mum = LengthUnit.Micro;
+    LengthUnit mm = LengthUnit.Milli;
+    LengthUnit cm = LengthUnit.Centi;
+    LengthUnit m = LengthUnit.Meter;
+    LengthUnit km = LengthUnit.Kilometer;
+    LengthUnit in = LengthUnit.Inch;
+    LengthUnit ft = LengthUnit.Foot;
+    LengthUnit yd = LengthUnit.Yard;
+    LengthUnit mi = LengthUnit.Mile;
 
-  TimeUnit ns = TimeUnit.Nano;
-  TimeUnit mus = TimeUnit.Micro;
-  TimeUnit ms = TimeUnit.Milli;
-  TimeUnit s = TimeUnit.Second;
-  TimeUnit min = TimeUnit.Minute;
-  TimeUnit hr = TimeUnit.Hour;
-  TimeUnit day = TimeUnit.Day;
-  TimeUnit wk = TimeUnit.Week;
-  TimeUnit mo = TimeUnit.Month;
-  TimeUnit yr = TimeUnit.Year;
-  TimeUnit tmo = TimeUnit.TrMonth;
-  TimeUnit tyr = TimeUnit.TrYear;
+    TimeUnit ns = TimeUnit.Nano;
+    TimeUnit mus = TimeUnit.Micro;
+    TimeUnit ms = TimeUnit.Milli;
+    TimeUnit s = TimeUnit.Second;
+    TimeUnit min = TimeUnit.Minute;
+    TimeUnit hr = TimeUnit.Hour;
+    TimeUnit day = TimeUnit.Day;
+    TimeUnit wk = TimeUnit.Week;
+    TimeUnit mo = TimeUnit.Month;
+    TimeUnit yr = TimeUnit.Year;
+    TimeUnit tmo = TimeUnit.TrMonth;
+    TimeUnit tyr = TimeUnit.TrYear;
 
-  MassUnit amu = MassUnit.AtomicMass;
-  MassUnit mug = MassUnit.Micro;
-  MassUnit mg = MassUnit.Milli;
-  MassUnit g = MassUnit.Gram;
-  MassUnit kg = MassUnit.Kilogram;
-  MassUnit ct = MassUnit.Carat;
-  MassUnit dr = MassUnit.Dram;
-  MassUnit gr = MassUnit.Grain;
-  MassUnit Nt = MassUnit.Newton;
-  MassUnit oz = MassUnit.Ounce;
-  MassUnit ozt = MassUnit.TroyOunce;
-  MassUnit lb = MassUnit.Pound;
-  MassUnit slug = MassUnit.Slug;
-  MassUnit st = MassUnit.Stone;
-  MassUnit sht = MassUnit.Ton;
-  MassUnit lt = MassUnit.TonUK;
-  MassUnit tonne = MassUnit.Tonne;
-  MassUnit Mo = MassUnit.Solar;
+    MassUnit amu = MassUnit.AtomicMass;
+    MassUnit mug = MassUnit.Micro;
+    MassUnit mg = MassUnit.Milli;
+    MassUnit g = MassUnit.Gram;
+    MassUnit kg = MassUnit.Kilogram;
+    MassUnit ct = MassUnit.Carat;
+    MassUnit dr = MassUnit.Dram;
+    MassUnit gr = MassUnit.Grain;
+    MassUnit Nt = MassUnit.Newton;
+    MassUnit oz = MassUnit.Ounce;
+    MassUnit ozt = MassUnit.TroyOunce;
+    MassUnit lb = MassUnit.Pound;
+    MassUnit slug = MassUnit.Slug;
+    MassUnit st = MassUnit.Stone;
+    MassUnit sht = MassUnit.Ton;
+    MassUnit lt = MassUnit.TonUK;
+    MassUnit tonne = MassUnit.Tonne;
+    MassUnit Mo = MassUnit.Solar;
 
-  VolumeUnit L = VolumeUnit.LITER;
-  VolumeUnit mL = VolumeUnit.MILLI_LITER;
-  VolumeUnit fl_oz = VolumeUnit.FLUID_OZ;
-  VolumeUnit gal = VolumeUnit.GALLON;
-  VolumeUnit qt = VolumeUnit.QUART;
-  VolumeUnit pt = VolumeUnit.PINT;
-  VolumeUnit cup = VolumeUnit.CUP;
-  VolumeUnit tbsp = VolumeUnit.TABLE_SPOON;
-  VolumeUnit tsp = VolumeUnit.TEA_SPOON;
+    VolumeUnit L = VolumeUnit.LITER;
+    VolumeUnit mL = VolumeUnit.MILLI_LITER;
+    VolumeUnit fl_oz = VolumeUnit.FLUID_OZ;
+    VolumeUnit gal = VolumeUnit.GALLON;
+    VolumeUnit qt = VolumeUnit.QUART;
+    VolumeUnit pt = VolumeUnit.PINT;
+    VolumeUnit cup = VolumeUnit.CUP;
+    VolumeUnit tbsp = VolumeUnit.TABLE_SPOON;
+    VolumeUnit tsp = VolumeUnit.TEA_SPOON;
 
-  AngleUnit cyc = AngleUnit.Turn;
-  AngleUnit rad = AngleUnit.Radian;
-  AngleUnit mrad = AngleUnit.Milli;
-  AngleUnit nrad = AngleUnit.Nano;
-  AngleUnit arcsec = AngleUnit.ArcSecond;
-  AngleUnit mas = AngleUnit.MilliArcSecond;
-  AngleUnit grad = AngleUnit.Gradian;
-  AngleUnit quad = AngleUnit.Quadrant;
-  AngleUnit moa = AngleUnit.MOA;
-  AngleUnit deg = AngleUnit.Degree;
+    AngleUnit cyc = AngleUnit.Turn;
+    AngleUnit rad = AngleUnit.Radian;
+    AngleUnit mrad = AngleUnit.Milli;
+    AngleUnit nrad = AngleUnit.Nano;
+    AngleUnit arcsec = AngleUnit.ArcSecond;
+    AngleUnit mas = AngleUnit.MilliArcSecond;
+    AngleUnit grad = AngleUnit.Gradian;
+    AngleUnit quad = AngleUnit.Quadrant;
+    AngleUnit moa = AngleUnit.MOA;
+    AngleUnit deg = AngleUnit.Degree;
 
-  TemperatureUnit dK = TemperatureUnit.Kelvin;
-  TemperatureUnit dC = TemperatureUnit.Celsius;
-  TemperatureUnit dF = TemperatureUnit.Fahrenheit;
+    TemperatureUnit dK = TemperatureUnit.Kelvin;
+    TemperatureUnit dC = TemperatureUnit.Celsius;
+    TemperatureUnit dF = TemperatureUnit.Fahrenheit;
 
-  VelocityUnit mph = mi/hr;
+    VelocityUnit mph = mi / hr;
 
-  AccelerationUnit ag = AccelerationUnit.GRAVITY;
+    AccelerationUnit ag = AccelerationUnit.GRAVITY;
 
-  MomentumUnit Ns = kg m/s;
+    MomentumUnit Ns = kg
+    m/s;
 
-  ForceUnit N = kg m/s/s;
-  ForceUnit dyn = g cm/s/s;
-  ForceUnit lbf = slug ft/s/s;
+    ForceUnit N = kg
+    m/s/s;
+    ForceUnit dyn = g
+    cm/s/s;
+    ForceUnit lbf = slug
+    ft/s/s;
 
-  EnergyUnit joule = N m;
-  EnergyUnit J = joule;
-  EnergyUnit erg = dyn cm;
-  EnergyUnit kcal = EnergyUnit.kcal;
+    EnergyUnit joule = N
+    m;
+    EnergyUnit J = joule;
+    EnergyUnit erg = dyn
+    cm;
+    EnergyUnit kcal = EnergyUnit.kcal;
 
-  PowerUnit watt = J / s;
-  PowerUnit W = watt;
+    PowerUnit watt = J / s;
+    PowerUnit W = watt;
 
-  HeatCapacityUnit C = J / dK;
+    HeatCapacityUnit C = J / dK;
 
-  FrequencyUnit Hz = cyc / s;
-  FrequencyUnit kHz = cyc/ms;
-  FrequencyUnit MHz = cyc/mus;
-  FrequencyUnit GHz = cyc/ns;
-  FrequencyUnit rpm = cyc/min;
+    FrequencyUnit Hz = cyc / s;
+    FrequencyUnit kHz = cyc / ms;
+    FrequencyUnit MHz = cyc / mus;
+    FrequencyUnit GHz = cyc / ns;
+    FrequencyUnit rpm = cyc / min;
 
-  ChargeUnit coulomb = ChargeUnit.Coulomb;
-  CurrentUnit amp = coulomb / s;
+    ChargeUnit coulomb = ChargeUnit.Coulomb;
+    CurrentUnit amp = coulomb / s;
 }
 

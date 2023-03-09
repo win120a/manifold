@@ -18,91 +18,78 @@ package manifold.api.json.codegen.schema;
 
 import java.util.List;
 import java.util.function.Supplier;
+
 import manifold.api.json.codegen.IJsonParentType;
 import manifold.api.json.codegen.IJsonType;
 
-public class LazyRefJsonType implements IJsonType
-{
-  private final Supplier<IJsonType> _supplier;
-  private TypeAttributes _typeAttributes;
+public class LazyRefJsonType implements IJsonType {
+    private final Supplier<IJsonType> _supplier;
+    private TypeAttributes _typeAttributes;
 
-  LazyRefJsonType( Supplier<IJsonType> supplier )
-  {
-    _supplier = supplier;
-    _typeAttributes = new TypeAttributes();
-  }
-
-  public IJsonType resolve()
-  {
-    IJsonType type = _supplier.get();
-    while( type instanceof LazyRefJsonType )
-    {
-      type = ((LazyRefJsonType)type).resolve();
+    LazyRefJsonType(Supplier<IJsonType> supplier) {
+        _supplier = supplier;
+        _typeAttributes = new TypeAttributes();
     }
-    if( type instanceof JsonSchemaType )
-    {
-      ((JsonSchemaType)type).resolveRefs();
+
+    public IJsonType resolve() {
+        IJsonType type = _supplier.get();
+        while (type instanceof LazyRefJsonType) {
+            type = ((LazyRefJsonType) type).resolve();
+        }
+        if (type instanceof JsonSchemaType) {
+            ((JsonSchemaType) type).resolveRefs();
+        }
+        type = type.copyWithAttributes(_typeAttributes.copy());
+        return type;
     }
-    type = type.copyWithAttributes( _typeAttributes.copy() );
-    return type;
-  }
 
-  @Override
-  public TypeAttributes getTypeAttributes()
-  {
-    return _typeAttributes;
-  }
-  @Override
-  public LazyRefJsonType copyWithAttributes( TypeAttributes attributes )
-  {
-    if( _typeAttributes.equals( attributes ) )
-    {
-      return this;
+    @Override
+    public TypeAttributes getTypeAttributes() {
+        return _typeAttributes;
     }
-    LazyRefJsonType copy = new LazyRefJsonType( _supplier );
-    copy._typeAttributes = copy._typeAttributes.overrideWith( attributes );
-    return copy;
-  }
 
-  @Override
-  public String getName()
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public LazyRefJsonType copyWithAttributes(TypeAttributes attributes) {
+        if (_typeAttributes.equals(attributes)) {
+            return this;
+        }
+        LazyRefJsonType copy = new LazyRefJsonType(_supplier);
+        copy._typeAttributes = copy._typeAttributes.overrideWith(attributes);
+        return copy;
+    }
 
-  @Override
-  public String getIdentifier()
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public IJsonParentType getParent()
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public String getIdentifier() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public List<IJsonType> getDefinitions()
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public IJsonParentType getParent() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public void setDefinitions( List<IJsonType> definitions )
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public List<IJsonType> getDefinitions() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public boolean equalsStructurally( IJsonType type2 )
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public void setDefinitions(List<IJsonType> definitions) {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public IJsonType merge( IJsonType type )
-  {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public boolean equalsStructurally(IJsonType type2) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public IJsonType merge(IJsonType type) {
+        throw new UnsupportedOperationException();
+    }
 }

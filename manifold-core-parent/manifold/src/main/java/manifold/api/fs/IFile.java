@@ -22,35 +22,31 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 
-public interface IFile extends IResource
-{
-  public static IFile getIFile( IFileSystem fs, Path classFile )
-  {
-    try
-    {
-      return fs.getIFile( classFile.toUri().toURL() );
+public interface IFile extends IResource {
+    public static IFile getIFile(IFileSystem fs, Path classFile) {
+        try {
+            return fs.getIFile(classFile.toUri().toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( MalformedURLException e )
-    {
-      throw new RuntimeException( e );
+
+    IFile[] EMPTY_ARRAY = new IFile[0];
+
+    InputStream openInputStream() throws IOException;
+
+    OutputStream openOutputStream() throws IOException;
+
+    OutputStream openOutputStreamForAppend() throws IOException;
+
+    String getExtension();
+
+    String getBaseName();
+
+    /**
+     * Facilitates virtual files e.g., IFileFragment
+     */
+    default IFile getPhysicalFile() {
+        return this;
     }
-  }
-
-  IFile[] EMPTY_ARRAY = new IFile[0];
-
-  InputStream openInputStream() throws IOException;
-
-  OutputStream openOutputStream() throws IOException;
-
-  OutputStream openOutputStreamForAppend() throws IOException;
-
-  String getExtension();
-
-  String getBaseName();
-
-  /** Facilitates virtual files e.g., IFileFragment */
-  default IFile getPhysicalFile()
-  {
-    return this;
-  }
 }

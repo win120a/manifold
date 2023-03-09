@@ -19,26 +19,23 @@ package manifold.ext.delegation.parts.diamond;
 import manifold.ext.delegation.rt.api.part;
 import manifold.ext.delegation.rt.api.link;
 
-public @part class StudentPart implements Student
-{
-  @link Person _person;
-  private final Program _program;
+public @part class StudentPart implements Student {
+    @link
+    Person _person;
+    private final Program _program;
 
-  public StudentPart( Person person, Program program )
-  {
-    _person = person;
-    _program = program;
-  }
+    public StudentPart(Person person, Program program) {
+        _person = person;
+        _program = program;
+    }
 
-  @Override
-  public Program getProgram()
-  {
-    return _program;
-  }
+    @Override
+    public Program getProgram() {
+        return _program;
+    }
 
-  @Override
-  public String getTitle()
-  {
-    return "grunt";
-  }
+    @Override
+    public String getTitle() {
+        return "grunt";
+    }
 }

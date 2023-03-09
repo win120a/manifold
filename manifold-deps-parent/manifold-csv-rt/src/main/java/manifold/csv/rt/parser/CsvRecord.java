@@ -18,22 +18,18 @@ package manifold.csv.rt.parser;
 
 import java.util.List;
 
-public class CsvRecord
-{
-  private final List<CsvField> _fields;
+public class CsvRecord {
+    private final List<CsvField> _fields;
 
-  CsvRecord( List<CsvField> fields )
-  {
-    _fields = fields;
-  }
+    CsvRecord(List<CsvField> fields) {
+        _fields = fields;
+    }
 
-  public List<CsvField> getFields()
-  {
-    return _fields;
-  }
+    public List<CsvField> getFields() {
+        return _fields;
+    }
 
-  public int getSize()
-  {
-    return _fields.size();
-  }
+    public int getSize() {
+        return _fields.size();
+    }
 }

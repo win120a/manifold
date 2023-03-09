@@ -23,6 +23,5 @@ package manifold.ext.props.rt.api;
  * are abstract. Manifold rewrites the property fields's modifiers during compilation and replace {@code abstract} with
  * {@code @Abstract}.
  */
-public @interface Abstract
-{
+public @interface Abstract {
 }

@@ -4,11 +4,10 @@ import junit.framework.TestCase;
 import manifold.internal.host.RuntimeManifoldHost;
 
 /**
+ *
  */
-public class BasicHostTest extends TestCase
-{
-  public void testBootstrap()
-  {
-    RuntimeManifoldHost.bootstrap();
-  }
+public class BasicHostTest extends TestCase {
+    public void testBootstrap() {
+        RuntimeManifoldHost.bootstrap();
+    }
 }

@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *   
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -22,17 +22,15 @@ import manifold.ext.rt.api.ICoercionProvider;
 import manifold.rt.api.util.ServiceUtil;
 import manifold.util.concurrent.LocklessLazyVar;
 
-public class CoercionProviders
-{
-  private static final LocklessLazyVar<Set<ICoercionProvider>> _coercionProviders =
-    LocklessLazyVar.make( () -> {
-      Set<ICoercionProvider> registered = new HashSet<>();
-      ServiceUtil.loadRegisteredServices( registered, ICoercionProvider.class, CoercionProviders.class.getClassLoader() );
-      return registered;
-    } );
+public class CoercionProviders {
+    private static final LocklessLazyVar<Set<ICoercionProvider>> _coercionProviders =
+            LocklessLazyVar.make(() -> {
+                Set<ICoercionProvider> registered = new HashSet<>();
+                ServiceUtil.loadRegisteredServices(registered, ICoercionProvider.class, CoercionProviders.class.getClassLoader());
+                return registered;
+            });
 
-  public static Set<ICoercionProvider> get()
-  {
-    return _coercionProviders.get();
-  }
+    public static Set<ICoercionProvider> get() {
+        return _coercionProviders.get();
+    }
 }

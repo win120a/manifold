@@ -17,46 +17,38 @@
 package manifold.preprocessor.statement;
 
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 
-public class FileStatement extends Statement
-{
-  private final List<Statement> _statements;
+public class FileStatement extends Statement {
+    private final List<Statement> _statements;
 
-  public FileStatement( List<Statement> statements, int start, int end )
-  {
-    super( null, start, end );
-    _statements = statements;
-  }
-
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-    for( Statement stmt: _statements )
-    {
-      stmt.execute( result, source, visible, definitions );
+    public FileStatement(List<Statement> statements, int start, int end) {
+        super(null, start, end);
+        _statements = statements;
     }
-  }
 
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-    for( Statement stmt: _statements )
-    {
-      stmt.execute( result, visible, definitions );
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+        for (Statement stmt : _statements) {
+            stmt.execute(result, source, visible, definitions);
+        }
     }
-  }
 
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    for( Statement stmt: _statements )
-    {
-      if( stmt.hasPreprocessorDirectives() )
-      {
-        return true;
-      }
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+        for (Statement stmt : _statements) {
+            stmt.execute(result, visible, definitions);
+        }
     }
-    return false;
-  }
+
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        for (Statement stmt : _statements) {
+            if (stmt.hasPreprocessorDirectives()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

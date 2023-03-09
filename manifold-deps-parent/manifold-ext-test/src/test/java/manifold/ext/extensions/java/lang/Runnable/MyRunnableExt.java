@@ -4,9 +4,9 @@ import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.Structural;
 
 /**
+ *
  */
 @Extension
 @Structural
-public class MyRunnableExt
-{
+public class MyRunnableExt {
 }

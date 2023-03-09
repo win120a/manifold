@@ -17,6 +17,8 @@
 package manifold.js.rt;
 
 import manifold.rt.api.Bindings;
+
 import java.util.concurrent.ConcurrentHashMap;
 
-class ThreadSafeBindings extends ConcurrentHashMap<String, Object> implements Bindings {}
+class ThreadSafeBindings extends ConcurrentHashMap<String, Object> implements Bindings {
+}

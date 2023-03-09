@@ -19,34 +19,33 @@ package manifold.api.fs;
 import java.io.File;
 import java.net.URL;
 import java.util.concurrent.locks.Lock;
+
 import manifold.api.host.IManifoldHost;
 import manifold.api.service.IService;
 
-public interface IFileSystem extends IService
-{
-  IManifoldHost getHost();
+public interface IFileSystem extends IService {
+    IManifoldHost getHost();
 
-  IDirectory getIDirectory( File dir );
+    IDirectory getIDirectory(File dir);
 
-  IFile getIFile( File file );
+    IFile getIFile(File file);
 
-  void setCachingMode( CachingMode cachingMode );
+    void setCachingMode(CachingMode cachingMode);
 
-  void clearAllCaches();
+    void clearAllCaches();
 
-  IDirectory getIDirectory( URL url );
+    IDirectory getIDirectory(URL url);
 
-  IFile getIFile( URL url );
+    IFile getIFile(URL url);
 
-  Lock getLock();
+    Lock getLock();
 
 //  IFile getFakeFile( URL url, IModule module );
 
-  enum CachingMode
-  {
-    NO_CACHING,
-    CHECK_TIMESTAMPS,
-    FUZZY_TIMESTAMPS,
-    FULL_CACHING
-  }
+    enum CachingMode {
+        NO_CACHING,
+        CHECK_TIMESTAMPS,
+        FUZZY_TIMESTAMPS,
+        FULL_CACHING
+    }
 }

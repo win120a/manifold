@@ -19,11 +19,9 @@ package manifold.tuple.nested;
 import manifold.tuple.Foo;
 import manifold.ext.rt.api.auto;
 
-public class DifferentPackage extends Foo
-{
-  @Override
-  public auto labeledMultiReturn()
-  {
-    return Name: "Natalie", Age: 22;
-  }
+public class DifferentPackage extends Foo {
+    @Override
+    public auto labeledMultiReturn() {
+        return Name:"Natalie", Age:22;
+    }
 }

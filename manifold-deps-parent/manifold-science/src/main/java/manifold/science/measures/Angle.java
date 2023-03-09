@@ -22,61 +22,50 @@ import manifold.science.vector.LengthVector;
 import manifold.science.vector.TimeVector;
 import manifold.science.vector.VelocityVector;
 
-final public class Angle extends AbstractMeasure<AngleUnit, Angle>
-{
-  public Angle( Rational value, AngleUnit unit, AngleUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+final public class Angle extends AbstractMeasure<AngleUnit, Angle> {
+    public Angle(Rational value, AngleUnit unit, AngleUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public Angle( Rational value, AngleUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public Angle(Rational value, AngleUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public AngleUnit getBaseUnit()
-  {
-    return AngleUnit.BASE;
-  }
+    @Override
+    public AngleUnit getBaseUnit() {
+        return AngleUnit.BASE;
+    }
 
-  @Override
-  public Angle make( Rational value, AngleUnit unit, AngleUnit displayUnit )
-  {
-    return new Angle( value, unit, displayUnit );
-  }
+    @Override
+    public Angle make(Rational value, AngleUnit unit, AngleUnit displayUnit) {
+        return new Angle(value, unit, displayUnit);
+    }
 
-  @Override
-  public Angle make( Rational value, AngleUnit unit )
-  {
-    return new Angle( value, unit );
-  }
+    @Override
+    public Angle make(Rational value, AngleUnit unit) {
+        return new Angle(value, unit);
+    }
 
-  //@BinderSeparators( :accepted = {":"} )
-  public LengthVector postfixBind( Length len )
-  {
-    return new LengthVector( len, this );
-  }
+    //@BinderSeparators( :accepted = {":"} )
+    public LengthVector postfixBind(Length len) {
+        return new LengthVector(len, this);
+    }
 
-  //@BinderSeparators( :accepted = {":"} )
-  public TimeVector postfixBind( Time t )
-  {
-    return new TimeVector( t, this );
-  }
+    //@BinderSeparators( :accepted = {":"} )
+    public TimeVector postfixBind(Time t) {
+        return new TimeVector(t, this);
+    }
 
-  //@BinderSeparators( :accepted = {":"} )
-  public VelocityVector postfixBind( Velocity v )
-  {
-    return new VelocityVector( v, this );
-  }
+    //@BinderSeparators( :accepted = {":"} )
+    public VelocityVector postfixBind(Velocity v) {
+        return new VelocityVector(v, this);
+    }
 
-  public Frequency div( Time time )
-  {
-    return new Frequency( toBaseNumber() / time.toBaseNumber(), FrequencyUnit.BASE, FrequencyUnit.get( getDisplayUnit(), time.getDisplayUnit() ) );
-  }
+    public Frequency div(Time time) {
+        return new Frequency(toBaseNumber() / time.toBaseNumber(), FrequencyUnit.BASE, FrequencyUnit.get(getDisplayUnit(), time.getDisplayUnit()));
+    }
 
-  public Time div( Frequency freq )
-  {
-    return new Time( toBaseNumber() / freq.toBaseNumber(), TimeUnit.BASE, freq.getDisplayUnit().getTimeUnit() );
-  }
+    public Time div(Frequency freq) {
+        return new Time(toBaseNumber() / freq.toBaseNumber(), TimeUnit.BASE, freq.getDisplayUnit().getTimeUnit());
+    }
 }

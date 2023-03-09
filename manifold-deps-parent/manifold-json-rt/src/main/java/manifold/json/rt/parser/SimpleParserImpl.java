@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import manifold.rt.api.Bindings;
 import manifold.json.rt.api.DataBindings;
 import manifold.rt.api.util.Pair;
@@ -46,200 +47,165 @@ import manifold.rt.api.util.Pair;
   ws =  { " " | "\t" | "\n" | "\r" }.
  */
 
-final class SimpleParserImpl
-{
-  private final Tokenizer _tokenizer;
-  private Token _token;
-  private final List<String> _errors;
-  private boolean _useBig;
-  private boolean _withTokens;
+final class SimpleParserImpl {
+    private final Tokenizer _tokenizer;
+    private Token _token;
+    private final List<String> _errors;
+    private boolean _useBig;
+    private boolean _withTokens;
 
-  SimpleParserImpl( Tokenizer tokenizer, boolean useBig )
-  {
-    _tokenizer = tokenizer;
-    _useBig = useBig;
-    _errors = new ArrayList<>();
-    advance();
-  }
-
-  // jsonText = value.
-  Object parse()
-  {
-    return parse( false );
-  }
-  Object parse( boolean withTokens )
-  {
-    _withTokens = withTokens;
-    Object val = null;
-    if( _token.isValueType() )
-    {
-      val = parseValue();
-    }
-    else
-    {
-      addError();
-    }
-    return val;
-  }
-
-  private void advance()
-  {
-    _token = _tokenizer.next();
-  }
-
-  // array = "[" [ value { "," value } ] "]".
-  private Object parseArray()
-  {
-    ArrayList<Object> arr = new ArrayList<>();
-    advance();
-    if( _token.isValueType() )
-    {
-      arr.add( parseValue() );
-      while( _token.getType() == TokenType.COMMA )
-      {
+    SimpleParserImpl(Tokenizer tokenizer, boolean useBig) {
+        _tokenizer = tokenizer;
+        _useBig = useBig;
+        _errors = new ArrayList<>();
         advance();
-        arr.add( parseValue() );
-      }
     }
-    checkAndSkip( TokenType.RSQUARE, "]" );
-    return arr;
-  }
-  
-  // object = "{" [ member { "," member } ] "}".
-  private Object parseObject()
-  {
-    // using a LinkedHashMap to preserve insertion order, necessary for IJ plugin
-    Bindings map = new DataBindings( new LinkedHashMap<>() );
 
-    advance();
-    if( _token.getType() == TokenType.STRING )
-    {
-      parseMember( map );
-      while( _token.getType() == TokenType.COMMA )
-      {
-        advance();
-        parseMember( map );
-      }
+    // jsonText = value.
+    Object parse() {
+        return parse(false);
     }
-    checkAndSkip( TokenType.RCURLY, "}" );
-    return map;
-  }
 
-  // member = string ":" value.
-  private void parseMember( Bindings map )
-  {
-    Token keyToken = _token;
-    String key = _token.getString();
-    check( TokenType.STRING, "a string" );
-    check( TokenType.COLON, ":" );
-    Token valueToken = _token;
-    Object val = parseValue();
-    map.put( key, _withTokens ? new Pair<>( new Token[] {keyToken, valueToken}, val ) : val );
-  }
-
-  // value = object | array | number | string | "true" | "false" | "null" .
-  private Object parseValue()
-  {
-    Object val;
-    switch( _token.getType() )
-    {
-      case LCURLY:
-        val = parseObject();
-        break;
-      case LSQUARE:
-        val = parseArray();
-        break;
-      case INTEGER:
-        if( _useBig )
-        {
-          val = new BigInteger( _token.getString() );
+    Object parse(boolean withTokens) {
+        _withTokens = withTokens;
+        Object val = null;
+        if (_token.isValueType()) {
+            val = parseValue();
+        } else {
+            addError();
         }
-        else
-        {
-          try
-          {
-            val = Integer.parseInt( _token.getString() );
-          }
-          catch( NumberFormatException e0 )
-          {
-            // we have an overflow, the tokenizer guarantees the format is correct
-            try
-            {
-              val = Long.parseLong( _token.getString() );
+        return val;
+    }
+
+    private void advance() {
+        _token = _tokenizer.next();
+    }
+
+    // array = "[" [ value { "," value } ] "]".
+    private Object parseArray() {
+        ArrayList<Object> arr = new ArrayList<>();
+        advance();
+        if (_token.isValueType()) {
+            arr.add(parseValue());
+            while (_token.getType() == TokenType.COMMA) {
+                advance();
+                arr.add(parseValue());
             }
-            catch( NumberFormatException e1 )
-            {
-              val = 0;
+        }
+        checkAndSkip(TokenType.RSQUARE, "]");
+        return arr;
+    }
+
+    // object = "{" [ member { "," member } ] "}".
+    private Object parseObject() {
+        // using a LinkedHashMap to preserve insertion order, necessary for IJ plugin
+        Bindings map = new DataBindings(new LinkedHashMap<>());
+
+        advance();
+        if (_token.getType() == TokenType.STRING) {
+            parseMember(map);
+            while (_token.getType() == TokenType.COMMA) {
+                advance();
+                parseMember(map);
             }
-          }
+        }
+        checkAndSkip(TokenType.RCURLY, "}");
+        return map;
+    }
+
+    // member = string ":" value.
+    private void parseMember(Bindings map) {
+        Token keyToken = _token;
+        String key = _token.getString();
+        check(TokenType.STRING, "a string");
+        check(TokenType.COLON, ":");
+        Token valueToken = _token;
+        Object val = parseValue();
+        map.put(key, _withTokens ? new Pair<>(new Token[]{keyToken, valueToken}, val) : val);
+    }
+
+    // value = object | array | number | string | "true" | "false" | "null" .
+    private Object parseValue() {
+        Object val;
+        switch (_token.getType()) {
+            case LCURLY:
+                val = parseObject();
+                break;
+            case LSQUARE:
+                val = parseArray();
+                break;
+            case INTEGER:
+                if (_useBig) {
+                    val = new BigInteger(_token.getString());
+                } else {
+                    try {
+                        val = Integer.parseInt(_token.getString());
+                    } catch (NumberFormatException e0) {
+                        // we have an overflow, the tokenizer guarantees the format is correct
+                        try {
+                            val = Long.parseLong(_token.getString());
+                        } catch (NumberFormatException e1) {
+                            val = 0;
+                        }
+                    }
+                }
+                advance();
+                break;
+            case DOUBLE:
+                if (_useBig) {
+                    val = new BigDecimal(_token.getString());
+                } else {
+                    val = Double.parseDouble(_token.getString());
+                }
+                advance();
+                break;
+            case STRING:
+                val = _token.getString();
+                advance();
+                break;
+            case TRUE:
+                val = true;
+                advance();
+                break;
+            case FALSE:
+                val = false;
+                advance();
+                break;
+            case NULL:
+                val = null;
+                advance();
+                break;
+            default:
+                val = null;
+                addError();
+        }
+        return val;
+    }
+
+    private void addError() {
+        _errors.add("[" + _token.getLineNumber() + ":" + _token.getColumn() + "] Unexpected token '" + _token.getString() + "'");
+        advance();
+    }
+
+    private void check(TokenType type, String s) {
+        if (_token.getType() != type) {
+            _errors.add("[" + _token.getLineNumber() + ":" + _token.getColumn() + "] expecting '" + s + "', found '" + _token.getString() + "'");
         }
         advance();
-        break;
-      case DOUBLE:
-        if( _useBig )
-        {
-          val = new BigDecimal( _token.getString() );
+    }
+
+    private void checkAndSkip(TokenType type, String s) {
+        if (_token.getType() != type) {
+            _errors.add("[" + _token.getLineNumber() + ":" + _token.getColumn() + "] expecting '" + s + "', found '" + _token.getString() + "'");
+            while (_token.getType() != TokenType.EOF &&
+                    _token.getType() != type) {
+                advance();
+            }
         }
-        else
-        {
-          val = Double.parseDouble( _token.getString() );
-        }
         advance();
-        break;
-      case STRING:
-        val = _token.getString();
-        advance();
-        break;
-      case TRUE:
-        val = true;
-        advance();
-        break;
-      case FALSE:
-        val = false;
-        advance();
-        break;
-      case NULL:
-        val = null;
-        advance();
-        break;
-      default:
-        val = null;
-        addError();
     }
-    return val;
-  }
-  
-  private void addError()
-  {
-    _errors.add( "[" + _token.getLineNumber() + ":" + _token.getColumn() + "] Unexpected token '" + _token.getString() + "'" );
-    advance();
-  }
 
-  private void check( TokenType type, String s )
-  {
-    if( _token.getType() != type )
-    {
-      _errors.add( "[" + _token.getLineNumber() + ":" + _token.getColumn() + "] expecting '" + s + "', found '" + _token.getString() + "'" );
+    List<String> getErrors() {
+        return _errors;
     }
-    advance();
-  }
-
-  private void checkAndSkip( TokenType type, String s )
-  {
-    if( _token.getType() != type )
-    {
-      _errors.add( "[" + _token.getLineNumber() + ":" + _token.getColumn() + "] expecting '" + s + "', found '" + _token.getString() + "'" );
-      while( _token.getType() != TokenType.EOF &&
-             _token.getType() != type )
-      {
-        advance();
-      }
-    }
-    advance();
-  }
-
-  List<String> getErrors()
-  {
-    return _errors;
-  }
 }

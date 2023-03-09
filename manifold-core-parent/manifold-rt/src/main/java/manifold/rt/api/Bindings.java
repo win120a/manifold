@@ -21,6 +21,5 @@ import java.util.Map;
 /**
  * Name/Value bindings
  */
-public interface Bindings extends Map<String, Object>
-{
+public interface Bindings extends Map<String, Object> {
 }

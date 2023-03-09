@@ -54,28 +54,28 @@ import java.lang.annotation.Target;
  * {@literal @}var @set(Protected) String name; // declares public read access and protected write access
  * </code></pre>
  * <p/>
+ *
  * @see val
  * @see get
  * @see set
  */
-@Target( ElementType.FIELD )
-@Retention( RetentionPolicy.CLASS )
-public @interface var
-{
-  /**
-   * Access options to override the property field's declared access. Note, favor Java modifiers for properties over
-   * PropOption annotation arguments. As such, the only necessary option is PropOption.Package to override the default
-   * public nature of properties. Otherwise, you don't need to use this argument.
-   */
-  PropOption[] value() default {};
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.CLASS)
+public @interface var {
+    /**
+     * Access options to override the property field's declared access. Note, favor Java modifiers for properties over
+     * PropOption annotation arguments. As such, the only necessary option is PropOption.Package to override the default
+     * public nature of properties. Otherwise, you don't need to use this argument.
+     */
+    PropOption[] value() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the var's generated getter/setter methods.
-   */
-  any[] annos() default {};
+    /**
+     * Use this argument to specify annotations to apply to the var's generated getter/setter methods.
+     */
+    any[] annos() default {};
 
-  /**
-   * Use this argument to specify annotations to apply to the var's generated setter parameter.
-   */
-  any[] param() default {};
+    /**
+     * Use this argument to specify annotations to apply to the var's generated setter parameter.
+     */
+    any[] param() default {};
 }

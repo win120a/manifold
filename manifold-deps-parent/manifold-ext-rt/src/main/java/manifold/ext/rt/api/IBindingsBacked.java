@@ -25,10 +25,9 @@ import manifold.rt.api.Bindings;
  * <p/>
  * See the {@code JsonStructureType}.
  */
-public interface IBindingsBacked
-{
-  /**
-   * The {@link Bindings} object used to store name/value pairs corresponding with getter/setter methods.
-   */
-  Bindings getBindings();
+public interface IBindingsBacked {
+    /**
+     * The {@link Bindings} object used to store name/value pairs corresponding with getter/setter methods.
+     */
+    Bindings getBindings();
 }

@@ -21,11 +21,9 @@ import org.junit.Test;
 
 import static java.lang.System.out;
 
-public class FileFragmentTest
-{
-  @Test
-  public void testFileFragment()
-  {
+public class FileFragmentTest {
+    @Test
+    public void testFileFragment() {
     /*[>MyFragmentTest.html.mtl<]
     <%@ params(String name) %>
     <!DOCTYPE html>
@@ -46,6 +44,6 @@ public class FileFragmentTest
     </body>
     </html>
     */
-    out.println(!MyFragmentTest.render("hi").isEmpty());
-  }
+        out.println(!MyFragmentTest.render("hi").isEmpty());
+    }
 }

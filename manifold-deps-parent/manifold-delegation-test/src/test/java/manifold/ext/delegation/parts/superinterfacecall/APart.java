@@ -18,17 +18,14 @@ package manifold.ext.delegation.parts.superinterfacecall;
 
 import manifold.ext.delegation.rt.api.part;
 
-public @part class APart implements A
-{
-  @Override
-  public String getName( String name )
-  {
-    return "A" + name;
-  }
+public @part class APart implements A {
+    @Override
+    public String getName(String name) {
+        return "A" + name;
+    }
 
-  @Override
-  public String stuff( String name1, String name2 )
-  {
-    return A.super.stuff( name1, name2 );
-  }
+    @Override
+    public String stuff(String name1, String name2) {
+        return A.super.stuff(name1, name2);
+    }
 }

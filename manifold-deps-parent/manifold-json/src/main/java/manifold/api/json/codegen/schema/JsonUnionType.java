@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import manifold.api.fs.IFile;
 import manifold.api.json.AbstractJsonTypeManifold;
 import manifold.api.json.codegen.DynamicType;
@@ -31,113 +32,92 @@ import manifold.api.json.codegen.JsonStructureType;
 import manifold.util.concurrent.LocklessLazyVar;
 
 /**
+ *
  */
-public class JsonUnionType extends JsonStructureType
-{
-  private static final class State
-  {
-    private Map<String, IJsonType> _constituentTypes;
-  }
-
-  private LocklessLazyVar<JsonEnumType> _collapsedEnumType = LocklessLazyVar.make( () -> {
-    if( !getMembers().isEmpty() )
-    {
-      return null;
-    }
-    if( getConstituents().stream().allMatch( e -> e instanceof JsonEnumType ) )
-    {
-      return makeEnumType( getConstituents() );
-    }
-    return null;
-  } );
-
-  private final State _state;
-
-
-  public JsonUnionType( JsonSchemaType parent, IFile source, String name, TypeAttributes attr )
-  {
-    super( parent, source, name, attr );
-    _state = new State();
-    _state._constituentTypes = Collections.emptyMap();
-  }
-
-  @Override
-  protected void resolveRefsImpl()
-  {
-    super.resolveRefsImpl();
-    for( Map.Entry<String, IJsonType> entry: new HashSet<>( _state._constituentTypes.entrySet() ) )
-    {
-      IJsonType type = entry.getValue();
-      if( type instanceof JsonSchemaType )
-      {
-        ((JsonSchemaType)type).resolveRefs();
-      }
-      else if( type instanceof LazyRefJsonType )
-      {
-        type = ((LazyRefJsonType)type).resolve();
-        _state._constituentTypes.put( entry.getKey(), type );
-      }
-    }
-  }
-
-  public Collection<? extends IJsonType> getConstituents()
-  {
-    return _state._constituentTypes.values();
-  }
-
-  public void addConstituent( String name, IJsonType type )
-  {
-    if( _state._constituentTypes.isEmpty() )
-    {
-      _state._constituentTypes = new LinkedHashMap<>();
-    }
-    _state._constituentTypes.put( name, type );
-    if( type instanceof IJsonParentType && !isDefinition( type ) )
-    {
-      super.addChild( name, (IJsonParentType)type );
-    }
-  }
-
-  private boolean isDefinition( IJsonType type )
-  {
-    return type.getParent() != null &&
-           type.getParent().getName().equals( JsonSchemaTransformer.JSCH_DEFINITIONS );
-  }
-
-  public JsonUnionType merge( IJsonType type )
-  {
-    IJsonType mergedType = null;
-    for( IJsonType c: getConstituents() )
-    {
-      mergedType = JsonTransformer.mergeTypesNoUnion( c, type );
-      if( mergedType != null && mergedType != DynamicType.instance() )
-      {
-        break;
-      }
+public class JsonUnionType extends JsonStructureType {
+    private static final class State {
+        private Map<String, IJsonType> _constituentTypes;
     }
 
-    if( mergedType == null )
-    {
-      mergedType = type;
-    }
-    addConstituent( mergedType.getName(), mergedType );
-    return this;
-  }
+    private LocklessLazyVar<JsonEnumType> _collapsedEnumType = LocklessLazyVar.make(() -> {
+        if (!getMembers().isEmpty()) {
+            return null;
+        }
+        if (getConstituents().stream().allMatch(e -> e instanceof JsonEnumType)) {
+            return makeEnumType(getConstituents());
+        }
+        return null;
+    });
 
-  public JsonEnumType getCollapsedEnumType()
-  {
-    return _collapsedEnumType.get();
-  }
+    private final State _state;
 
-  @Override
-  public void render( AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable )
-  {
-    JsonEnumType collapsedEnumType = getCollapsedEnumType();
-    if( collapsedEnumType != null )
-    {
-      collapsedEnumType.render( tm, sb, indent, mutable );
-      return;
+
+    public JsonUnionType(JsonSchemaType parent, IFile source, String name, TypeAttributes attr) {
+        super(parent, source, name, attr);
+        _state = new State();
+        _state._constituentTypes = Collections.emptyMap();
     }
-    super.render( tm, sb, indent, mutable );
-  }
+
+    @Override
+    protected void resolveRefsImpl() {
+        super.resolveRefsImpl();
+        for (Map.Entry<String, IJsonType> entry : new HashSet<>(_state._constituentTypes.entrySet())) {
+            IJsonType type = entry.getValue();
+            if (type instanceof JsonSchemaType) {
+                ((JsonSchemaType) type).resolveRefs();
+            } else if (type instanceof LazyRefJsonType) {
+                type = ((LazyRefJsonType) type).resolve();
+                _state._constituentTypes.put(entry.getKey(), type);
+            }
+        }
+    }
+
+    public Collection<? extends IJsonType> getConstituents() {
+        return _state._constituentTypes.values();
+    }
+
+    public void addConstituent(String name, IJsonType type) {
+        if (_state._constituentTypes.isEmpty()) {
+            _state._constituentTypes = new LinkedHashMap<>();
+        }
+        _state._constituentTypes.put(name, type);
+        if (type instanceof IJsonParentType && !isDefinition(type)) {
+            super.addChild(name, (IJsonParentType) type);
+        }
+    }
+
+    private boolean isDefinition(IJsonType type) {
+        return type.getParent() != null &&
+                type.getParent().getName().equals(JsonSchemaTransformer.JSCH_DEFINITIONS);
+    }
+
+    public JsonUnionType merge(IJsonType type) {
+        IJsonType mergedType = null;
+        for (IJsonType c : getConstituents()) {
+            mergedType = JsonTransformer.mergeTypesNoUnion(c, type);
+            if (mergedType != null && mergedType != DynamicType.instance()) {
+                break;
+            }
+        }
+
+        if (mergedType == null) {
+            mergedType = type;
+        }
+        addConstituent(mergedType.getName(), mergedType);
+        return this;
+    }
+
+    public JsonEnumType getCollapsedEnumType() {
+        return _collapsedEnumType.get();
+    }
+
+    @Override
+    public void render(AbstractJsonTypeManifold tm, StringBuilder sb, int indent, boolean mutable) {
+        JsonEnumType collapsedEnumType = getCollapsedEnumType();
+        if (collapsedEnumType != null) {
+            collapsedEnumType.render(tm, sb, indent, mutable);
+            return;
+        }
+        super.render(tm, sb, indent, mutable);
+    }
 }

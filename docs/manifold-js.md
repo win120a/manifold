@@ -1,9 +1,11 @@
 ---
 layout: default
 ---
+
 # The Javascript Manifold
 
-The Javascript Manifold (Manifold.js) is a [Manifold](http://manifold.systems/) extension library that allows for seamless interaction with javascript
+The Javascript Manifold (Manifold.js) is a [Manifold](http://manifold.systems/) extension library that allows for
+seamless interaction with javascript
 resources from Java using the [Rhino](https://github.com/mozilla/rhino) project.
 
 The library supports the use of javascript programs from Java, the use of ES6-flavored javascript classes from
@@ -14,7 +16,7 @@ use in Java as a scripting layer.
 
 Manifold.js makes standard ES5-style Javascript programs available as types in Java.
 
-The entire javascript program is evaluated when the type is first accessed.  Top level functions
+The entire javascript program is evaluated when the type is first accessed. Top level functions
 are accessible as static methods on the program type.
 
 ### Functions
@@ -23,14 +25,14 @@ Here is an example top-level function found in `ExampleProgram.js`:
 
 ```javascript
     function hello(name) {
-        return "Hello " + name;
-    }
+    return "Hello " + name;
+}
 ```
 
 This function could be invoked from Java like so:
 
 ```java
-    System.out.println( ExampleProgram.hello("Java Programmers") )
+    System.out.println(ExampleProgram.hello("Java Programmers"))
 ```
 
 ### Parameter & Return Types
@@ -40,21 +42,21 @@ The parameters and the return type of javascript functions are all of type `Obje
 ### Variables
 
 Top level variables in javascript programs are treated as global variables and will retain their values
-between evaluation.  Given this function:
+between evaluation. Given this function:
 
 ```javascript
     var i = 0;
 
-    function nextNum() {
-        return i++;
-    }
+function nextNum() {
+    return i++;
+}
 ```
 
 The following code
 
 ```javascript
-    System.out.println( ExampleProgram.nextNum() )
-    System.out.println( ExampleProgram.nextNum() )
+    System.out.println(ExampleProgram.nextNum())
+System.out.println(ExampleProgram.nextNum())
 ```
 
 will print
@@ -64,33 +66,38 @@ will print
 
 ### Typescript-Style Typing (Parameters & Return Types)
 
-In order to allow for greater control and readability in Java, Manifold.js allows you to specify the types parameters and return
+In order to allow for greater control and readability in Java, Manifold.js allows you to specify the types parameters
+and return
 types using Typescript syntax.
 
 Javascript:
 
 ```javascript
-    import java.util.ArrayList;
-    class Sample {
-        constructor(a : String) {
-            this.foo = a;
-        }
+    import java
 
-        foo (bar: String, baz : Integer) : ArrayList {
-           var arrlist = new ArrayList();
-           for(var i = 0 ; i < baz ; i ++) {
-               arrlist.add(bar);
-           }
-           return arrlist;
-        }
+.
+util.ArrayList;
+
+class Sample {
+    constructor(a: String) {
+        this.foo = a;
     }
+
+    foo(bar: String, baz: Integer): ArrayList {
+        var arrlist = new ArrayList();
+        for (var i = 0; i < baz; i++) {
+            arrlist.add(bar);
+        }
+        return arrlist;
+    }
+}
 ```
 
 Java:
 
 ```java
-    Sample sample = new Sample();
-    System.out.println(foo("Hello", 5)) // ["Hello","Hello","Hello","Hello","Hello"]
+    Sample sample=new Sample();
+        System.out.println(foo("Hello",5)) // ["Hello","Hello","Hello","Hello","Hello"]
 ```
 
 ### ES6-style Arrow Functions
@@ -101,14 +108,16 @@ Javascript:
 
 ```javascript
     //Arrow function expression
-    function filterEvens(list) {
-        return list.filter( a => a % 2 == 0);
-    }
+function filterEvens(list) {
+    return list.filter(a => a % 2 == 0);
+}
 
-    //Arrow function statements
-    function incrementList(list) {
-        return list.map( a => {return a + 1});
-    }
+//Arrow function statements
+function incrementList(list) {
+    return list.map(a => {
+        return a + 1
+    });
+}
 ```
 
 ## Experimental Features
@@ -125,55 +134,60 @@ Javascript: foo.js
 ```javascript
     class Foo {
 
-        //Constructor
-        constructor(a) {
-            this.foo = a;
-            this._bars = 5;
-        }
-
-        //Methods
-        function bar() {
-            return this.foo * 2;
-        }
-
-        function baz(a,b) {
-            return a+b + this.foo;
-        }
-
-        //Static Methods
-        static hello() {
-            return "hello";
-        }
-
-        //Properties
-        get bars() {
-            return this._bars*2;
-        }
-
-        set bars(a) {
-            this._bars = a;
-        }
-
+    //Constructor
+    constructor(a) {
+        this.foo = a;
+        this._bars = 5;
     }
+
+    //Methods
+    function
+
+    bar() {
+        return this.foo * 2;
+    }
+
+    function
+
+    baz(a, b) {
+        return a + b + this.foo;
+    }
+
+    //Static Methods
+    static hello() {
+        return "hello";
+    }
+
+    //Properties
+    get bars() {
+        return this._bars * 2;
+    }
+
+    set bars(a) {
+        this._bars = a;
+    }
+
+}
 ```
 
-####  Constructor
+#### Constructor
+
 The constructor is called when a new object is created. It initializes the properties within the object.
 
 Javascript:
 
 ```javascript
     class Foo {
-        constructor(a) {
-            this.bar = a;
-        }
+    constructor(a) {
+        this.bar = a;
     }
+}
 ```
 
 Java:
 
 ```java
-    Foo foo = new Foo(5); // Creates new Foo object and sets this.bar to a
+    Foo foo=new Foo(5); // Creates new Foo object and sets this.bar to a
 ```
 
 #### Methods
@@ -186,37 +200,42 @@ Javascript:
 ```javascript
     class Foo {
 
-        constructor(a) {
-            this.foo = a;
-        }
-
-        function bar() {
-            return this.foo * 2;
-        }
+    constructor(a) {
+        this.foo = a;
     }
+
+    function
+
+    bar() {
+        return this.foo * 2;
+    }
+}
 ```
 
 Java:
 
 ```java
-    Foo foo = new Foo(21);
-    System.out.println(foo.bar); // prints 42
+    Foo foo=new Foo(21);
+        System.out.println(foo.bar); // prints 42
 ```
+
 #### Static Methods
 
 Javascript:
 
 ```javascript
     class Foo {
-        constructor(a) {
-            this.foo = a;
-            this._bars = 5;
-        }
-
-        static function staticFoo() {
-            return 42;
-        }
+    constructor(a) {
+        this.foo = a;
+        this._bars = 5;
     }
+
+    static function
+
+    staticFoo() {
+        return 42;
+    }
+}
 ```
 
 Java:
@@ -226,32 +245,35 @@ Java:
 ```
 
 #### Properties
+
 Classes can have getter and setter properties which abstract the properties held within the class.
 
 Javascript:
 
 ```javascript
     class Foo {
-        constructor(a) {
-            this.foo = a;
-            this._bars = 5;
-        }
-        get bars() {
-            return this._bars*2;
-        }
-
-        set bars(a) {
-            this._bars = a;
-        }
+    constructor(a) {
+        this.foo = a;
+        this._bars = 5;
     }
+
+    get bars() {
+        return this._bars * 2;
+    }
+
+    set bars(a) {
+        this._bars = a;
+    }
+}
 ```
 
 Java:
 
 ```javascript
-    Foo foo = new Foo();
-    foo.setBars(21);
-    System.out.println(foo.getBars()) // Prints 42
+    Foo
+foo = new Foo();
+foo.setBars(21);
+System.out.println(foo.getBars()) // Prints 42
 ```
 
 ### Javascript Template Support
@@ -282,8 +304,8 @@ Java:
 
 ```java
 
-    String str = SampleJSTemplate.renderToString({"Carson", "Kyle", "Lucca"});
-    System.out.println(str)
+String str=SampleJSTemplate.renderToString({"Carson","Kyle","Lucca"});
+        System.out.println(str)
 
 ```
 
@@ -294,13 +316,13 @@ Javascript classes can be accessed using the same syntax as Java classes.
 Java:
 
 ```java
-    Foo foo = new Foo(10);
-    System.out.println(foo.bar()); // 20
-    System.out.println(foo.getBars()); // 5
+    Foo foo=new Foo(10);
+        System.out.println(foo.bar()); // 20
+        System.out.println(foo.getBars()); // 5
 
-    foo.setBars(20);
-    System.out.println(foo.getBars()) // 40
-    System.out.println(Foo.hello()) // Hello
+        foo.setBars(20);
+        System.out.println(foo.getBars()) // 40
+        System.out.println(Foo.hello()) // Hello
 ```
 
 #### Accessing Java Classes from Javascript
@@ -310,15 +332,18 @@ The (non-standard javascript) import statement is used to extend Java classes wi
 Here is some example javascript: hello.js
 
 ```javascript
-    import java.util.ArrayList;
+    import java
 
-    function hello() {
-        var arrlist = new ArrayList();
-        arrlist.add(1);
-        arrlist.add(2);
-        arrlist.add(3);
-        System.out.println(arrlist.toArray(new Integer[arrlist.size()]));
-    }
+.
+util.ArrayList;
+
+function hello() {
+    var arrlist = new ArrayList();
+    arrlist.add(1);
+    arrlist.add(2);
+    arrlist.add(3);
+    System.out.println(arrlist.toArray(new Integer[arrlist.size()]));
+}
 ```
 
 This can be invoked from Java like so:
@@ -337,21 +362,24 @@ known limitation is that the constructor of the superclass cannot be overwritten
 Javascript:
 
 ```javascript
-    import java.util.ArrayList;
+    import java
 
-    class SizePrints extends ArrayList {
-        printSize() {
-            System.out.println(super.size());
-        }
+.
+util.ArrayList;
+
+class SizePrints extends ArrayList {
+    printSize() {
+        System.out.println(super.size());
     }
+}
 ```
 
 Java:
 
 ```java
-    SizePrints demo = new sizePrints();
-    demo.add(1);
-    demo.add(2);
-    demo.add(3);
-    demo.printSize(); // Prints 3
+    SizePrints demo=new sizePrints();
+        demo.add(1);
+        demo.add(2);
+        demo.add(3);
+        demo.printSize(); // Prints 3
 ```

@@ -18,6 +18,7 @@ package manifold.science.extensions.java.math.BigDecimal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 import manifold.ext.rt.api.Extension;
 import manifold.ext.rt.api.ComparableUsing;
 import manifold.ext.rt.api.This;
@@ -26,94 +27,83 @@ import manifold.ext.rt.api.This;
  * Extends {@code BigDecimal} with arithmetic and relational operator implementations
  */
 @Extension
-public abstract class ManBigDecimalExt implements ComparableUsing<BigDecimal>
-{
-  /**
-   * Supports unary prefix operator {@code -}
-   */
-  public static BigDecimal unaryMinus( @This BigDecimal thiz )
-  {
-    return thiz.negate();
-  }
-
-  /**
-   * Supports unary increment operator {@code ++}
-   */
-  public static BigDecimal inc( @This BigDecimal thiz )
-  {
-    return thiz.add( BigDecimal.ONE );
-  }
-
-  /**
-   * Supports unary decrement operator {@code --}
-   */
-  public static BigDecimal dec( @This BigDecimal thiz )
-  {
-    return thiz.subtract( BigDecimal.ONE );
-  }
-
-  /**
-   * Supports binary operator {@code +}
-   */
-  public static BigDecimal plus( @This BigDecimal thiz, BigDecimal operand )
-  {
-    return thiz.add( operand );
-  }
-
-  /**
-   * Supports binary operator {@code -}
-   */
-  public static BigDecimal minus( @This BigDecimal thiz, BigDecimal operand )
-  {
-    return thiz.subtract( operand );
-  }
-
-  /**
-   * Supports binary operator {@code *}
-   */
-  public static BigDecimal times( @This BigDecimal thiz, BigDecimal operand )
-  {
-    return thiz.multiply( operand );
-  }
-
-  /**
-   * Supports binary operator {@code /}
-   */
-  public static BigDecimal div( @This BigDecimal thiz, BigDecimal operand )
-  {
-    return thiz.divide( operand, RoundingMode.HALF_EVEN );
-  }
-
-  /**
-   * Supports binary operator {@code %}
-   */
-  public static BigDecimal rem( @This BigDecimal thiz, BigDecimal operand )
-  {
-    return thiz.remainder( operand );
-  }
-
-  /**
-   * Implements structural interface {@link ComparableUsing} to support relational operators {@code == != > >= < <=}
-   */
-  public static boolean compareToUsing( @This BigDecimal thiz, BigDecimal that, Operator op )
-  {
-    switch( op )
-    {
-      case LT:
-        return thiz.compareTo( that ) < 0;
-      case LE:
-        return thiz.compareTo( that ) <= 0;
-      case GT:
-        return thiz.compareTo( that ) > 0;
-      case GE:
-        return thiz.compareTo( that ) >= 0;
-      case EQ:
-        return thiz.compareTo( that ) == 0;
-      case NE:
-        return thiz.compareTo( that ) != 0;
-
-      default:
-        throw new IllegalStateException();
+public abstract class ManBigDecimalExt implements ComparableUsing<BigDecimal> {
+    /**
+     * Supports unary prefix operator {@code -}
+     */
+    public static BigDecimal unaryMinus(@This BigDecimal thiz) {
+        return thiz.negate();
     }
-  }
+
+    /**
+     * Supports unary increment operator {@code ++}
+     */
+    public static BigDecimal inc(@This BigDecimal thiz) {
+        return thiz.add(BigDecimal.ONE);
+    }
+
+    /**
+     * Supports unary decrement operator {@code --}
+     */
+    public static BigDecimal dec(@This BigDecimal thiz) {
+        return thiz.subtract(BigDecimal.ONE);
+    }
+
+    /**
+     * Supports binary operator {@code +}
+     */
+    public static BigDecimal plus(@This BigDecimal thiz, BigDecimal operand) {
+        return thiz.add(operand);
+    }
+
+    /**
+     * Supports binary operator {@code -}
+     */
+    public static BigDecimal minus(@This BigDecimal thiz, BigDecimal operand) {
+        return thiz.subtract(operand);
+    }
+
+    /**
+     * Supports binary operator {@code *}
+     */
+    public static BigDecimal times(@This BigDecimal thiz, BigDecimal operand) {
+        return thiz.multiply(operand);
+    }
+
+    /**
+     * Supports binary operator {@code /}
+     */
+    public static BigDecimal div(@This BigDecimal thiz, BigDecimal operand) {
+        return thiz.divide(operand, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * Supports binary operator {@code %}
+     */
+    public static BigDecimal rem(@This BigDecimal thiz, BigDecimal operand) {
+        return thiz.remainder(operand);
+    }
+
+    /**
+     * Implements structural interface {@link ComparableUsing} to support relational operators {@code == != > >= < <=}
+     */
+    public static boolean compareToUsing(@This BigDecimal thiz, BigDecimal that, Operator op) {
+        switch (op) {
+            case LT:
+                return thiz.compareTo(that) < 0;
+            case LE:
+                return thiz.compareTo(that) <= 0;
+            case GT:
+                return thiz.compareTo(that) > 0;
+            case GE:
+                return thiz.compareTo(that) >= 0;
+            case EQ:
+                return thiz.compareTo(that) == 0;
+            case NE:
+                return thiz.compareTo(that) != 0;
+
+            default:
+                throw new IllegalStateException();
+        }
+    }
 }

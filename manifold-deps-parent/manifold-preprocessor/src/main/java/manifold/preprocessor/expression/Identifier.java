@@ -18,36 +18,30 @@ package manifold.preprocessor.expression;
 
 import manifold.preprocessor.definitions.Definitions;
 
-public class Identifier extends TerminalExpression
-{
-  private final String _name;
+public class Identifier extends TerminalExpression {
+    private final String _name;
 
-  Identifier( String name, int start, int end )
-  {
-    super( start, end );
-    _name = name;
-  }
+    Identifier(String name, int start, int end) {
+        super(start, end);
+        _name = name;
+    }
 
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return definitions.isDefined( _name );
-  }
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return definitions.isDefined(_name);
+    }
 
-  public String getName()
-  {
-    return _name;
-  }
+    public String getName() {
+        return _name;
+    }
 
-  @Override
-  public String getValue( Definitions definitions )
-  {
-    String value = definitions.getValue( _name );
-    return value == null ? "" : value;
-  }
+    @Override
+    public String getValue(Definitions definitions) {
+        String value = definitions.getValue(_name);
+        return value == null ? "" : value;
+    }
 
-  public String toString()
-  {
-    return _name;
-  }
+    public String toString() {
+        return _name;
+    }
 }

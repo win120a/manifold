@@ -16,9 +16,8 @@
 
 package manifold.ext.delegation.parts.diamond;
 
-public interface Student extends Person
-{
-  enum Program {BS, MS, PHD}
+public interface Student extends Person {
+    enum Program {BS, MS, PHD}
 
-  Program getProgram();
+    Program getProgram();
 }

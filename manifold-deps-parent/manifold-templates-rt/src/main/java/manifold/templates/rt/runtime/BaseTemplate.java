@@ -19,6 +19,7 @@ package manifold.templates.rt.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import manifold.templates.rt.ManifoldTemplates;
 import manifold.util.ManExceptionUtil;
 import manifold.rt.api.util.StreamUtil;
@@ -31,152 +32,126 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * The base class for all generated template classes.  You can derive your own base class from this one to
  * provide application-specific functionality. See {@link manifold.templates.rt.sparkjava.SparkTemplate}.
  */
-public abstract class BaseTemplate
-{
-  private ILayout _explicitLayout = null;
-  private LocklessLazyVar<String> _templateText = LocklessLazyVar.make(
-    () -> {
-      try
-      {
-        InputStreamReader reader = new InputStreamReader( getTemplateResourceAsStream(), UTF_8 );
-        return StreamUtil.getContent( reader ).replace( "\r\n", "\n" );
-      }
-      catch( Exception e )
-      {
-        throw ManExceptionUtil.unchecked( e );
-      }
+public abstract class BaseTemplate {
+    private ILayout _explicitLayout = null;
+    private LocklessLazyVar<String> _templateText = LocklessLazyVar.make(
+            () -> {
+                try {
+                    InputStreamReader reader = new InputStreamReader(getTemplateResourceAsStream(), UTF_8);
+                    return StreamUtil.getContent(reader).replace("\r\n", "\n");
+                } catch (Exception e) {
+                    throw ManExceptionUtil.unchecked(e);
+                }
+            }
+    );
+
+    /**
+     * Open an {@link InputStream} for the template resource file in the classpath/module-path.
+     * <p>
+     * To be implemented internally by the generated template.
+     */
+    protected abstract InputStream getTemplateResourceAsStream();
+
+    /**
+     * Returns the raw content of the template resource file at runtime.
+     * <p>
+     * If the template is hard-coded in a test and there is no template resource file, the generated template
+     * class overrides this method to return the test-provided text directly.
+     */
+    protected String getTemplateText() {
+        return _templateText.get();
     }
-  );
 
-  /**
-   * Open an {@link InputStream} for the template resource file in the classpath/module-path.
-   * <p>
-   * To be implemented internally by the generated template.
-   */
-  protected abstract InputStream getTemplateResourceAsStream();
-
-  /**
-   * Returns the raw content of the template resource file at runtime.
-   * <p>
-   * If the template is hard-coded in a test and there is no template resource file, the generated template
-   * class overrides this method to return the test-provided text directly.
-   */
-  protected String getTemplateText()
-  {
-    return _templateText.get();
-  }
-
-  protected void setLayout( ILayout layout )
-  {
-    _explicitLayout = layout;
-  }
-
-  protected ILayout getTemplateLayout()
-  {
-    if( _explicitLayout != null )
-    {
-      return _explicitLayout;
+    protected void setLayout(ILayout layout) {
+        _explicitLayout = layout;
     }
-    else
-    {
-      return ManifoldTemplates.getDefaultLayout( this.getClass().getName() );
-    }
-  }
 
-  protected ILayout getExplicitLayout()
-  {
-    return _explicitLayout;
-  }
-
-  protected void beforeRender( Appendable buffer, ILayout override, boolean topLevelTemplate ) throws IOException
-  {
-    if( topLevelTemplate )
-    {
-      ILayout templateLayout = override == null ? getTemplateLayout() : override;
-      templateLayout.header( buffer );
-    }
-  }
-
-  @SuppressWarnings("unused")
-  protected void afterRender( Appendable buffer, ILayout override, boolean topLevelTemplate, long renderTime ) throws IOException
-  {
-    if( topLevelTemplate )
-    {
-      ILayout templateLayout = override == null ? getTemplateLayout() : override;
-      templateLayout.footer( buffer );
-    }
-    if( buffer instanceof WrapAppendable )
-    {
-      // E.g., to trigger indentation for the `nest` directive
-      ((WrapAppendable)buffer).complete();
-    }
-    ManifoldTemplates.getTracer().trace( this.getClass(), renderTime );
-  }
-
-  @SuppressWarnings("unused")
-  protected void handleException( Exception e, String fileName, int lineStart, int[] templateLineNumbers )
-  {
-    StackTraceElement[] currentStack = e.getStackTrace();
-    String templateClassName = getClass().getName();
-
-    int elementToRemove = 0;
-    while( elementToRemove < currentStack.length )
-    {
-      StackTraceElement curr = currentStack[elementToRemove];
-      if( curr.getClassName().equals( templateClassName ) )
-      {
-        if( curr.getMethodName().equals( "renderImpl" ) )
-        {
-          handleTemplateException( e, fileName, lineStart, templateLineNumbers, elementToRemove );
+    protected ILayout getTemplateLayout() {
+        if (_explicitLayout != null) {
+            return _explicitLayout;
+        } else {
+            return ManifoldTemplates.getDefaultLayout(this.getClass().getName());
         }
-        else if( curr.getMethodName().equals( "footer" ) || curr.getMethodName().equals( "header" ) )
-        {
-          handleLayoutException( e, fileName, lineStart, templateLineNumbers, elementToRemove );
-        }
-      }
-      elementToRemove++;
     }
-  }
 
-  private void handleTemplateException( Exception e, String fileName, int lineStart, int[] templateLineNumbers, int elementToRemove )
-  {
-    StackTraceElement[] currentStack = e.getStackTrace();
-    int lineNumber = currentStack[elementToRemove].getLineNumber();
-    int javaLineNum = lineNumber - lineStart;
+    protected ILayout getExplicitLayout() {
+        return _explicitLayout;
+    }
 
-    String declaringClass = currentStack[elementToRemove + 1].getClassName();
-    String methodName = currentStack[elementToRemove + 1].getMethodName();
+    protected void beforeRender(Appendable buffer, ILayout override, boolean topLevelTemplate) throws IOException {
+        if (topLevelTemplate) {
+            ILayout templateLayout = override == null ? getTemplateLayout() : override;
+            templateLayout.header(buffer);
+        }
+    }
 
-    StackTraceElement b = new StackTraceElement( declaringClass, methodName, fileName, templateLineNumbers[javaLineNum] );
-    currentStack[elementToRemove + 1] = b;
+    @SuppressWarnings("unused")
+    protected void afterRender(Appendable buffer, ILayout override, boolean topLevelTemplate, long renderTime) throws IOException {
+        if (topLevelTemplate) {
+            ILayout templateLayout = override == null ? getTemplateLayout() : override;
+            templateLayout.footer(buffer);
+        }
+        if (buffer instanceof WrapAppendable) {
+            // E.g., to trigger indentation for the `nest` directive
+            ((WrapAppendable) buffer).complete();
+        }
+        ManifoldTemplates.getTracer().trace(this.getClass(), renderTime);
+    }
 
-    System.arraycopy( currentStack, elementToRemove + 1, currentStack, elementToRemove, currentStack.length - 1 - elementToRemove );
-    throwUnchecked( e, currentStack );
-  }
+    @SuppressWarnings("unused")
+    protected void handleException(Exception e, String fileName, int lineStart, int[] templateLineNumbers) {
+        StackTraceElement[] currentStack = e.getStackTrace();
+        String templateClassName = getClass().getName();
 
-  private void handleLayoutException( Exception e, String fileName, int lineStart, int[] templateLineNumbers, int elementToReplace )
-  {
-    StackTraceElement[] currentStack = e.getStackTrace();
-    int lineNumber = currentStack[elementToReplace].getLineNumber();
-    int javaLineNum = lineNumber - lineStart;
+        int elementToRemove = 0;
+        while (elementToRemove < currentStack.length) {
+            StackTraceElement curr = currentStack[elementToRemove];
+            if (curr.getClassName().equals(templateClassName)) {
+                if (curr.getMethodName().equals("renderImpl")) {
+                    handleTemplateException(e, fileName, lineStart, templateLineNumbers, elementToRemove);
+                } else if (curr.getMethodName().equals("footer") || curr.getMethodName().equals("header")) {
+                    handleLayoutException(e, fileName, lineStart, templateLineNumbers, elementToRemove);
+                }
+            }
+            elementToRemove++;
+        }
+    }
 
-    String declaringClass = currentStack[elementToReplace].getClassName();
-    String methodName = currentStack[elementToReplace].getMethodName();
+    private void handleTemplateException(Exception e, String fileName, int lineStart, int[] templateLineNumbers, int elementToRemove) {
+        StackTraceElement[] currentStack = e.getStackTrace();
+        int lineNumber = currentStack[elementToRemove].getLineNumber();
+        int javaLineNum = lineNumber - lineStart;
 
-    StackTraceElement b = new StackTraceElement( declaringClass, methodName, fileName, templateLineNumbers[javaLineNum] );
-    currentStack[elementToReplace] = b;
+        String declaringClass = currentStack[elementToRemove + 1].getClassName();
+        String methodName = currentStack[elementToRemove + 1].getMethodName();
 
-    throwUnchecked( e, currentStack );
-  }
+        StackTraceElement b = new StackTraceElement(declaringClass, methodName, fileName, templateLineNumbers[javaLineNum]);
+        currentStack[elementToRemove + 1] = b;
 
-  private void throwUnchecked( Exception e, StackTraceElement[] currentStack )
-  {
-    e.setStackTrace( currentStack );
-    throw ManExceptionUtil.unchecked( e );
-  }
+        System.arraycopy(currentStack, elementToRemove + 1, currentStack, elementToRemove, currentStack.length - 1 - elementToRemove);
+        throwUnchecked(e, currentStack);
+    }
 
-  public String toS( Object o )
-  {
-    return o == null ? "" : o.toString();
-  }
+    private void handleLayoutException(Exception e, String fileName, int lineStart, int[] templateLineNumbers, int elementToReplace) {
+        StackTraceElement[] currentStack = e.getStackTrace();
+        int lineNumber = currentStack[elementToReplace].getLineNumber();
+        int javaLineNum = lineNumber - lineStart;
+
+        String declaringClass = currentStack[elementToReplace].getClassName();
+        String methodName = currentStack[elementToReplace].getMethodName();
+
+        StackTraceElement b = new StackTraceElement(declaringClass, methodName, fileName, templateLineNumbers[javaLineNum]);
+        currentStack[elementToReplace] = b;
+
+        throwUnchecked(e, currentStack);
+    }
+
+    private void throwUnchecked(Exception e, StackTraceElement[] currentStack) {
+        e.setStackTrace(currentStack);
+        throw ManExceptionUtil.unchecked(e);
+    }
+
+    public String toS(Object o) {
+        return o == null ? "" : o.toString();
+    }
 }

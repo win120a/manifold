@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import manifold.api.fs.IFileUtil;
 
 import static manifold.util.ManExceptionUtil.unchecked;
@@ -48,97 +49,79 @@ import static manifold.util.ManExceptionUtil.unchecked;
  * </pre>
  * Where X and Y are supplied as local variables {@code javaNum} and {$code textNum}, respectively.
  */
-public class RenameSourceFilesForJava11Build
-{
-  public static class              _8_will_become_java_files // REMEMBER TO UN-DEFINE ENV VAR!!!!!!!!!!
-  {
-    public static void main( String[] args ) throws IOException, URISyntaxException
+public class RenameSourceFilesForJava11Build {
+    public static class _8_will_become_java_files // REMEMBER TO UN-DEFINE ENV VAR!!!!!!!!!!
     {
-      doIt( 8, 11 );
+        public static void main(String[] args) throws IOException, URISyntaxException {
+            doIt(8, 11);
+        }
     }
-  }
 
-  /**
-   * IMPORTANT: define env var:
-   *
-   *  <pre>
-   *   set manifold.compiling.java11defined=true
-   *  </pre>
-   *
-   *  when compiling with Java 11.
-   */
-  public static class              _11_will_become_java_files_from_8 // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
-  {
-    public static void main( String[] args ) throws IOException, URISyntaxException
+    /**
+     * IMPORTANT: define env var:
+     *
+     * <pre>
+     *   set manifold.compiling.java11defined=true
+     *  </pre>
+     * <p>
+     * when compiling with Java 11.
+     */
+    public static class _11_will_become_java_files_from_8 // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
     {
-      doIt( 11, 8 );
+        public static void main(String[] args) throws IOException, URISyntaxException {
+            doIt(11, 8);
+        }
     }
-  }
 
-  public static class              _11_will_become_java_files_from_17 // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
-  {
-    public static void main( String[] args ) throws IOException, URISyntaxException
+    public static class _11_will_become_java_files_from_17 // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
     {
-      doIt( 11, 17 );
+        public static void main(String[] args) throws IOException, URISyntaxException {
+            doIt(11, 17);
+        }
     }
-  }
 
-  public static class              _17_will_become_java_files // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
-  {
-    public static void main( String[] args ) throws IOException, URISyntaxException
+    public static class _17_will_become_java_files // REMEMBER TO DEFINE ENV VAR!!!!!!!!!!
     {
-      doIt( 17, 11 );
+        public static void main(String[] args) throws IOException, URISyntaxException {
+            doIt(17, 11);
+        }
     }
-  }
 
-  private static void doIt( int javaNum, int textNum ) throws URISyntaxException, IOException
-  {
+    private static void doIt(int javaNum, int textNum) throws URISyntaxException, IOException {
 //    int javaNum = 8; // will become .java files
 //    int textNum = 11; // wil become .javaX files
 
-    URI uri = RenameSourceFilesForJava11Build.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-    Path target_classes_ = Paths.get( uri );
-    Path manifold_ = target_classes_.getParent().getParent();
-    Path src_ = manifold_.resolve( "src" ).resolve( "main" ).resolve( "java" );
-    Files.walk( src_ )
-      .forEach( pathJavaFile -> {
-        if( Files.isRegularFile( pathJavaFile ) )
-        {
-          String fileName = pathJavaFile.getFileName().toString();
-          if( fileName.endsWith( ".java"+javaNum ) )
-          {
-            String baseJavaFile = IFileUtil.getBaseName( fileName );
-            if( baseJavaFile.endsWith( "_"+javaNum ) )
-            {
-              String baseTextFile = baseJavaFile.substring( 0, baseJavaFile.length() - String.valueOf( javaNum ).length() ) + textNum;
-              Path pathTextFile = pathJavaFile.getParent().resolve( baseTextFile + ".java" );
-              if( Files.isRegularFile( pathTextFile ) )
-              {
-                try
-                {
-                  Files.move( pathTextFile, pathJavaFile.getParent().resolve( baseTextFile + ".java"+textNum ) );
-                }
-                catch( IOException e )
-                {
-                  throw unchecked( e );
-                }
-              }
+        URI uri = RenameSourceFilesForJava11Build.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        Path target_classes_ = Paths.get(uri);
+        Path manifold_ = target_classes_.getParent().getParent();
+        Path src_ = manifold_.resolve("src").resolve("main").resolve("java");
+        Files.walk(src_)
+                .forEach(pathJavaFile -> {
+                    if (Files.isRegularFile(pathJavaFile)) {
+                        String fileName = pathJavaFile.getFileName().toString();
+                        if (fileName.endsWith(".java" + javaNum)) {
+                            String baseJavaFile = IFileUtil.getBaseName(fileName);
+                            if (baseJavaFile.endsWith("_" + javaNum)) {
+                                String baseTextFile = baseJavaFile.substring(0, baseJavaFile.length() - String.valueOf(javaNum).length()) + textNum;
+                                Path pathTextFile = pathJavaFile.getParent().resolve(baseTextFile + ".java");
+                                if (Files.isRegularFile(pathTextFile)) {
+                                    try {
+                                        Files.move(pathTextFile, pathJavaFile.getParent().resolve(baseTextFile + ".java" + textNum));
+                                    } catch (IOException e) {
+                                        throw unchecked(e);
+                                    }
+                                }
 
-              try
-              {
-                Files.move( pathJavaFile, pathJavaFile.getParent().resolve( baseJavaFile + ".java" ) );
-              }
-              catch( IOException e )
-              {
-                throw unchecked( e );
-              }
-            }
-            else
-            {
-              System.err.println( "Found file without '_" + javaNum + "' base suffix: " + fileName );
-            }
-          }
-        }
-      } );
-  }
+                                try {
+                                    Files.move(pathJavaFile, pathJavaFile.getParent().resolve(baseJavaFile + ".java"));
+                                } catch (IOException e) {
+                                    throw unchecked(e);
+                                }
+                            } else {
+                                System.err.println("Found file without '_" + javaNum + "' base suffix: " + fileName);
+                            }
+                        }
+                    }
+                });
+    }
 }

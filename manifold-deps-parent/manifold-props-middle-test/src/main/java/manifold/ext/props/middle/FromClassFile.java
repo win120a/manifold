@@ -23,56 +23,75 @@ import java.util.Map;
 
 import static manifold.ext.props.rt.api.PropOption.Private;
 
-public class FromClassFile
-{
-  @var static String staticReadwriteBackingProp = "staticReadwriteBackingProp";
+public class FromClassFile {
+    @var
+    static String staticReadwriteBackingProp = "staticReadwriteBackingProp";
 
-  // externally read-only property
-  @var @set(Private) static String staticReadonlyBackingProp = "staticReadonlyBackingProp";
+    // externally read-only property
+    @var
+    @set(Private)
+    static String staticReadonlyBackingProp = "staticReadonlyBackingProp";
 
-  public static void updateStaticReadonlyBackingProp()
-  {
-    // can modify read-only field internally, just no getter is made available
-    staticReadonlyBackingProp = "updated";
-  }
+    public static void updateStaticReadonlyBackingProp() {
+        // can modify read-only field internally, just no getter is made available
+        staticReadonlyBackingProp = "updated";
+    }
 
-  static private Map<String, Integer> _staticMap = new HashMap<>();
-  @var static int staticNonbackingProp;
-  {
-    _staticMap.put( "staticNonbackingProp", 8 );
-  }
-  public static int getStaticNonbackingProp()
-  {
-    return _staticMap.get( "staticNonbackingProp" );
-  }
-  public static void setStaticNonbackingProp( int value )
-  {
-    _staticMap.put( "staticNonbackingProp", value );
-  }
+    static private Map<String, Integer> _staticMap = new HashMap<>();
+    @var
+    static int staticNonbackingProp;
 
-  @var String readwriteBackingProp = "readwriteBackingProp";
-  @var int int_readwriteBackingProp = 1;
-  @get @set String readwriteBackingProp2 = "readwriteBackingProp2";
-  @val String readonlyBackingProp = "readonlyBackingProp";
-  @set String writeonlyBackingProp;
+    {
+        _staticMap.put("staticNonbackingProp", 8);
+    }
 
-  @var final String finalBackingProp = "finalBackingProp";
+    public static int getStaticNonbackingProp() {
+        return _staticMap.get("staticNonbackingProp");
+    }
 
-  @var final String finalNonBackingProp;
-  public final String getFinalNonBackingProp() {return "finalNonBackingProp";}
-  public final void setFinalNonBackingProp(String value) {throw new RuntimeException("finalNonBackingProp");}
+    public static void setStaticNonbackingProp(int value) {
+        _staticMap.put("staticNonbackingProp", value);
+    }
 
-  private Map<String, Integer> _map = new HashMap<>();
-  @var int nonbacking;
-  {
-    _map.put( "nonbacking", 8 );
-  }
-  public int getNonbacking()
-  {
-    return _map.get( "nonbacking" );
-  }
-  public void setNonbacking( int value )
-  {
-    _map.put( "nonbacking", value );
-  }
+    @var
+    String readwriteBackingProp = "readwriteBackingProp";
+    @var
+    int int_readwriteBackingProp = 1;
+    @get
+    @set
+    String readwriteBackingProp2 = "readwriteBackingProp2";
+    @val
+    String readonlyBackingProp = "readonlyBackingProp";
+    @set
+    String writeonlyBackingProp;
+
+    @var
+    final String finalBackingProp = "finalBackingProp";
+
+    @var
+    final String finalNonBackingProp;
+
+    public final String getFinalNonBackingProp() {
+        return "finalNonBackingProp";
+    }
+
+    public final void setFinalNonBackingProp(String value) {
+        throw new RuntimeException("finalNonBackingProp");
+    }
+
+    private Map<String, Integer> _map = new HashMap<>();
+    @var
+    int nonbacking;
+
+    {
+        _map.put("nonbacking", 8);
+    }
+
+    public int getNonbacking() {
+        return _map.get("nonbacking");
+    }
+
+    public void setNonbacking(int value) {
+        _map.put("nonbacking", value);
+    }
 }

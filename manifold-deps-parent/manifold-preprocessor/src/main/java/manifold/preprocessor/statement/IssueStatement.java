@@ -18,62 +18,54 @@ package manifold.preprocessor.statement;
 
 import com.sun.tools.javac.util.JCDiagnostic;
 import com.sun.tools.javac.util.Log;
+
 import java.util.List;
+
 import manifold.internal.javac.IDynamicJdk;
 import manifold.internal.javac.JavacPlugin;
 import manifold.preprocessor.TokenType;
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.expression.StringLiteral;
 
-public class IssueStatement extends Statement
-{
-  private final int _tokenStart;
-  private final StringLiteral _message;
-  private final boolean _isError;
+public class IssueStatement extends Statement {
+    private final int _tokenStart;
+    private final StringLiteral _message;
+    private final boolean _isError;
 
-  public IssueStatement( int start, int end, StringLiteral message, boolean isError )
-  {
-    super( TokenType.Undef, start, end );
-    _tokenStart = start;
-    _message = message;
-    _isError = isError;
-  }
-
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-    preserveMaskedOutSpace( result, source );
-
-    if( !visible )
-    {
-      return;
+    public IssueStatement(int start, int end, StringLiteral message, boolean isError) {
+        super(TokenType.Undef, start, end);
+        _tokenStart = start;
+        _message = message;
+        _isError = isError;
     }
 
-    if( JavacPlugin.instance() != null )
-    {
-      if( _isError )
-      {
-        IDynamicJdk.instance().logError( Log.instance( JavacPlugin.instance().getContext() ),
-          new JCDiagnostic.SimpleDiagnosticPosition( _tokenStart ),
-          "proc.messager", _message.getValue( definitions ) );
-      }
-      else
-      {
-        IDynamicJdk.instance().logWarning( Log.instance( JavacPlugin.instance().getContext() ),
-          new JCDiagnostic.SimpleDiagnosticPosition( _tokenStart ),
-          "proc.messager", _message.getValue( definitions ) );
-      }
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+        preserveMaskedOutSpace(result, source);
+
+        if (!visible) {
+            return;
+        }
+
+        if (JavacPlugin.instance() != null) {
+            if (_isError) {
+                IDynamicJdk.instance().logError(Log.instance(JavacPlugin.instance().getContext()),
+                        new JCDiagnostic.SimpleDiagnosticPosition(_tokenStart),
+                        "proc.messager", _message.getValue(definitions));
+            } else {
+                IDynamicJdk.instance().logWarning(Log.instance(JavacPlugin.instance().getContext()),
+                        new JCDiagnostic.SimpleDiagnosticPosition(_tokenStart),
+                        "proc.messager", _message.getValue(definitions));
+            }
+        }
     }
-  }
 
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-  }
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+    }
 
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    return true;
-  }
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        return true;
+    }
 }

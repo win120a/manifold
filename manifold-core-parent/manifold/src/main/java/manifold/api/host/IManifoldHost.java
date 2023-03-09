@@ -30,24 +30,22 @@ import manifold.internal.javac.JavaParser;
  * <li>IDEs - the Manifold IntelliJ IDEA plugin</li>
  * </ul>
  */
-public interface IManifoldHost extends IService
-{
-  ClassLoader getActualClassLoader();
+public interface IManifoldHost extends IService {
+    ClassLoader getActualClassLoader();
 
-  IModule getSingleModule();
+    IModule getSingleModule();
 
-  boolean isPathIgnored( String path );
+    boolean isPathIgnored(String path);
 
-  void addTypeSystemListenerAsWeakRef( Object ctx, ITypeSystemListener listener );
+    void addTypeSystemListenerAsWeakRef(Object ctx, ITypeSystemListener listener);
 
-  void createdType( IFileFragment file, String[] types );
+    void createdType(IFileFragment file, String[] types);
 
-  IFileSystem getFileSystem();
+    IFileSystem getFileSystem();
 
-  JavaParser getJavaParser();
+    JavaParser getJavaParser();
 
-  default String getArrayTypeName()
-  {
-    return null;
-  }
+    default String getArrayTypeName() {
+        return null;
+    }
 }

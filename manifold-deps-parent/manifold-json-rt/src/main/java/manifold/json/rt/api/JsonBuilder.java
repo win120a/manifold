@@ -20,13 +20,12 @@ import manifold.ext.rt.RuntimeMethods;
 
 /**
  * Super interface for all Builder classes in JSON and JSON-derived manifolds, such as XML, YAML, and CSV.
+ *
  * @param <T>
  */
-public interface JsonBuilder<T extends IJsonBindingsBacked> extends BuiltType<T>
-{
-  default T build()
-  {
-    //noinspection unchecked
-    return (T)RuntimeMethods.coerceFromBindingsValue( getBindings(), findBuiltTypeFrom( JsonBuilder.class ) );
-  }
+public interface JsonBuilder<T extends IJsonBindingsBacked> extends BuiltType<T> {
+    default T build() {
+        //noinspection unchecked
+        return (T) RuntimeMethods.coerceFromBindingsValue(getBindings(), findBuiltTypeFrom(JsonBuilder.class));
+    }
 }

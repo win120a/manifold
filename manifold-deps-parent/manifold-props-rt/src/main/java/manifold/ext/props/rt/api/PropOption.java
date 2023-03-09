@@ -30,86 +30,81 @@ import java.util.Arrays;
  *   {@literal @}var @set(Abstract) String name;
  * </code></pre>
  */
-public enum PropOption
-{
-  /**
-   * For use with {@link get}, {@link set} to override the non-use of {@code abstract} modifier on a {@code @var}
-   * property, or individually with {@link get} and {@link set}. If specified, the generated get/set method will be
-   * abstract. Note only properties declared in interfaces and abstract classes can be {@code abstract}. If the
-   * corresponding get/set method is user-defined, it must be declared {@code abstract}.
-   * <pre><code>
-   *    // only the setter method is abstract
-   *   {@literal @}var @set(Abstract) String name;
-   * </code></pre>
-   */
-  Abstract( Modifier.ABSTRACT ),
+public enum PropOption {
+    /**
+     * For use with {@link get}, {@link set} to override the non-use of {@code abstract} modifier on a {@code @var}
+     * property, or individually with {@link get} and {@link set}. If specified, the generated get/set method will be
+     * abstract. Note only properties declared in interfaces and abstract classes can be {@code abstract}. If the
+     * corresponding get/set method is user-defined, it must be declared {@code abstract}.
+     * <pre><code>
+     *    // only the setter method is abstract
+     *   {@literal @}var @set(Abstract) String name;
+     * </code></pre>
+     */
+    Abstract(Modifier.ABSTRACT),
 
-  /**
-   * For use with {@link get}, {@link set} to override the non-use of {@code final} modifier on a {@code @var}
-   * property, or individually with {@link get} and {@link set}. If specified, the generated get/set method will be
-   * final. Note properties declared in interfaces cannot be {@code final}. If the corresponding get/set method is
-   * user-defined, it must be declared {@code final}.
-   * <pre><code>
-   *    // only the setter is final
-   *   {@literal @}var @set(Final) String name;
-   * </code></pre>
-   */
-  Final( Modifier.FINAL ),
+    /**
+     * For use with {@link get}, {@link set} to override the non-use of {@code final} modifier on a {@code @var}
+     * property, or individually with {@link get} and {@link set}. If specified, the generated get/set method will be
+     * final. Note properties declared in interfaces cannot be {@code final}. If the corresponding get/set method is
+     * user-defined, it must be declared {@code final}.
+     * <pre><code>
+     *    // only the setter is final
+     *   {@literal @}var @set(Final) String name;
+     * </code></pre>
+     */
+    Final(Modifier.FINAL),
 
-  /**
-   * For use with {@link get}, {@link set} to override the property's declared accessibility.
-   * If specified, the generated get and/or set methods will be {@code private}.
-   * If the corresponding get/set method is user-defined, it must be declared {@code private}.
-   */
-  Private( Modifier.PRIVATE ),
-  /**
-   * For use with {@link var}, {@link get}, {@link set} to override the property's declared accessibility.
-   * If specified, the generated get and/or set methods will be <i>package-private</i>.
-   * If the corresponding get/set method is user-defined, it must be declared {@code package-private}.
-   */
-  Package( 0 ),
-  /**
-   * For use with {@link get}, {@link set} to override the property's declared accessibility.
-   * If specified, the generated get and/or set methods will be {@code protected}.
-   * If the corresponding get/set method is user-defined, it must be declared {@code protected}.
-   */
-  Protected( Modifier.PROTECTED ),
-  /**
-   * For use with {@link get}, {@link set} to override the property's declared accessibility.
-   * If specified, the generated get and/or set methods will be {@code public}.
-   * If the corresponding get/set method is user-defined, it must be declared {@code public}.
-   */
-  Public( Modifier.PUBLIC );
+    /**
+     * For use with {@link get}, {@link set} to override the property's declared accessibility.
+     * If specified, the generated get and/or set methods will be {@code private}.
+     * If the corresponding get/set method is user-defined, it must be declared {@code private}.
+     */
+    Private(Modifier.PRIVATE),
+    /**
+     * For use with {@link var}, {@link get}, {@link set} to override the property's declared accessibility.
+     * If specified, the generated get and/or set methods will be <i>package-private</i>.
+     * If the corresponding get/set method is user-defined, it must be declared {@code package-private}.
+     */
+    Package(0),
+    /**
+     * For use with {@link get}, {@link set} to override the property's declared accessibility.
+     * If specified, the generated get and/or set methods will be {@code protected}.
+     * If the corresponding get/set method is user-defined, it must be declared {@code protected}.
+     */
+    Protected(Modifier.PROTECTED),
+    /**
+     * For use with {@link get}, {@link set} to override the property's declared accessibility.
+     * If specified, the generated get and/or set methods will be {@code public}.
+     * If the corresponding get/set method is user-defined, it must be declared {@code public}.
+     */
+    Public(Modifier.PUBLIC);
 
-  private final int _modifier;
+    private final int _modifier;
 
-  PropOption( int modifier )
-  {
-    _modifier = modifier;
-  }
+    PropOption(int modifier) {
+        _modifier = modifier;
+    }
 
-  /**
-   * @return The Java {@link Modifier} integral value corresponding with the option.
-   */
-  public int getModifier()
-  {
-    return _modifier;
-  }
+    /**
+     * @return The Java {@link Modifier} integral value corresponding with the option.
+     */
+    public int getModifier() {
+        return _modifier;
+    }
 
-  public int or( PropOption option )
-  {
-    return or( option.getModifier() );
-  }
-  public int or( int modifier )
-  {
-    return getModifier() | modifier;
-  }
+    public int or(PropOption option) {
+        return or(option.getModifier());
+    }
 
-  public static PropOption fromModifier( int modifier )
-  {
-    return Arrays.stream( PropOption.values() )
-      .filter( e -> e.getModifier() == modifier )
-      .findFirst()
-      .orElseThrow( () -> new IllegalArgumentException( "Bad modifier: " + modifier ) );
-  }
+    public int or(int modifier) {
+        return getModifier() | modifier;
+    }
+
+    public static PropOption fromModifier(int modifier) {
+        return Arrays.stream(PropOption.values())
+                .filter(e -> e.getModifier() == modifier)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Bad modifier: " + modifier));
+    }
 }

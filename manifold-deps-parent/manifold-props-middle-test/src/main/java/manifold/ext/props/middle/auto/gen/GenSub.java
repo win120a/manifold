@@ -16,28 +16,23 @@
 
 package manifold.ext.props.middle.auto.gen;
 
-public class GenSub extends GenericBase<String>
-{
-  public GenSub( String tee )
-  {
-    super( tee );
-  }
+public class GenSub extends GenericBase<String> {
+    public GenSub(String tee) {
+        super(tee);
+    }
 
-  @Override
-  public String getTee()
-  {
-    return super.getTee();
-  }
+    @Override
+    public String getTee() {
+        return super.getTee();
+    }
 
-  @Override
-  protected GenericBase<String> getMee()
-  {
-    return this;
-  }
+    @Override
+    protected GenericBase<String> getMee() {
+        return this;
+    }
 
-  @Override
-  protected void setMee( GenericBase<String> mee )
-  {
-    setTee( mee.getTee() );
-  }
+    @Override
+    protected void setMee(GenericBase<String> mee) {
+        setTee(mee.getTee());
+    }
 }

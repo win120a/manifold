@@ -13,9 +13,9 @@ definitions:
       state:
         type: string
     required:
-    - street_address
-    - city
-    - state
+      - street_address
+      - city
+      - state
 properties:
   ContactAddresses:
     type: array

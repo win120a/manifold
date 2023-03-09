@@ -5,18 +5,33 @@
   "type": "object",
   "definitions": {
     "MyEnum": {
-      "enum": ["red", "orange", 6, 9.0, null]
+      "enum": [
+        "red",
+        "orange",
+        6,
+        9.0,
+        null
+      ]
     },
     "MyEnum2": {
-      "enum": ["stuff", "things"]
+      "enum": [
+        "stuff",
+        "things"
+      ]
     }
   },
   "properties": {
-    "foo" : {
+    "foo": {
       "$ref": "#/definitions/MyEnum"
     },
-    "bar" : {
-      "enum": ["blue", "green", 5, 4.0, null]
+    "bar": {
+      "enum": [
+        "blue",
+        "green",
+        5,
+        4.0,
+        null
+      ]
     },
     "baz": {
       "allOf": [
@@ -24,7 +39,12 @@
           "$ref": "#/definitions/MyEnum"
         },
         {
-          "enum": ["blue", "orange", 6, 3]
+          "enum": [
+            "blue",
+            "orange",
+            6,
+            3
+          ]
         }
       ]
     },
@@ -38,14 +58,18 @@
         }
       ]
     },
-
     "bazAnyOf": {
       "anyOf": [
         {
           "$ref": "#/definitions/MyEnum"
         },
         {
-          "enum": ["blue", "orange", 6, 3]
+          "enum": [
+            "blue",
+            "orange",
+            6,
+            3
+          ]
         }
       ]
     },
@@ -55,11 +79,15 @@
           "$ref": "#/definitions/MyEnum"
         },
         {
-          "enum": ["blue", "orange", 6, 3]
+          "enum": [
+            "blue",
+            "orange",
+            6,
+            3
+          ]
         }
       ]
     },
-
     "justRefsAnyOf": {
       "anyOf": [
         {

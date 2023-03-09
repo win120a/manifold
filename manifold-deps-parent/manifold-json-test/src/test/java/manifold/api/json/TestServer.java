@@ -17,30 +17,31 @@
 package manifold.api.json;
 
 import spark.Spark;
+
 import static spark.Spark.*;
 
 import abc.ResponseError;
 
 public class TestServer {
-  public static void main(String[] args) {
-    port(4567);
+    public static void main(String[] args) {
+        port(4567);
 
-    // return the Query String of the GET request
-    get("/testGet_QueryString", (req, res) -> req.raw().getQueryString() );
+        // return the Query String of the GET request
+        get("/testGet_QueryString", (req, res) -> req.raw().getQueryString());
 
-    // return the Query String of the POST request
-    post("/testPost_QueryString", (req, res) -> req.raw().getQueryString() );
+        // return the Query String of the POST request
+        post("/testPost_QueryString", (req, res) -> req.raw().getQueryString());
 
-    // Error response for IllegalStateException
-    exception(IllegalArgumentException.class, (e, req, res) -> {
-      res.status(400);
-      res.body(ResponseError.create(e.getMessage()).write().toJson()); // <~~~ The ResponseError.json file!
-    });
+        // Error response for IllegalStateException
+        exception(IllegalArgumentException.class, (e, req, res) -> {
+            res.status(400);
+            res.body(ResponseError.create(e.getMessage()).write().toJson()); // <~~~ The ResponseError.json file!
+        });
 
-    after((req, res) -> res.type("application/json"));
-  }
+        after((req, res) -> res.type("application/json"));
+    }
 
-  public static void stop() {
-    Spark.stop();
-  }
+    public static void stop() {
+        Spark.stop();
+    }
 }

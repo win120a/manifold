@@ -5,13 +5,21 @@
       "$id": "stuff",
       "type": "object",
       "properties": {
-        "foo": {"type": "string"},
-        "bar": {"type": "integer"}
+        "foo": {
+          "type": "string"
+        },
+        "bar": {
+          "type": "integer"
+        }
       },
-      "required": ["foo"]
+      "required": [
+        "foo"
+      ]
     }
   },
   "properties": {
-    "blah": {"type": "string"}
+    "blah": {
+      "type": "string"
+    }
   }
 }

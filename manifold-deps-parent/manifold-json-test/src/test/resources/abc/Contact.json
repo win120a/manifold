@@ -1,48 +1,56 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "type" : "object",
-  "id" : "http://example.com/schemas/Contact.json",
-
+  "type": "object",
+  "id": "http://example.com/schemas/Contact.json",
   "definitions": {
     "Address": {
       "type": "object",
       "properties": {
-        "street_address": { "type": "string" },
-        "city":           { "type": "string" },
-        "state":          { "type": "string" }
+        "street_address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
       },
-      "required": ["street_address", "city", "state"]
+      "required": [
+        "street_address",
+        "city",
+        "state"
+      ]
     }
   },
-
-  "properties" : {
-    "ContactAddresses" : {
-      "type" : "array",
-      "items" : {
-        "type" : "object",
-        "$ref" : "#/definitions/Address"
+  "properties": {
+    "ContactAddresses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/Address"
       }
     },
-    "DateOfBirth" : {
-      "type" : "string",
-      "format" : "date"
+    "DateOfBirth": {
+      "type": "string",
+      "format": "date"
     },
-    "HomePhone" : {
-      "type" : "string"
+    "HomePhone": {
+      "type": "string"
     },
-    "HomePhoneCountry" : {
-      "type" : "string"
+    "HomePhoneCountry": {
+      "type": "string"
     },
     "Name": {
-      "type" : "string"
+      "type": "string"
     },
-    "NumDependents" : {
-      "type" : "integer",
-      "format" : "int32"
+    "NumDependents": {
+      "type": "integer",
+      "format": "int32"
     },
-    "PrimaryAddress" : {
-      "type" : "object",
-      "$ref" : "#/definitions/Address"
+    "PrimaryAddress": {
+      "type": "object",
+      "$ref": "#/definitions/Address"
     }
   }
 }

@@ -1,15 +1,19 @@
 # Manifold : YAML
 
-The YAML type manifold provides comprehensive support for YAML (1.2).  You can define a YAML or JSON API with YAML resource
-files (`.yml` and `.yaml` files).  Manifold can derive an API from sample data in YAML format or you can build [JSON Schema](https://json-schema.org/)
+The YAML type manifold provides comprehensive support for YAML (1.2). You can define a YAML or JSON API with YAML
+resource
+files (`.yml` and `.yaml` files). Manifold can derive an API from sample data in YAML format or you can
+build [JSON Schema](https://json-schema.org/)
 APIs directly with YAML.
 
-Manifold lets you use YAML and JSON interchangeably, as such please refer to the [JSON and JSON Schema](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-json)
-project reference.  All that applies to JSON applies to YAML.
+Manifold lets you use YAML and JSON interchangeably, as such please refer to
+the [JSON and JSON Schema](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-json)
+project reference. All that applies to JSON applies to YAML.
 
-# IDE Support 
+# IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -32,15 +36,15 @@ Enter: <kbd>https://github.com/manifold-systems/manifold-sample-project.git</kbd
 <p><img src="http://manifold.systems/images/OpenSampleProject.png" alt="echo method" width="60%" height="60%"/></p>
 
 Use the [plugin](https://plugins.jetbrains.com/plugin/10057-manifold) to really boost your productivity. Use code
-completion to conveniently build queries and discover the schema's API.  Navigate to/from call-sites and YAML/schema
-file elements.  Make changes to your YAML/schema files and use the changes immediately, no compilation!  Find usages of
+completion to conveniently build queries and discover the schema's API. Navigate to/from call-sites and YAML/schema
+file elements. Make changes to your YAML/schema files and use the changes immediately, no compilation!  Find usages of
 any element in your YAML/schema files. Perform rename refactors to quickly and safely make project-wide changes.
 
 # Setup
 
 ## Building this project
 
-The `manifold-yaml` project is defined with Maven.  To build it install Maven and run the following command.
+The `manifold-yaml` project is defined with Maven. To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -52,26 +56,29 @@ The `manifold-yaml` dependency works with all build tooling, including Maven and
 versions 8 - 19.
 
 This project consists of two modules:
+
 * `manifold-yaml`
 * `manifold-yaml-rt`
 
 For optimal performance and to work with Android and other JVM languages it is recommended to:
+
 * Add a dependency on `manifold-yaml-rt` (Gradle: "implementation", Maven: "compile")
 * Add `manifold-yaml` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "annotationProcessorPaths")
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
->Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
->Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
+> Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest. 
+version (8 - 19), the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -109,7 +116,9 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyProject'
 ```
@@ -178,10 +187,9 @@ rootProject.name = 'MyProject'
 `manifold-yaml-rt`:<br>
 [![javadoc](https://javadoc.io/badge2/systems.manifold/manifold-yaml-rt/2023.1.3/javadoc.svg)](https://javadoc.io/doc/systems.manifold/manifold-yaml-rt/2023.1.3)
 
-
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 # Versioning
 

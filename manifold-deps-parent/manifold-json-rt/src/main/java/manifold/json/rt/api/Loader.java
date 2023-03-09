@@ -32,238 +32,177 @@ import manifold.rt.api.util.StreamUtil;
  *
  * @param <E> The sub-interface extending {@link IJsonBindingsBacked} or {@link IJsonList}
  */
-public class Loader<E>
-{
-  public E fromJson( String jsonText )
-  {
-    return (E)Json.fromJson( jsonText );
-  }
-
-  //
-  // JSON methods
-  //
-
-  public E fromJsonUrl( String urlBase, String... urlSuffix )
-  {
-    try
-    {
-      StringBuilder url = new StringBuilder( urlBase );
-      if( urlSuffix != null )
-      {
-        Arrays.stream( urlSuffix ).forEach( url::append );
-      }
-
-      return (E)ManUrlExt.getJsonContent( new java.net.URL( url.toString() ) );
+public class Loader<E> {
+    public E fromJson(String jsonText) {
+        return (E) Json.fromJson(jsonText);
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    //
+    // JSON methods
+    //
+
+    public E fromJsonUrl(String urlBase, String... urlSuffix) {
+        try {
+            StringBuilder url = new StringBuilder(urlBase);
+            if (urlSuffix != null) {
+                Arrays.stream(urlSuffix).forEach(url::append);
+            }
+
+            return (E) ManUrlExt.getJsonContent(new java.net.URL(url.toString()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public E fromJsonUrl( java.net.URL url )
-  {
-    return (E)ManUrlExt.getJsonContent( url );
-  }
-
-  public E fromJsonFile( java.io.File file )
-  {
-    try
-    {
-      return (E)fromJsonUrl( file.toURI().toURL() );
+    public E fromJsonUrl(java.net.URL url) {
+        return (E) ManUrlExt.getJsonContent(url);
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    public E fromJsonFile(java.io.File file) {
+        try {
+            return (E) fromJsonUrl(file.toURI().toURL());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public E fromJsonReader( Reader reader )
-  {
-    try
-    {
-      return (E)Json.fromJson( StreamUtil.getContent( reader ) );
+    public E fromJsonReader(Reader reader) {
+        try {
+            return (E) Json.fromJson(StreamUtil.getContent(reader));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+
+    //
+    // YAML methods
+    //
+
+    public E fromYaml(String yamlText) {
+        IJsonBindingsTranslator yaml = IJsonBindingsTranslator.get("YAML");
+        return (E) yaml.toBindings(yamlText);
     }
-  }
 
+    public E fromYamlUrl(String urlBase, String... urlSuffix) {
+        try {
+            StringBuilder url = new StringBuilder(urlBase);
+            if (urlSuffix != null) {
+                Arrays.stream(urlSuffix).forEach(url::append);
+            }
 
-  //
-  // YAML methods
-  //
-
-  public E fromYaml( String yamlText )
-  {
-    IJsonBindingsTranslator yaml = IJsonBindingsTranslator.get( "YAML" );
-    return (E)yaml.toBindings( yamlText );
-  }
-
-  public E fromYamlUrl( String urlBase, String... urlSuffix )
-  {
-    try
-    {
-      StringBuilder url = new StringBuilder( urlBase );
-      if( urlSuffix != null )
-      {
-        Arrays.stream( urlSuffix ).forEach( url::append );
-      }
-
-      return (E)ManUrlExt.getYamlContent( new java.net.URL( url.toString() ) );
+            return (E) ManUrlExt.getYamlContent(new java.net.URL(url.toString()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    public E fromYamlUrl(java.net.URL url) {
+        return (E) ManUrlExt.getYamlContent(url);
     }
-  }
 
-  public E fromYamlUrl( java.net.URL url )
-  {
-    return (E)ManUrlExt.getYamlContent( url );
-  }
-
-  public E fromYamlFile( java.io.File file )
-  {
-    try
-    {
-      return fromYamlUrl( file.toURI().toURL() );
+    public E fromYamlFile(java.io.File file) {
+        try {
+            return fromYamlUrl(file.toURI().toURL());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    public E fromYamlReader(Reader reader) {
+        try {
+            IJsonBindingsTranslator yaml = IJsonBindingsTranslator.get("YAML");
+            return (E) yaml.toBindings(StreamUtil.getContent(reader));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  public E fromYamlReader( Reader reader )
-  {
-    try
-    {
-      IJsonBindingsTranslator yaml = IJsonBindingsTranslator.get( "YAML" );
-      return (E)yaml.toBindings( StreamUtil.getContent( reader ) );
+
+    //
+    // XML methods
+    //
+
+    public E fromXml(String xmlText) {
+        IJsonBindingsTranslator xml = IJsonBindingsTranslator.get("XML");
+        return (E) xml.toBindings(xmlText);
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    public E fromXmlUrl(String urlBase, String... urlSuffix) {
+        try {
+            StringBuilder url = new StringBuilder(urlBase);
+            if (urlSuffix != null) {
+                Arrays.stream(urlSuffix).forEach(url::append);
+            }
+
+            return (E) ManUrlExt.getXmlContent(new java.net.URL(url.toString()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-
-  //
-  // XML methods
-  //
-
-  public E fromXml( String xmlText )
-  {
-    IJsonBindingsTranslator xml = IJsonBindingsTranslator.get( "XML" );
-    return (E)xml.toBindings( xmlText );
-  }
-
-  public E fromXmlUrl( String urlBase, String... urlSuffix )
-  {
-    try
-    {
-      StringBuilder url = new StringBuilder( urlBase );
-      if( urlSuffix != null )
-      {
-        Arrays.stream( urlSuffix ).forEach( url::append );
-      }
-
-      return (E)ManUrlExt.getXmlContent( new java.net.URL( url.toString() ) );
+    public E fromXmlUrl(java.net.URL url) {
+        return (E) ManUrlExt.getXmlContent(url);
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  public E fromXmlUrl( java.net.URL url )
-  {
-    return (E)ManUrlExt.getXmlContent( url );
-  }
+    public E fromXmlFile(java.io.File file) {
+        try {
+            return fromXmlUrl(file.toURI().toURL());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-  public E fromXmlFile( java.io.File file )
-  {
-    try
-    {
-      return fromXmlUrl( file.toURI().toURL() );
+    public E fromXmlReader(Reader reader) {
+        try {
+            IJsonBindingsTranslator xml = IJsonBindingsTranslator.get("XML");
+            return (E) xml.toBindings(StreamUtil.getContent(reader));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
-
-  public E fromXmlReader( Reader reader )
-  {
-    try
-    {
-      IJsonBindingsTranslator xml = IJsonBindingsTranslator.get( "XML" );
-      return (E)xml.toBindings( StreamUtil.getContent( reader ) );
-    }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
 
-  //
-  // CSV methods
-  //
+    //
+    // CSV methods
+    //
 
-  public E fromCsv( String csvText )
-  {
-    IJsonBindingsTranslator csv = IJsonBindingsTranslator.get( "CSV" );
-    return (E)csv.toBindings( csvText );
-  }
+    public E fromCsv(String csvText) {
+        IJsonBindingsTranslator csv = IJsonBindingsTranslator.get("CSV");
+        return (E) csv.toBindings(csvText);
+    }
 
-  public E fromCsvUrl( String urlBase, String... urlSuffix )
-  {
-    try
-    {
-      StringBuilder url = new StringBuilder( urlBase );
-      if( urlSuffix != null )
-      {
-        Arrays.stream( urlSuffix ).forEach( url::append );
-      }
+    public E fromCsvUrl(String urlBase, String... urlSuffix) {
+        try {
+            StringBuilder url = new StringBuilder(urlBase);
+            if (urlSuffix != null) {
+                Arrays.stream(urlSuffix).forEach(url::append);
+            }
 
-      return (E)ManUrlExt.getCsvContent( new java.net.URL( url.toString() ) );
+            return (E) ManUrlExt.getCsvContent(new java.net.URL(url.toString()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  public E fromCsvUrl( java.net.URL url )
-  {
-    return (E)ManUrlExt.getCsvContent( url );
-  }
+    public E fromCsvUrl(java.net.URL url) {
+        return (E) ManUrlExt.getCsvContent(url);
+    }
 
-  public E fromCsvFile( java.io.File file )
-  {
-    try
-    {
-      return fromCsvUrl( file.toURI().toURL() );
+    public E fromCsvFile(java.io.File file) {
+        try {
+            return fromCsvUrl(file.toURI().toURL());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  public E fromCsvReader( Reader reader )
-  {
-    try
-    {
-      IJsonBindingsTranslator csv = IJsonBindingsTranslator.get( "CSV" );
-      return (E)csv.toBindings( StreamUtil.getContent( reader ) );
+    public E fromCsvReader(Reader reader) {
+        try {
+            IJsonBindingsTranslator csv = IJsonBindingsTranslator.get("CSV");
+            return (E) csv.toBindings(StreamUtil.getContent(reader));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 }

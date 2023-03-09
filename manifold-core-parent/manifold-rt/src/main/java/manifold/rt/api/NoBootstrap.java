@@ -28,6 +28,5 @@ import java.lang.annotation.Target;
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.TYPE)
-public @interface NoBootstrap
-{
+public @interface NoBootstrap {
 }

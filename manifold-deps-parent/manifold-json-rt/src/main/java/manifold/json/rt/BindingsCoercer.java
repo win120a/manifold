@@ -32,50 +32,39 @@ import java.util.List;
  * coercer is used to produce direct instances of the interfaces so that other JVM languages can use JSON and GraphQL
  * type manifolds without having to support structural typing.
  */
-public class BindingsCoercer implements ICoercionProvider
-{
-  @Override
-  public Object coerce( Object o, Type ifaceToProxyType )
-  {
-    Class<?> ifaceToProxy = ifaceToProxyType instanceof ParameterizedType
-      ? (Class)((ParameterizedType)ifaceToProxyType).getRawType()
-      : (Class)ifaceToProxyType;
-    if( !ifaceToProxy.isInterface() )
-    {
-      return ICallHandler.UNHANDLED;
+public class BindingsCoercer implements ICoercionProvider {
+    @Override
+    public Object coerce(Object o, Type ifaceToProxyType) {
+        Class<?> ifaceToProxy = ifaceToProxyType instanceof ParameterizedType
+                ? (Class) ((ParameterizedType) ifaceToProxyType).getRawType()
+                : (Class) ifaceToProxyType;
+        if (!ifaceToProxy.isInterface()) {
+            return ICallHandler.UNHANDLED;
+        }
+
+        Structural annotation = ifaceToProxy.getAnnotation(Structural.class);
+        if (annotation != null) {
+            if (o instanceof Bindings && IBindingsBacked.class.isAssignableFrom(ifaceToProxy)) {
+                if (annotation.factoryClass() != Void.class) {
+                    IProxyFactory factory = (IProxyFactory) ReflectUtil.constructor(ifaceToProxy.getName() + "$ProxyFactory").newInstance();
+                    //noinspection unchecked
+                    return factory.proxy(o, ifaceToProxy);
+                } else {
+                    return RuntimeMethods.constructProxy(o, ifaceToProxy);
+                }
+            }
+        }
+        return ICallHandler.UNHANDLED;
     }
 
-    Structural annotation = ifaceToProxy.getAnnotation( Structural.class );
-    if( annotation != null )
-    {
-      if( o instanceof Bindings && IBindingsBacked.class.isAssignableFrom( ifaceToProxy ) )
-      {
-        if( annotation.factoryClass() != Void.class )
-        {
-          IProxyFactory factory = (IProxyFactory)ReflectUtil.constructor( ifaceToProxy.getName() + "$ProxyFactory" ).newInstance();
-          //noinspection unchecked
-          return factory.proxy( o, ifaceToProxy );
+    @Override
+    public Object toBindingValue(Object value) {
+        if (value instanceof IBindingsBacked) {
+            return ((IBindingsBacked) value).getBindings();
         }
-        else
-        {
-          return RuntimeMethods.constructProxy( o, ifaceToProxy );
+        if (value instanceof IListBacked) {
+            return ((IListBacked) value).getList();
         }
-      }
+        return ICallHandler.UNHANDLED;
     }
-    return ICallHandler.UNHANDLED;
-  }
-
-  @Override
-  public Object toBindingValue( Object value )
-  {
-    if( value instanceof IBindingsBacked )
-    {
-      return ((IBindingsBacked)value).getBindings();
-    }
-    if( value instanceof IListBacked )
-    {
-      return ((IListBacked)value).getList();
-    }
-    return ICallHandler.UNHANDLED;
-  }
 }

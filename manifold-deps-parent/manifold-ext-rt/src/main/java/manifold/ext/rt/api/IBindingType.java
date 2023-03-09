@@ -21,11 +21,10 @@ import manifold.rt.api.Bindings;
 /**
  * {@code enum} types implement this so dynamic proxies can marshal calls to {@link Bindings}.
  */
-public interface IBindingType
-{
-  /**
-   * Produce a value suitable for a {@link Bindings} value e.g., a simple value like a string or
-   * number or another Bindings or List of such values.
-   */
-  Object toBindingValue();
+public interface IBindingType {
+    /**
+     * Produce a value suitable for a {@link Bindings} value e.g., a simple value like a string or
+     * number or another Bindings or List of such values.
+     */
+    Object toBindingValue();
 }

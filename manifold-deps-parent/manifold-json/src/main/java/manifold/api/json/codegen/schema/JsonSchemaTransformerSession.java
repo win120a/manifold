@@ -19,6 +19,7 @@ package manifold.api.json.codegen.schema;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
 import manifold.api.fs.IFile;
 import manifold.api.json.codegen.IJsonType;
 import manifold.rt.api.util.Pair;
@@ -28,56 +29,47 @@ import manifold.rt.api.util.Pair;
  * a given session is single-threaded, therefore there is one instance of this class per thread
  * and per session accessible via instance().
  */
-public class JsonSchemaTransformerSession
-{
-  private static final ThreadLocal<JsonSchemaTransformerSession> INSTANCE = new ThreadLocal<>();
+public class JsonSchemaTransformerSession {
+    private static final ThreadLocal<JsonSchemaTransformerSession> INSTANCE = new ThreadLocal<>();
 
-  private Map<IFile, Pair<IJsonType, JsonSchemaTransformer>> _baseTypeByUrl;
-  private Stack<JsonSchemaTransformer> _transformers;
+    private Map<IFile, Pair<IJsonType, JsonSchemaTransformer>> _baseTypeByUrl;
+    private Stack<JsonSchemaTransformer> _transformers;
 
-  public static JsonSchemaTransformerSession instance()
-  {
-    JsonSchemaTransformerSession instance = INSTANCE.get();
-    if( instance == null )
-    {
-      INSTANCE.set( instance = new JsonSchemaTransformerSession() );
+    public static JsonSchemaTransformerSession instance() {
+        JsonSchemaTransformerSession instance = INSTANCE.get();
+        if (instance == null) {
+            INSTANCE.set(instance = new JsonSchemaTransformerSession());
+        }
+        return instance;
     }
-    return instance;
-  }
 
-  private JsonSchemaTransformerSession()
-  {
-    _baseTypeByUrl = new HashMap<>();
-    _transformers = new Stack<>();
-  }
-
-  void pushTransformer( JsonSchemaTransformer transformer )
-  {
-    _transformers.push( transformer );
-  }
-  void popTransformer( JsonSchemaTransformer transformer )
-  {
-    if( _transformers.peek() != transformer )
-    {
-      throw new IllegalStateException( "Unbalanced transformer pop" );
+    private JsonSchemaTransformerSession() {
+        _baseTypeByUrl = new HashMap<>();
+        _transformers = new Stack<>();
     }
-    _transformers.pop();
-  }
 
-  Pair<IJsonType, JsonSchemaTransformer> getCachedBaseType( IFile url )
-  {
-    return _baseTypeByUrl.get( url );
-  }
-  void cacheBaseType( IFile url, Pair<IJsonType, JsonSchemaTransformer> pair )
-  {
-    _baseTypeByUrl.put( url, pair );
-  }
-
-  public void maybeClear()
-  {
-    if( _transformers.size() == 0 )
-    {
-      _baseTypeByUrl.clear();
+    void pushTransformer(JsonSchemaTransformer transformer) {
+        _transformers.push(transformer);
     }
-  }
+
+    void popTransformer(JsonSchemaTransformer transformer) {
+        if (_transformers.peek() != transformer) {
+            throw new IllegalStateException("Unbalanced transformer pop");
+        }
+        _transformers.pop();
+    }
+
+    Pair<IJsonType, JsonSchemaTransformer> getCachedBaseType(IFile url) {
+        return _baseTypeByUrl.get(url);
+    }
+
+    void cacheBaseType(IFile url, Pair<IJsonType, JsonSchemaTransformer> pair) {
+        _baseTypeByUrl.put(url, pair);
+    }
+
+    public void maybeClear() {
+        if (_transformers.size() == 0) {
+            _baseTypeByUrl.clear();
+        }
+    }
 }

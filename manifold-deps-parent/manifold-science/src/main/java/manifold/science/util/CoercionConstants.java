@@ -32,104 +32,84 @@ import java.math.BigInteger;
  * </code></pre>
  * Note unlike floating point literals, these expressions retain the precision of the literal decimal values.
  */
-public interface CoercionConstants
-{
-  RationalCoercion r = RationalCoercion.INSTANCE;
-  BigDecimalCoercion bd = BigDecimalCoercion.INSTANCE;
-  BigIntegerCoercion bi = BigIntegerCoercion.INSTANCE;
+public interface CoercionConstants {
+    RationalCoercion r = RationalCoercion.INSTANCE;
+    BigDecimalCoercion bd = BigDecimalCoercion.INSTANCE;
+    BigIntegerCoercion bi = BigIntegerCoercion.INSTANCE;
 
-  class RationalCoercion
-  {
-    static final RationalCoercion INSTANCE = new RationalCoercion();
+    class RationalCoercion {
+        static final RationalCoercion INSTANCE = new RationalCoercion();
 
-    public Rational postfixBind( String value )
-    {
-      return Rational.get( value );
+        public Rational postfixBind(String value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(Integer value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(Long value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(Float value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(Double value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(BigInteger value) {
+            return Rational.get(value);
+        }
+
+        public Rational postfixBind(BigDecimal value) {
+            return Rational.get(value);
+        }
     }
 
-    public Rational postfixBind( Integer value )
-    {
-      return Rational.get( value );
+    class BigDecimalCoercion {
+        static final BigDecimalCoercion INSTANCE = new BigDecimalCoercion();
+
+        public BigDecimal postfixBind(String value) {
+            return new BigDecimal(value);
+        }
+
+        public BigDecimal postfixBind(Integer value) {
+            return BigDecimal.valueOf(value);
+        }
+
+        public BigDecimal postfixBind(Long value) {
+            return BigDecimal.valueOf(value);
+        }
+
+        public BigDecimal postfixBind(Float value) {
+            return BigDecimal.valueOf(value);
+        }
+
+        public BigDecimal postfixBind(Double value) {
+            return BigDecimal.valueOf(value);
+        }
+
+        public BigDecimal postfixBind(BigInteger value) {
+            return new BigDecimal(value);
+        }
     }
 
-    public Rational postfixBind( Long value )
-    {
-      return Rational.get( value );
+    class BigIntegerCoercion {
+        static final BigIntegerCoercion INSTANCE = new BigIntegerCoercion();
+
+        public BigInteger postfixBind(String value) {
+            return new BigInteger(value);
+        }
+
+        public BigInteger postfixBind(Integer value) {
+            return BigInteger.valueOf(value);
+        }
+
+        public BigInteger postfixBind(Long value) {
+            return BigInteger.valueOf(value);
+        }
     }
-
-    public Rational postfixBind( Float value )
-    {
-      return Rational.get( value );
-    }
-
-    public Rational postfixBind( Double value )
-    {
-      return Rational.get( value );
-    }
-
-    public Rational postfixBind( BigInteger value )
-    {
-      return Rational.get( value );
-    }
-
-    public Rational postfixBind( BigDecimal value )
-    {
-      return Rational.get( value );
-    }
-  }
-
-  class BigDecimalCoercion
-  {
-    static final BigDecimalCoercion INSTANCE = new BigDecimalCoercion();
-
-    public BigDecimal postfixBind( String value )
-    {
-      return new BigDecimal( value );
-    }
-
-    public BigDecimal postfixBind( Integer value )
-    {
-      return BigDecimal.valueOf( value );
-    }
-
-    public BigDecimal postfixBind( Long value )
-    {
-      return BigDecimal.valueOf( value );
-    }
-
-    public BigDecimal postfixBind( Float value )
-    {
-      return BigDecimal.valueOf( value );
-    }
-
-    public BigDecimal postfixBind( Double value )
-    {
-      return BigDecimal.valueOf( value );
-    }
-
-    public BigDecimal postfixBind( BigInteger value )
-    {
-      return new BigDecimal( value );
-    }
-  }
-
-  class BigIntegerCoercion
-  {
-    static final BigIntegerCoercion INSTANCE = new BigIntegerCoercion();
-
-    public BigInteger postfixBind( String value )
-    {
-      return new BigInteger( value );
-    }
-
-    public BigInteger postfixBind( Integer value )
-    {
-      return BigInteger.valueOf( value );
-    }
-
-    public BigInteger postfixBind( Long value )
-    {
-      return BigInteger.valueOf( value );
-    }
-  }
 }

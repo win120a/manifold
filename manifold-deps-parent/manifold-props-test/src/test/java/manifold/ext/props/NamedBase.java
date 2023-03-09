@@ -16,11 +16,9 @@
 
 package manifold.ext.props;
 
-public class NamedBase
-{
-  // test that this setter is overridden by a generated setter in subclass
-  public void setName( String name )
-  {
-    System.out.println( "LOL" );
-  }
+public class NamedBase {
+    // test that this setter is overridden by a generated setter in subclass
+    public void setName(String name) {
+        System.out.println("LOL");
+    }
 }

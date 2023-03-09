@@ -23,14 +23,22 @@ package manifold.api.type;
  * handled directly when using Manifold with Java. Support for other JVM
  * languages must be provided via third parties implementing {@link manifold.api.host.IManifoldHost}.
  */
-public interface ISourceKind
-{
-  /** Java source */
-  ISourceKind Java = new ISourceKind() {};
+public interface ISourceKind {
+    /**
+     * Java source
+     */
+    ISourceKind Java = new ISourceKind() {
+    };
 
-  /** JavaScript source */
-  ISourceKind JavaScript = new ISourceKind() {};
+    /**
+     * JavaScript source
+     */
+    ISourceKind JavaScript = new ISourceKind() {
+    };
 
-  /** The {@ITypeManifold} does not contribute source */
-  ISourceKind None = new ISourceKind() {};
+    /**
+     * The {@ITypeManifold} does not contribute source
+     */
+    ISourceKind None = new ISourceKind() {
+    };
 }

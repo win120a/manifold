@@ -16,11 +16,10 @@
 
 package manifold.ext.props.middle;
 
-public class SubClassOverridesBaseClassGeneratedSetter extends BaseClass
-{
-  @Override public void setBackedProp( String value )
-  {
-    super.backedProp = value + ":overridenSetter";
-  }
+public class SubClassOverridesBaseClassGeneratedSetter extends BaseClass {
+    @Override
+    public void setBackedProp(String value) {
+        super.backedProp = value + ":overridenSetter";
+    }
 
 }

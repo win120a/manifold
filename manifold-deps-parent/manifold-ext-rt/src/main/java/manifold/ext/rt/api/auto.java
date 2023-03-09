@@ -26,7 +26,7 @@ package manifold.ext.rt.api;
  * A method with return type {@code auto} infers its return type from the return statements in its definition. As a
  * consequence, fields and methods declared in the inferred type are type-safely accessible to call-sites.
  */
-public final class auto
-{
-  private auto() {}
+public final class auto {
+    private auto() {
+    }
 }

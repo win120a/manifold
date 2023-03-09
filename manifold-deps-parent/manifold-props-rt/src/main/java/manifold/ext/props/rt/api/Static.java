@@ -26,8 +26,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Tags a property field as explicitly static to distinguish an explicitly declared static prop in an interface.
  */
-@Target( ElementType.FIELD )
-@Retention( RetentionPolicy.SOURCE )
-public @interface Static
-{
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Static {
 }

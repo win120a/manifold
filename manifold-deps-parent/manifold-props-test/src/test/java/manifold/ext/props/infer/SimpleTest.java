@@ -20,22 +20,18 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class SimpleTest
-{
-  @Test
-  public void testInnerAccess()
-  {
-    C c = new C();
-    c.asdf();
-  }
-
-  static class A
-  {
-    private String getFoo()
-    {
-      return "foo";
+public class SimpleTest {
+    @Test
+    public void testInnerAccess() {
+        C c = new C();
+        c.asdf();
     }
-  }
+
+    static class A {
+        private String getFoo() {
+            return "foo";
+        }
+    }
 
 //  static class B extends A
 //  {
@@ -44,93 +40,86 @@ public class SimpleTest
 //    }
 //  }
 
-  static class C
-  {
-    void asdf()
-    {
-      A a = new A();
-      B b = new B();
-      //a.foo = "";
-      b.foo = "asdfx"; // B#setFoo(String) is package-private, this is accessible
+    static class C {
+        void asdf() {
+            A a = new A();
+            B b = new B();
+            //a.foo = "";
+            b.foo = "asdfx"; // B#setFoo(String) is package-private, this is accessible
 //    String res = b.foo; // A#getFoo() is private, this is not accessible through B, should have "can't access write-only property", and does
-    }
-
-  }
-
-
-
-  static interface ISomething
-  {
-    String getName();
-    void setName(String name);
-  }
-  static interface ISomethingMore extends ISomething
-  {
-    String getName();
-    void setName(String name);
-
-    int getAge();
-    void setAge(int age);
-  }
-  static class More implements ISomethingMore
-  {
-
-    private String _name;
-
-    @Override
-    public String getName()
-    {
-      return _name;
-    }
-
-    @Override
-    public void setName( String name )
-    {
-      _name = name;
-    }
-
-    @Override
-    public int getAge()
-    {
-      return 0;
-    }
-
-    @Override
-    public void setAge( int age )
-    {
+        }
 
     }
-  }
-  interface IBlah
-  {
-    ISomethingMore getMore();
-    void setMore(ISomethingMore more);
-  }
-  static class BlahImpl implements IBlah
-  {
-    private ISomethingMore _more;
 
-    @Override
-    public ISomethingMore getMore()
-    {
-      return _more;
+
+    static interface ISomething {
+        String getName();
+
+        void setName(String name);
     }
 
-    @Override
-    public void setMore( ISomethingMore more )
-    {
-      _more = more;
-    }
-  }
+    static interface ISomethingMore extends ISomething {
+        String getName();
 
-  @Test
-  public void testSomething()
-  {
-    IBlah blah = new BlahImpl();
-    blah.more = new More();
-    blah.more.name = "hi";
-    assertEquals( "hi", blah.more.name );
-    blah.more.age = 5;
-  }
+        void setName(String name);
+
+        int getAge();
+
+        void setAge(int age);
+    }
+
+    static class More implements ISomethingMore {
+
+        private String _name;
+
+        @Override
+        public String getName() {
+            return _name;
+        }
+
+        @Override
+        public void setName(String name) {
+            _name = name;
+        }
+
+        @Override
+        public int getAge() {
+            return 0;
+        }
+
+        @Override
+        public void setAge(int age) {
+
+        }
+    }
+
+    interface IBlah {
+        ISomethingMore getMore();
+
+        void setMore(ISomethingMore more);
+    }
+
+    static class BlahImpl implements IBlah {
+        private ISomethingMore _more;
+
+        @Override
+        public ISomethingMore getMore() {
+            return _more;
+        }
+
+        @Override
+        public void setMore(ISomethingMore more) {
+            _more = more;
+        }
+    }
+
+    @Test
+    public void testSomething() {
+        IBlah blah = new BlahImpl();
+        blah.more = new More();
+        blah.more.name = "hi";
+        assertEquals("hi", blah.more.name);
+        blah.more.age = 5;
+    }
 
 }

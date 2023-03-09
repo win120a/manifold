@@ -39,450 +39,377 @@ import java.util.stream.Stream;
  * <p/>
  * See the {@code JsonListType}.
  */
-public interface IListBacked<T> extends List<T>
-{
-  /**
-   * The {@link List} object used to store raw values corresponding with List methods.
-   */
-  List<Object> getList();
+public interface IListBacked<T> extends List<T> {
+    /**
+     * The {@link List} object used to store raw values corresponding with List methods.
+     */
+    List<Object> getList();
 
-  /**
-   * Finds declared type parameter of type extending IListBacked.
-   * <pre>interface Hobby extends IlistBacked&lt;HobbyItem&gt;</pre>
-   * Returns {@code HobbyItem}
-   */
-  default Class<?> getFinalComponentType()
-  {
-    Class<?>[] interfaces = getClass().getInterfaces();
-    for( Class<?> e : interfaces )
-    {
-      for( Type iface : e.getGenericInterfaces() )
-      {
-        if( iface instanceof ParameterizedType &&
-          List.class.isAssignableFrom( (Class<?>)((ParameterizedType)iface).getRawType() ) )
-        {
-          Type typeArg = ((ParameterizedType)iface).getActualTypeArguments()[0];
-          if( typeArg instanceof ParameterizedType )
-          {
-            typeArg = ((ParameterizedType)typeArg).getRawType();
-          }
-          if( typeArg instanceof Class )
-          {
-            //noinspection unchecked
-            return (Class<T>)typeArg;
-          }
+    /**
+     * Finds declared type parameter of type extending IListBacked.
+     * <pre>interface Hobby extends IlistBacked&lt;HobbyItem&gt;</pre>
+     * Returns {@code HobbyItem}
+     */
+    default Class<?> getFinalComponentType() {
+        Class<?>[] interfaces = getClass().getInterfaces();
+        for (Class<?> e : interfaces) {
+            for (Type iface : e.getGenericInterfaces()) {
+                if (iface instanceof ParameterizedType &&
+                        List.class.isAssignableFrom((Class<?>) ((ParameterizedType) iface).getRawType())) {
+                    Type typeArg = ((ParameterizedType) iface).getActualTypeArguments()[0];
+                    if (typeArg instanceof ParameterizedType) {
+                        typeArg = ((ParameterizedType) typeArg).getRawType();
+                    }
+                    if (typeArg instanceof Class) {
+                        //noinspection unchecked
+                        return (Class<T>) typeArg;
+                    }
+                }
+            }
         }
-      }
+        throw new IllegalStateException();
     }
-    throw new IllegalStateException();
-  }
 
-  /*
-   * Delegate to the wrapped List.
-   */
+    /*
+     * Delegate to the wrapped List.
+     */
 
-  default void coerceListToBindingValues()
-  {
-    List list = getList();
-    for( int i = 0; i < list.size(); i++ )
-    {
-      Object e = list.get( i );
-      e = toBindingsValue( (T) e );
-      list.set( i, e );
+    default void coerceListToBindingValues() {
+        List list = getList();
+        for (int i = 0; i < list.size(); i++) {
+            Object e = list.get(i);
+            e = toBindingsValue((T) e);
+            list.set(i, e);
+        }
     }
-  }
 
-  default List<T> coerceListToComplexValues()
-  {
-    return (List) getList().stream()
-      .map( e -> coerce( e, getFinalComponentType() ) )
-      .collect( Collectors.toList() );
-  }
-  
-  default Object coerce( Object value, Class type )
-  {
-    return RuntimeMethods.coerceFromBindingsValue( value, type );
-  }
-
-  @Override
-  default void replaceAll( UnaryOperator<T> operator )
-  {
-    getList().replaceAll( e -> toBindingsValue( operator.apply( (T) coerce( e, getFinalComponentType() ) ) ) );
-  }
-
-  @Override
-  default void sort( Comparator<? super T> c )
-  {
-    List<T> cList = coerceListToComplexValues();
-    cList.sort( c );
-    List<Object> bList = toBindings( cList );
-    for( int i = 0; i < bList.size(); i++ )
-    {
-      getList().set( i, bList.get( i ) );
+    default List<T> coerceListToComplexValues() {
+        return (List) getList().stream()
+                .map(e -> coerce(e, getFinalComponentType()))
+                .collect(Collectors.toList());
     }
-  }
 
-  @Override
-  default Spliterator<T> spliterator()
-  {
-    return coerceListToComplexValues().spliterator();
-  }
-
-  @Override
-  default boolean removeIf( Predicate<? super T> filter )
-  {
-    List<T> cList = coerceListToComplexValues();
-    boolean result = cList.removeIf( filter );
-    if( result )
-    {
-      List<Object> bList = toBindings( cList );
-      getList().clear();
-      getList().addAll( bList );
+    default Object coerce(Object value, Class type) {
+        return RuntimeMethods.coerceFromBindingsValue(value, type);
     }
-    return result;
-  }
 
-  @Override
-  default Stream<T> stream()
-  {
-    return coerceListToComplexValues().stream();
-  }
-
-  @Override
-  default Stream<T> parallelStream()
-  {
-    return coerceListToComplexValues().parallelStream();
-  }
-
-  @Override
-  default void forEach( Consumer<? super T> action )
-  {
-    coerceListToComplexValues().forEach( action );
-  }
-
-  @Override
-  default int size()
-  {
-    return getList().size();
-  }
-
-  @Override
-  default boolean isEmpty()
-  {
-    return getList().isEmpty();
-  }
-
-  @Override
-  default boolean contains( Object o )
-  {
-    return coerceListToComplexValues().contains( o );
-  }
-
-  @Override
-  default Iterator<T> iterator()
-  {
-    return new Iterator<T>() {
-
-      Iterator<T> _delegate = coerceListToComplexValues().iterator();
-      Iterator _actual = getList().iterator();
-
-      @Override
-      public boolean hasNext()
-      {
-        return _delegate.hasNext();
-      }
-
-      @Override
-      public T next()
-      {
-        _actual.next();
-        return _delegate.next();
-      }
-
-      @Override
-      public void remove()
-      {
-        _actual.remove();
-      }
-    };
-  }
-
-  @Override
-  default Object[] toArray()
-  {
-    return coerceListToComplexValues().toArray();
-  }
-
-  @Override
-  default <T1> T1[] toArray( T1[] a )
-  {
-    return coerceListToComplexValues().toArray( a );
-  }
-
-  @Override
-  default boolean add( T t )
-  {
-    return getList().add( toBindingsValue( t ) );
-  }
-
-  default Object toBindingsValue( Object element )
-  {
-    Object value = element;
-    if( value instanceof IBindingsBacked )
-    {
-      value = ((IBindingsBacked)value).getBindings();
+    @Override
+    default void replaceAll(UnaryOperator<T> operator) {
+        getList().replaceAll(e -> toBindingsValue(operator.apply((T) coerce(e, getFinalComponentType()))));
     }
-    else if( value instanceof IListBacked )
-    {
-      value = ((IListBacked)value).getList();
+
+    @Override
+    default void sort(Comparator<? super T> c) {
+        List<T> cList = coerceListToComplexValues();
+        cList.sort(c);
+        List<Object> bList = toBindings(cList);
+        for (int i = 0; i < bList.size(); i++) {
+            getList().set(i, bList.get(i));
+        }
     }
-    else
-    {
-      value = RuntimeMethods.coerceToBindingValue( value );
+
+    @Override
+    default Spliterator<T> spliterator() {
+        return coerceListToComplexValues().spliterator();
     }
-    return value;
-  }
 
-  @Override
-  default boolean remove( Object o )
-  {
-    Object bindingValue = toBindingsValue( (T) o );
-    return getList().remove( bindingValue );
-  }
+    @Override
+    default boolean removeIf(Predicate<? super T> filter) {
+        List<T> cList = coerceListToComplexValues();
+        boolean result = cList.removeIf(filter);
+        if (result) {
+            List<Object> bList = toBindings(cList);
+            getList().clear();
+            getList().addAll(bList);
+        }
+        return result;
+    }
 
-  @Override
-  default boolean containsAll( Collection<?> c )
-  {
-    return coerceListToComplexValues().containsAll( c );
-  }
+    @Override
+    default Stream<T> stream() {
+        return coerceListToComplexValues().stream();
+    }
 
-  @Override
-  default boolean addAll( Collection<? extends T> c )
-  {
-    List<Object> all = toBindings( c );
-    return getList().addAll( all );
-  }
+    @Override
+    default Stream<T> parallelStream() {
+        return coerceListToComplexValues().parallelStream();
+    }
 
-  @Override
-  default boolean addAll( int index, Collection<? extends T> c )
-  {
-    List<Object> all = toBindings( c );
-    return getList().addAll( index, (Collection<? extends T>) all );
-  }
+    @Override
+    default void forEach(Consumer<? super T> action) {
+        coerceListToComplexValues().forEach(action);
+    }
 
-  default List<Object> toBindings( Collection<?> c )
-  {
-    return c.stream().map( e -> toBindingsValue( (T) e ) ).collect( Collectors.toList() );
-  }
+    @Override
+    default int size() {
+        return getList().size();
+    }
 
-  @Override
-  default boolean removeAll( Collection<?> c )
-  {
-    return getList().removeAll( toBindings( c ) );
-  }
+    @Override
+    default boolean isEmpty() {
+        return getList().isEmpty();
+    }
 
-  @Override
-  default boolean retainAll( Collection<?> c )
-  {
-    return getList().retainAll( toBindings( c ) );
-  }
+    @Override
+    default boolean contains(Object o) {
+        return coerceListToComplexValues().contains(o);
+    }
 
-  @Override
-  default void clear()
-  {
-    getList().clear();
-  }
+    @Override
+    default Iterator<T> iterator() {
+        return new Iterator<T>() {
 
-  @Override
-  default T get( int index )
-  {
-    Object o = getList().get( index );
-    return (T) coerce( o, getFinalComponentType() );
-  }
+            Iterator<T> _delegate = coerceListToComplexValues().iterator();
+            Iterator _actual = getList().iterator();
 
-  @Override
-  default T set( int index, T element )
-  {
-    element = (T) toBindingsValue( element );
-    T result = (T) getList().set( index, element );
-    return result == null ? null : (T) coerce( result, getFinalComponentType() );
-  }
+            @Override
+            public boolean hasNext() {
+                return _delegate.hasNext();
+            }
 
-  @Override
-  default void add( int index, T element )
-  {
-    Object bindingValue = toBindingsValue( element );
-    getList().add( index, (T) bindingValue );
-  }
+            @Override
+            public T next() {
+                _actual.next();
+                return _delegate.next();
+            }
 
-  @Override
-  default T remove( int index )
-  {
-    Object bindingValue = getList().remove( index );
-    return bindingValue == null ? null : (T) coerce( bindingValue, getFinalComponentType() );
-  }
+            @Override
+            public void remove() {
+                _actual.remove();
+            }
+        };
+    }
 
-  @Override
-  default int indexOf( Object o )
-  {
-    o = toBindingsValue( o );
-    return getList().indexOf( o );
-  }
+    @Override
+    default Object[] toArray() {
+        return coerceListToComplexValues().toArray();
+    }
 
-  @Override
-  default int lastIndexOf( Object o )
-  {
-    o = toBindingsValue( o );
-    return getList().lastIndexOf( o );
-  }
+    @Override
+    default <T1> T1[] toArray(T1[] a) {
+        return coerceListToComplexValues().toArray(a);
+    }
 
-  @Override
-  default ListIterator<T> listIterator()
-  {
-    return new ListIterator<T>()
-    {
-      ListIterator<T> _delegate = coerceListToComplexValues().listIterator();
-      ListIterator _actual = getList().listIterator();
+    @Override
+    default boolean add(T t) {
+        return getList().add(toBindingsValue(t));
+    }
 
-      @Override
-      public boolean hasNext()
-      {
-        return _delegate.hasNext();
-      }
+    default Object toBindingsValue(Object element) {
+        Object value = element;
+        if (value instanceof IBindingsBacked) {
+            value = ((IBindingsBacked) value).getBindings();
+        } else if (value instanceof IListBacked) {
+            value = ((IListBacked) value).getList();
+        } else {
+            value = RuntimeMethods.coerceToBindingValue(value);
+        }
+        return value;
+    }
 
-      @Override
-      public T next()
-      {
-        _actual.next();
-        return _delegate.next();
-      }
+    @Override
+    default boolean remove(Object o) {
+        Object bindingValue = toBindingsValue((T) o);
+        return getList().remove(bindingValue);
+    }
 
-      @Override
-      public boolean hasPrevious()
-      {
-        return _delegate.hasPrevious();
-      }
+    @Override
+    default boolean containsAll(Collection<?> c) {
+        return coerceListToComplexValues().containsAll(c);
+    }
 
-      @Override
-      public T previous()
-      {
-        _actual.previous();
-        return _delegate.previous();
-      }
+    @Override
+    default boolean addAll(Collection<? extends T> c) {
+        List<Object> all = toBindings(c);
+        return getList().addAll(all);
+    }
 
-      @Override
-      public int nextIndex()
-      {
-        _actual.nextIndex();
-        return _delegate.nextIndex();
-      }
+    @Override
+    default boolean addAll(int index, Collection<? extends T> c) {
+        List<Object> all = toBindings(c);
+        return getList().addAll(index, (Collection<? extends T>) all);
+    }
 
-      @Override
-      public int previousIndex()
-      {
-        _actual.previousIndex();
-        return _delegate.previousIndex();
-      }
+    default List<Object> toBindings(Collection<?> c) {
+        return c.stream().map(e -> toBindingsValue((T) e)).collect(Collectors.toList());
+    }
 
-      @Override
-      public void remove()
-      {
-        _actual.remove();
-        _delegate.remove();
-      }
+    @Override
+    default boolean removeAll(Collection<?> c) {
+        return getList().removeAll(toBindings(c));
+    }
 
-      @Override
-      public void set( T t )
-      {
-        _actual.set( toBindingsValue( t ) );
-        _delegate.set( t );
-      }
+    @Override
+    default boolean retainAll(Collection<?> c) {
+        return getList().retainAll(toBindings(c));
+    }
 
-      @Override
-      public void add( T t )
-      {
-        _actual.add( toBindingsValue( t ) );
-        _delegate.add( t );
-      }
-    };
-  }
+    @Override
+    default void clear() {
+        getList().clear();
+    }
 
-  @Override
-  default ListIterator<T> listIterator( int index )
-  {
-    return new ListIterator<T>()
-    {
-      ListIterator<T> _delegate = coerceListToComplexValues().listIterator( index );
-      ListIterator _actual = getList().listIterator( index );
+    @Override
+    default T get(int index) {
+        Object o = getList().get(index);
+        return (T) coerce(o, getFinalComponentType());
+    }
 
-      @Override
-      public boolean hasNext()
-      {
-        return _delegate.hasNext();
-      }
+    @Override
+    default T set(int index, T element) {
+        element = (T) toBindingsValue(element);
+        T result = (T) getList().set(index, element);
+        return result == null ? null : (T) coerce(result, getFinalComponentType());
+    }
 
-      @Override
-      public T next()
-      {
-        _actual.next();
-        return _delegate.next();
-      }
+    @Override
+    default void add(int index, T element) {
+        Object bindingValue = toBindingsValue(element);
+        getList().add(index, (T) bindingValue);
+    }
 
-      @Override
-      public boolean hasPrevious()
-      {
-        return _delegate.hasPrevious();
-      }
+    @Override
+    default T remove(int index) {
+        Object bindingValue = getList().remove(index);
+        return bindingValue == null ? null : (T) coerce(bindingValue, getFinalComponentType());
+    }
 
-      @Override
-      public T previous()
-      {
-        _actual.previous();
-        return _delegate.previous();
-      }
+    @Override
+    default int indexOf(Object o) {
+        o = toBindingsValue(o);
+        return getList().indexOf(o);
+    }
 
-      @Override
-      public int nextIndex()
-      {
-        _actual.nextIndex();
-        return _delegate.nextIndex();
-      }
+    @Override
+    default int lastIndexOf(Object o) {
+        o = toBindingsValue(o);
+        return getList().lastIndexOf(o);
+    }
 
-      @Override
-      public int previousIndex()
-      {
-        _actual.previousIndex();
-        return _delegate.previousIndex();
-      }
+    @Override
+    default ListIterator<T> listIterator() {
+        return new ListIterator<T>() {
+            ListIterator<T> _delegate = coerceListToComplexValues().listIterator();
+            ListIterator _actual = getList().listIterator();
 
-      @Override
-      public void remove()
-      {
-        _actual.remove();
-        _delegate.remove();
-      }
+            @Override
+            public boolean hasNext() {
+                return _delegate.hasNext();
+            }
 
-      @Override
-      public void set( T t )
-      {
-        _actual.set( toBindingsValue( t ) );
-        _delegate.set( t );
-      }
+            @Override
+            public T next() {
+                _actual.next();
+                return _delegate.next();
+            }
 
-      @Override
-      public void add( T t )
-      {
-        _actual.add( toBindingsValue( t ) );
-        _delegate.add( t );
-      }
-    };
-  }
+            @Override
+            public boolean hasPrevious() {
+                return _delegate.hasPrevious();
+            }
 
-  @Override
-  default List<T> subList( int fromIndex, int toIndex )
-  {
-    return (List<T>) getList().subList( fromIndex, toIndex ).stream()
-      .map( e -> coerce( e, getFinalComponentType() ) )
-      .collect( Collectors.toList() );
-  }
+            @Override
+            public T previous() {
+                _actual.previous();
+                return _delegate.previous();
+            }
+
+            @Override
+            public int nextIndex() {
+                _actual.nextIndex();
+                return _delegate.nextIndex();
+            }
+
+            @Override
+            public int previousIndex() {
+                _actual.previousIndex();
+                return _delegate.previousIndex();
+            }
+
+            @Override
+            public void remove() {
+                _actual.remove();
+                _delegate.remove();
+            }
+
+            @Override
+            public void set(T t) {
+                _actual.set(toBindingsValue(t));
+                _delegate.set(t);
+            }
+
+            @Override
+            public void add(T t) {
+                _actual.add(toBindingsValue(t));
+                _delegate.add(t);
+            }
+        };
+    }
+
+    @Override
+    default ListIterator<T> listIterator(int index) {
+        return new ListIterator<T>() {
+            ListIterator<T> _delegate = coerceListToComplexValues().listIterator(index);
+            ListIterator _actual = getList().listIterator(index);
+
+            @Override
+            public boolean hasNext() {
+                return _delegate.hasNext();
+            }
+
+            @Override
+            public T next() {
+                _actual.next();
+                return _delegate.next();
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return _delegate.hasPrevious();
+            }
+
+            @Override
+            public T previous() {
+                _actual.previous();
+                return _delegate.previous();
+            }
+
+            @Override
+            public int nextIndex() {
+                _actual.nextIndex();
+                return _delegate.nextIndex();
+            }
+
+            @Override
+            public int previousIndex() {
+                _actual.previousIndex();
+                return _delegate.previousIndex();
+            }
+
+            @Override
+            public void remove() {
+                _actual.remove();
+                _delegate.remove();
+            }
+
+            @Override
+            public void set(T t) {
+                _actual.set(toBindingsValue(t));
+                _delegate.set(t);
+            }
+
+            @Override
+            public void add(T t) {
+                _actual.add(toBindingsValue(t));
+                _delegate.add(t);
+            }
+        };
+    }
+
+    @Override
+    default List<T> subList(int fromIndex, int toIndex) {
+        return (List<T>) getList().subList(fromIndex, toIndex).stream()
+                .map(e -> coerce(e, getFinalComponentType()))
+                .collect(Collectors.toList());
+    }
 }

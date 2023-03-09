@@ -17,16 +17,15 @@
 package manifold.api.highjump;
 
 import java.util.Collections;
+
 import manifold.internal.runtime.Bootstrap;
 import org.junit.Test;
 
-public class HighjumpTest
-{
-  @Test
-  public void testSimple()
-  {
+public class HighjumpTest {
+    @Test
+    public void testSimple() {
 //    Object result = Highjump.instance().evaluate( "2 + 2", Collections.emptyList(), Collections.emptyList(), null );
 //    result = Highjump.instance().evaluate( "3 + 2", Collections.emptyList(), Collections.emptyList(), null );
 //    System.out.println( result );
-  }
+    }
 }

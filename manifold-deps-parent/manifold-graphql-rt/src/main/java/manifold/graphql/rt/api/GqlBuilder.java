@@ -18,12 +18,10 @@ package manifold.graphql.rt.api;
 
 import manifold.ext.rt.RuntimeMethods;
 
-public interface GqlBuilder<T extends GqlType> extends BuiltType<T>
-{
-  default T build()
-  {
-    //noinspection unchecked
-    return (T)RuntimeMethods.coerceFromBindingsValue( getBindings(), findBuiltTypeFrom( GqlBuilder.class ) );
-  }
+public interface GqlBuilder<T extends GqlType> extends BuiltType<T> {
+    default T build() {
+        //noinspection unchecked
+        return (T) RuntimeMethods.coerceFromBindingsValue(getBindings(), findBuiltTypeFrom(GqlBuilder.class));
+    }
 }
 

@@ -23,12 +23,10 @@ import java.util.List;
  * Exercises type conflict between field and accessor, here {@code List<String>} conflicts with {@code String[]},
  * resulting in no property for "errors".
  */
-public class NameTypeCollisionClass
-{
-  private List<String> errors = new ArrayList<>();
+public class NameTypeCollisionClass {
+    private List<String> errors = new ArrayList<>();
 
-  public String[] getErrors()
-  {
-    return errors.toArray( new String[0] );
-  }
+    public String[] getErrors() {
+        return errors.toArray(new String[0]);
+    }
 }

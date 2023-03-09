@@ -19,17 +19,18 @@ package manifold.ext.props.middle;
 import manifold.ext.props.rt.api.PropOption;
 import manifold.ext.props.rt.api.var;
 
-public class NonbackingWithPropOptions
-{
-  final @var public String name;
+public class NonbackingWithPropOptions {
+    final @var
+    public String name;
 
-  final @var public String nonbackingFinal;
-  final public String getNonbackingFinal()
-  {
-    return "hi";
-  }
-  final public void setNonbackingFinal( String value )
-  {
-    // whatever
-  }
+    final @var
+    public String nonbackingFinal;
+
+    final public String getNonbackingFinal() {
+        return "hi";
+    }
+
+    final public void setNonbackingFinal(String value) {
+        // whatever
+    }
 }

@@ -18,30 +18,28 @@ package manifold.ext.delegation.parts.superinterfacecall;
 
 import junit.framework.TestCase;
 
-public class SuperInterfaceCallTest extends TestCase
-{
-  public void testSuperInterfaceCall_Delegation()
-  {
-    MyA_APart myA = new MyA_APart();
-    assertEquals( "MyAhi 1 2", myA.stuff( "1", "2" ) );
-  }
-  public void testSuperInterfaceCall_Forwarding()
-  {
-    MyA_ANotPart myA = new MyA_ANotPart();
-    assertEquals( "Ahi 1 2", myA.stuff( "1", "2" ) );
-  }
-  public void testSuperInterfaceCall_Delegation_Void()
-  {
-    MyA_APart myA = new MyA_APart();
-    StringBuilder sb = new StringBuilder();
-    myA.stuffVoid( "1", "2", sb );
-    assertEquals( "MyAhi 1 2", sb.toString() );
-  }
-  public void testSuperInterfaceCall_Forwarding_Void()
-  {
-    MyA_ANotPart myA = new MyA_ANotPart();
-    StringBuilder sb = new StringBuilder();
-    myA.stuffVoid( "1", "2", sb );
-    assertEquals( "Ahi 1 2", sb.toString() );
-  }
+public class SuperInterfaceCallTest extends TestCase {
+    public void testSuperInterfaceCall_Delegation() {
+        MyA_APart myA = new MyA_APart();
+        assertEquals("MyAhi 1 2", myA.stuff("1", "2"));
+    }
+
+    public void testSuperInterfaceCall_Forwarding() {
+        MyA_ANotPart myA = new MyA_ANotPart();
+        assertEquals("Ahi 1 2", myA.stuff("1", "2"));
+    }
+
+    public void testSuperInterfaceCall_Delegation_Void() {
+        MyA_APart myA = new MyA_APart();
+        StringBuilder sb = new StringBuilder();
+        myA.stuffVoid("1", "2", sb);
+        assertEquals("MyAhi 1 2", sb.toString());
+    }
+
+    public void testSuperInterfaceCall_Forwarding_Void() {
+        MyA_ANotPart myA = new MyA_ANotPart();
+        StringBuilder sb = new StringBuilder();
+        myA.stuffVoid("1", "2", sb);
+        assertEquals("Ahi 1 2", sb.toString());
+    }
 }

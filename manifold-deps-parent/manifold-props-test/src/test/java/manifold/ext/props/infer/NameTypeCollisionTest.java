@@ -20,12 +20,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class NameTypeCollisionTest
-{
-  @Test
-  public void testNameTypeCollision()
-  {
-    NameTypeCollisionClass c = new NameTypeCollisionClass();
+public class NameTypeCollisionTest {
+    @Test
+    public void testNameTypeCollision() {
+        NameTypeCollisionClass c = new NameTypeCollisionClass();
 //    String[] errors = c.errors; // should not be a property due to collision of List<String> and String[]
-  }
+    }
 }

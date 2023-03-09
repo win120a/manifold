@@ -17,6 +17,5 @@
 package manifold.templates.rt.runtime;
 
 @SuppressWarnings("unused")
-public abstract class TestTemplateSuperClass extends BaseTemplate
-{
+public abstract class TestTemplateSuperClass extends BaseTemplate {
 }

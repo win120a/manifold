@@ -22,17 +22,14 @@ import manifold.internal.javac.JavacPlugin;
 
 import javax.lang.model.SourceVersion;
 
-public class JavacUtil
-{
-  public static SourceVersion getSourceVersion()
-  {
-    Context ctx = JavacPlugin.instance().getContext();
-    JavacProcessingEnvironment jpe = JavacProcessingEnvironment.instance( ctx );
-    return jpe.getSourceVersion();
-  }
+public class JavacUtil {
+    public static SourceVersion getSourceVersion() {
+        Context ctx = JavacPlugin.instance().getContext();
+        JavacProcessingEnvironment jpe = JavacProcessingEnvironment.instance(ctx);
+        return jpe.getSourceVersion();
+    }
 
-  public static int getSourceNumber()
-  {
-    return getSourceVersion().ordinal();
-  }
+    public static int getSourceNumber() {
+        return getSourceVersion().ordinal();
+    }
 }

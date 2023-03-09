@@ -18,24 +18,23 @@ package manifold.csv.api;
 
 import java.util.Arrays;
 import java.util.List;
+
 import manifold.api.host.IModule;
 import manifold.api.json.AbstractJsonTypeManifold;
 
 /**
+ *
  */
-public class CsvTypeManifold extends AbstractJsonTypeManifold<CsvModel>
-{
-  public static final List<String> FILE_EXTENSION = Arrays.asList( "csv", "tsv", "psv", "tab" );
+public class CsvTypeManifold extends AbstractJsonTypeManifold<CsvModel> {
+    public static final List<String> FILE_EXTENSION = Arrays.asList("csv", "tsv", "psv", "tab");
 
-  @Override
-  public void init( IModule module )
-  {
-    init( module, ( fqn, files ) -> new CsvModel( getModule().getHost(), fqn, files ) );
-  }
+    @Override
+    public void init(IModule module) {
+        init(module, (fqn, files) -> new CsvModel(getModule().getHost(), fqn, files));
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return FILE_EXTENSION.contains( fileExtension );
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return FILE_EXTENSION.contains(fileExtension);
+    }
 }

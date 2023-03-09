@@ -19,20 +19,19 @@ package manifold.ext.delegation;
 import junit.framework.TestCase;
 import manifold.ext.delegation.rt.api.link;
 
-public class VisibleMethodsTest extends TestCase
-{
-  public void testSyntheticMethodExclusion()
-  {
-    MyString s = new MyString( "hi" );
-    assertEquals( "hi", s.toString() );
-  }
-
-  // CharSequence has a synthetic method, which should be excluded from processing
-  static class MyString implements CharSequence {
-    @link String string;
-
-    public MyString(String string) {
-      this.string = string;
+public class VisibleMethodsTest extends TestCase {
+    public void testSyntheticMethodExclusion() {
+        MyString s = new MyString("hi");
+        assertEquals("hi", s.toString());
     }
-  }
+
+    // CharSequence has a synthetic method, which should be excluded from processing
+    static class MyString implements CharSequence {
+        @link
+        String string;
+
+        public MyString(String string) {
+            this.string = string;
+        }
+    }
 }

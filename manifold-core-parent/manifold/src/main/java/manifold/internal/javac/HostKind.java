@@ -18,21 +18,18 @@ package manifold.internal.javac;
 
 import com.sun.tools.javac.parser.Tokens;
 
-public enum HostKind
-{
-  LINE_COMMENT, BLOCK_COMMENT, JAVADOC_COMMENT, DOUBLE_QUOTE_LITERAL, TEXT_BLOCK_LITERAL;
+public enum HostKind {
+    LINE_COMMENT, BLOCK_COMMENT, JAVADOC_COMMENT, DOUBLE_QUOTE_LITERAL, TEXT_BLOCK_LITERAL;
 
-  static HostKind from( Tokens.Comment.CommentStyle s )
-  {
-    switch( s )
-    {
-      case LINE:
-        return LINE_COMMENT;
-      case BLOCK:
-        return BLOCK_COMMENT;
-      case JAVADOC:
-        return JAVADOC_COMMENT;
+    static HostKind from(Tokens.Comment.CommentStyle s) {
+        switch (s) {
+            case LINE:
+                return LINE_COMMENT;
+            case BLOCK:
+                return BLOCK_COMMENT;
+            case JAVADOC:
+                return JAVADOC_COMMENT;
+        }
+        throw new IllegalStateException();
     }
-    throw new IllegalStateException();
-  }
 }

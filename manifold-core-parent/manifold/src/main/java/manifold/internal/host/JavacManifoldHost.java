@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import manifold.api.fs.IDirectory;
 import manifold.api.fs.IFileSystem;
 import manifold.api.host.IManifoldHost;
@@ -35,48 +36,39 @@ import manifold.api.util.SourcePathUtil;
  * More generally, any two host instances must not share state that contributes to the {@link IManifoldHost} semantic
  * contract.
  */
-public class JavacManifoldHost extends SingleModuleManifoldHost
-{
-  public void initialize( Set<String> sourcePath, List<String> classpath, List<String> outputPath )
-  {
-    List<String> cp = classpath.stream().filter( e -> !SourcePathUtil.excludeFromSourcePath( e ) ).collect( Collectors.toList() );
-    Set<String> sp = sourcePath.stream().filter( e -> !SourcePathUtil.excludeFromSourcePath( e ) ).collect( Collectors.toSet() );
+public class JavacManifoldHost extends SingleModuleManifoldHost {
+    public void initialize(Set<String> sourcePath, List<String> classpath, List<String> outputPath) {
+        List<String> cp = classpath.stream().filter(e -> !SourcePathUtil.excludeFromSourcePath(e)).collect(Collectors.toList());
+        Set<String> sp = sourcePath.stream().filter(e -> !SourcePathUtil.excludeFromSourcePath(e)).collect(Collectors.toSet());
 
-    int i = 0;
-    for( String p: outputPath )
-    {
-      if( !cp.contains( p ) )
-      {
-        // ensure output path is in the classpath
-        cp.add( i++, p );
-      }
+        int i = 0;
+        for (String p : outputPath) {
+            if (!cp.contains(p)) {
+                // ensure output path is in the classpath
+                cp.add(i++, p);
+            }
+        }
+
+        List<String> all = new ArrayList<>();
+        for (String p : sp) {
+            if (!all.contains(p)) {
+                all.add(p);
+            }
+        }
+        for (String p : cp) {
+            if (!all.contains(p)) {
+                all.add(p);
+            }
+        }
+        initPaths(cp, all, outputPath);
     }
 
-    List<String> all = new ArrayList<>();
-    for( String p: sp )
-    {
-      if( !all.contains( p ) )
-      {
-        all.add( p );
-      }
+    private void initPaths(List<String> classpath, List<String> sourcePath, List<String> outputPath) {
+        IFileSystem fs = getFileSystem();
+        List<IDirectory> cp = classpath.stream().map(path -> fs.getIDirectory(new File(path))).collect(Collectors.toList());
+        List<IDirectory> sp = sourcePath.stream().map(path -> fs.getIDirectory(new File(path))).collect(Collectors.toList());
+        List<IDirectory> op = outputPath.stream().map(path -> fs.getIDirectory(new File(path))).collect(Collectors.toList());
+        createSingleModule(cp, sp, op);
     }
-    for( String p: cp )
-    {
-      if( !all.contains( p ) )
-      {
-        all.add( p );
-      }
-    }
-    initPaths( cp, all, outputPath );
-  }
-
-  private void initPaths( List<String> classpath, List<String> sourcePath, List<String> outputPath )
-  {
-    IFileSystem fs = getFileSystem();
-    List<IDirectory> cp = classpath.stream().map( path -> fs.getIDirectory( new File( path ) ) ).collect( Collectors.toList() );
-    List<IDirectory> sp = sourcePath.stream().map( path -> fs.getIDirectory( new File( path ) ) ).collect( Collectors.toList() );
-    List<IDirectory> op = outputPath.stream().map( path -> fs.getIDirectory( new File( path ) ) ).collect( Collectors.toList() );
-    createSingleModule( cp, sp, op );
-  }
 
 }

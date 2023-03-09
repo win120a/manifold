@@ -27,40 +27,37 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class ObjectTest
-{
-  @Test
-  public void testJreInterfaceInferredProperties()
-  {
-    // use "key" and "value" inferred properties on java.util.Map
-    Map<String,String> map = new LinkedHashMap<>();
-    map.put( "a", "1" );
-    map.put( "b", "2" );
-    Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-    Map.Entry entry = iterator.next();
-    assertEquals( "a", entry.key );
-    assertEquals( "1", entry.value );
-    entry = iterator.next();
-    assertEquals( "b", entry.key );
-    assertEquals( "2", entry.value );
-  }
-
-  @Test
-  public void testJreClassInferredProperties()
-  {
-    LocalDateTime ldt = LocalDateTime.of( 1986, 6, 12, 3, 30 );
-    assertEquals( 1986, ldt.year );
-    assertEquals( Month.JUNE, ldt.month );
-    assertEquals( 12, ldt.dayOfMonth );
-    assertEquals( 3, ldt.hour );
-    assertEquals( 30, ldt.minute );
-
-    Calendar calendar = Calendar.instance; // call getInstance() static
-    if (calendar.firstDayOfWeek == Calendar.SUNDAY) {  // call getFirstDayOfWeek()
-      calendar.firstDayOfWeek = Calendar.MONDAY; // call setFirstDayOfWeek()
+public class ObjectTest {
+    @Test
+    public void testJreInterfaceInferredProperties() {
+        // use "key" and "value" inferred properties on java.util.Map
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("a", "1");
+        map.put("b", "2");
+        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+        Map.Entry entry = iterator.next();
+        assertEquals("a", entry.key);
+        assertEquals("1", entry.value);
+        entry = iterator.next();
+        assertEquals("b", entry.key);
+        assertEquals("2", entry.value);
     }
-    if (!calendar.isLenient) { // call isLenient()
-      calendar.isLenient = true; // call setLenient()
+
+    @Test
+    public void testJreClassInferredProperties() {
+        LocalDateTime ldt = LocalDateTime.of(1986, 6, 12, 3, 30);
+        assertEquals(1986, ldt.year);
+        assertEquals(Month.JUNE, ldt.month);
+        assertEquals(12, ldt.dayOfMonth);
+        assertEquals(3, ldt.hour);
+        assertEquals(30, ldt.minute);
+
+        Calendar calendar = Calendar.instance; // call getInstance() static
+        if (calendar.firstDayOfWeek == Calendar.SUNDAY) {  // call getFirstDayOfWeek()
+            calendar.firstDayOfWeek = Calendar.MONDAY; // call setFirstDayOfWeek()
+        }
+        if (!calendar.isLenient) { // call isLenient()
+            calendar.isLenient = true; // call setLenient()
+        }
     }
-  }
 }

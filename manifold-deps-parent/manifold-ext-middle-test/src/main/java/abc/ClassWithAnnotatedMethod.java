@@ -20,9 +20,8 @@ import xyz.MyAnno;
 
 import static xyz.MyEnum.Curly;
 
-public class ClassWithAnnotatedMethod
-{
-  @MyAnno(Curly)
-  public void myAnnotatedMethod()
-  {}
+public class ClassWithAnnotatedMethod {
+    @MyAnno(Curly)
+    public void myAnnotatedMethod() {
+    }
 }

@@ -20,6 +20,7 @@ import graphql.language.Definition;
 import graphql.language.Node;
 import graphql.language.OperationDefinition;
 import graphql.language.TypeDefinition;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,108 +30,93 @@ import java.util.stream.Stream;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
+
 import manifold.api.host.IModule;
 import manifold.api.type.JavaTypeManifold;
 
-public class GqlManifold extends JavaTypeManifold<GqlModel>
-{
-  public static final List<String> EXTS = Arrays.asList( "graphql", "graphqls", "gql" );
+public class GqlManifold extends JavaTypeManifold<GqlModel> {
+    public static final List<String> EXTS = Arrays.asList("graphql", "graphqls", "gql");
 
-  private GqlScopeFinder _scopeFinder;
+    private GqlScopeFinder _scopeFinder;
 
-  @Override
-  public void init( IModule module )
-  {
-    _scopeFinder = new GqlScopeFinder( this );
-    init( module, (fqn, files) -> new GqlModel( this, fqn, files ) );
-  }
-
-  public GqlScopeFinder getScopeFinder()
-  {
-    return _scopeFinder;
-  }
-
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return EXTS.contains( fileExtension );
-  }
-
-  @Override
-  public boolean isInnerType( String topLevel, String relativeInner )
-  {
-    GqlModel model = getModel( topLevel );
-    GqlParentType type = model == null ? null : model.getType();
-    if( type == null )
-    {
-      return false;
+    @Override
+    public void init(IModule module) {
+        _scopeFinder = new GqlScopeFinder(this);
+        init(module, (fqn, files) -> new GqlModel(this, fqn, files));
     }
 
-    Definition typeDef = null;
-    for( StringTokenizer tokenizer = new StringTokenizer( relativeInner, "." ); tokenizer.hasMoreTokens(); )
-    {
-      String innerName = tokenizer.nextToken();
-      typeDef = typeDef == null ? type.getChild( innerName ) : getChildDefinition( typeDef, innerName );
-      if( typeDef == null )
-      {
-        // special case so Builder classes can have extension methods applied
-        return innerName.equals( "Builder" ) && !tokenizer.hasMoreTokens();
-      }
+    public GqlScopeFinder getScopeFinder() {
+        return _scopeFinder;
     }
-    return typeDef != null;
-  }
 
-  private Definition getChildDefinition( Definition def, String name )
-  {
-    for( Node child: def.getNamedChildren().getChildren( name ) )
-    {
-      if( child instanceof TypeDefinition || child instanceof OperationDefinition )
-      {
-        return (Definition)child;
-      }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return EXTS.contains(fileExtension);
     }
-    return null;
-  }
 
-  public <R> R findByModel( Function<GqlModel, R> byModel )
-  {
-    return getAllTypeNames().stream()
-      .map( fqn -> {
-        GqlModel model = getModel( fqn );
-        return model == null ? null : byModel.apply( model );
-      } )
-      .filter( Objects::nonNull )
-      .findFirst().orElse( null );
-  }
+    @Override
+    public boolean isInnerType(String topLevel, String relativeInner) {
+        GqlModel model = getModel(topLevel);
+        GqlParentType type = model == null ? null : model.getType();
+        if (type == null) {
+            return false;
+        }
 
-  public <R> Stream<R> findAllByModel( Function<GqlModel, R> byModel )
-  {
-    return getAllTypeNames().stream()
-      .map( fqn -> {
-        GqlModel model = getModel( fqn );
-        return model == null ? null : byModel.apply( model );
-      } )
-      .filter( Objects::nonNull );
-  }
-
-  /**
-   * Override so that getModel() can be called within this package (see GqlScope)
-   */
-  @Override
-  protected GqlModel getModel( String fqn )
-  {
-    return super.getModel( fqn );
-  }
-
-  @Override
-  protected String contribute( JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, GqlModel model, DiagnosticListener<JavaFileObject> errorHandler )
-  {
-    StringBuilder sb = new StringBuilder();
-    if( !model.getScope().hasConfigErrors() )
-    {
-      model.getType().render( sb, location, getModule(), errorHandler );
+        Definition typeDef = null;
+        for (StringTokenizer tokenizer = new StringTokenizer(relativeInner, "."); tokenizer.hasMoreTokens(); ) {
+            String innerName = tokenizer.nextToken();
+            typeDef = typeDef == null ? type.getChild(innerName) : getChildDefinition(typeDef, innerName);
+            if (typeDef == null) {
+                // special case so Builder classes can have extension methods applied
+                return innerName.equals("Builder") && !tokenizer.hasMoreTokens();
+            }
+        }
+        return typeDef != null;
     }
-    model.report( errorHandler );
-    return sb.toString();
-  }
+
+    private Definition getChildDefinition(Definition def, String name) {
+        for (Node child : def.getNamedChildren().getChildren(name)) {
+            if (child instanceof TypeDefinition || child instanceof OperationDefinition) {
+                return (Definition) child;
+            }
+        }
+        return null;
+    }
+
+    public <R> R findByModel(Function<GqlModel, R> byModel) {
+        return getAllTypeNames().stream()
+                .map(fqn -> {
+                    GqlModel model = getModel(fqn);
+                    return model == null ? null : byModel.apply(model);
+                })
+                .filter(Objects::nonNull)
+                .findFirst().orElse(null);
+    }
+
+    public <R> Stream<R> findAllByModel(Function<GqlModel, R> byModel) {
+        return getAllTypeNames().stream()
+                .map(fqn -> {
+                    GqlModel model = getModel(fqn);
+                    return model == null ? null : byModel.apply(model);
+                })
+                .filter(Objects::nonNull);
+    }
+
+    /**
+     * Override so that getModel() can be called within this package (see GqlScope)
+     */
+    @Override
+    protected GqlModel getModel(String fqn) {
+        return super.getModel(fqn);
+    }
+
+    @Override
+    protected String contribute(JavaFileManager.Location location, String topLevelFqn, boolean genStubs, String existing, GqlModel model, DiagnosticListener<JavaFileObject> errorHandler) {
+        StringBuilder sb = new StringBuilder();
+        if (!model.getScope().hasConfigErrors()) {
+            model.getType().render(sb, location, getModule(), errorHandler);
+        }
+        model.report(errorHandler);
+        return sb.toString();
+    }
 }

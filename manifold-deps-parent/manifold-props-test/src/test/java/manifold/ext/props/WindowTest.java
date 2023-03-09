@@ -20,13 +20,11 @@ import org.junit.Test;
 
 import java.awt.Window;
 
-public class WindowTest
-{
-  @Test
-  public void testWindow()
-  {
-    // tests that Windows.allWindows field of type sun.awt.util.IdentityArrayList, which the JDK hides with ct.sym,
-    // is handled gracefully, without compile error
-    Window.getWindows();
-  }
+public class WindowTest {
+    @Test
+    public void testWindow() {
+        // tests that Windows.allWindows field of type sun.awt.util.IdentityArrayList, which the JDK hides with ct.sym,
+        // is handled gracefully, without compile error
+        Window.getWindows();
+    }
 }

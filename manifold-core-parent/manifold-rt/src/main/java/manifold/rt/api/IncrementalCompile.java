@@ -26,17 +26,16 @@ import java.lang.annotation.RetentionPolicy;
  */
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
-public @interface IncrementalCompile
-{
-  /**
-   * The qualified name of the driver class, which must implement {@code IIncrementalCompileDriver}.
-   * Note this is not a {@code Class<? extends IIncrementalCompileDriver>} because the driver
-   * class is likely not in the classpath of the compiler.
-   */
-  String driverClass();
+public @interface IncrementalCompile {
+    /**
+     * The qualified name of the driver class, which must implement {@code IIncrementalCompileDriver}.
+     * Note this is not a {@code Class<? extends IIncrementalCompileDriver>} because the driver
+     * class is likely not in the classpath of the compiler.
+     */
+    String driverClass();
 
-  /**
-   * The identity hash of the driver
-   */
-  int driverInstance();
+    /**
+     * The identity hash of the driver
+     */
+    int driverInstance();
 }

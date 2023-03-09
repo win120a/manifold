@@ -16,17 +16,14 @@
 
 package manifold.csv.rt.parser;
 
-public class CsvField
-{
-  private final CsvToken _token;
+public class CsvField {
+    private final CsvToken _token;
 
-  CsvField( CsvToken token )
-  {
-    _token = token;
-  }
+    CsvField(CsvToken token) {
+        _token = token;
+    }
 
-  public CsvToken getToken()
-  {
-    return _token;
-  }
+    public CsvToken getToken() {
+        return _token;
+    }
 }

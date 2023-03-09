@@ -40,340 +40,258 @@ import manifold.rt.api.util.Pair;
 
 import static manifold.json.rt.Json.toBindings;
 
-public class Csv
-{
-  /**
-   * Write the contents of the {@code jsonValue} to CSV formatted string following
-   * <a href="https://tools.ietf.org/html/rfc4180">RFC 4180</a>. Note data in all fields is enclosed in double quotes.
-   * <p/>
-   * Additionally, since CSV is a flat file format, nesting of data is not directly supported. That is, <i>field</i>
-   * values having type {@code Bindings} or {@code List}, although legal Bindings value types, have no representation
-   * in CSV. Currently, such values are simply converted to strings via {@code toString()}, however this may change in
-   * a future revision.
-   */
-  public static String toCsv( Object jsonValue )
-  {
-    StringBuilder sb = new StringBuilder();
-    jsonValue = toBindings( jsonValue );
-    if( jsonValue instanceof Map )
-    {
-      toCsv( jsonValue, null, sb, 0 );
-    }
-    else if( jsonValue instanceof Iterable )
-    {
-      toCsv( jsonValue, "list", sb, 0 );
-    }
-    else
-    {
-      toCsv( jsonValue, "item", sb, 0 );
-    }
-    return sb.toString();
-  }
-
-  /**
-   * Write the contents of the {@code jsonValue} to CSV formatted string following
-   * <a href="https://tools.ietf.org/html/rfc4180">RFC 4180</a>. Note data in all fields is enclosed in double quotes.
-   * <p/>
-   * Additionally, since CSV is a flat file format, nesting of data is not directly supported. That is, <i>field</i>
-   * values having type {@code Bindings} or {@code List}, although legal Bindings value types, have no representation
-   * in CSV. Currently, such values are simply converted to strings via {@code toString()}, however this may change in
-   * a future revision.
-   */
-  public static void toCsv( Object jsonValue, String name, StringBuilder target, int indent )
-  {
-    jsonValue = toBindings( jsonValue );
-    if( jsonValue instanceof Map )
-    {
-      if( name == null )
-      {
-        Map map = (Map)jsonValue;
-        if( map.size() == 1 )
-        {
-          // single entry with no name implies root, defer to the root
-          Object rootKey = map.keySet().iterator().next();
-          Object rootValue = map.get( rootKey );
-          if( rootValue instanceof Pair )
-          {
-            rootValue = ((Pair)rootValue).getSecond();
-          }
-          toCsv( rootValue, rootKey.toString(), target, indent );
-          return;
+public class Csv {
+    /**
+     * Write the contents of the {@code jsonValue} to CSV formatted string following
+     * <a href="https://tools.ietf.org/html/rfc4180">RFC 4180</a>. Note data in all fields is enclosed in double quotes.
+     * <p/>
+     * Additionally, since CSV is a flat file format, nesting of data is not directly supported. That is, <i>field</i>
+     * values having type {@code Bindings} or {@code List}, although legal Bindings value types, have no representation
+     * in CSV. Currently, such values are simply converted to strings via {@code toString()}, however this may change in
+     * a future revision.
+     */
+    public static String toCsv(Object jsonValue) {
+        StringBuilder sb = new StringBuilder();
+        jsonValue = toBindings(jsonValue);
+        if (jsonValue instanceof Map) {
+            toCsv(jsonValue, null, sb, 0);
+        } else if (jsonValue instanceof Iterable) {
+            toCsv(jsonValue, "list", sb, 0);
+        } else {
+            toCsv(jsonValue, "item", sb, 0);
         }
-        else
-        {
-          //todo: factor out Csv.CSV_DEFAULT_ROOT
-          name = "root_object";
+        return sb.toString();
+    }
+
+    /**
+     * Write the contents of the {@code jsonValue} to CSV formatted string following
+     * <a href="https://tools.ietf.org/html/rfc4180">RFC 4180</a>. Note data in all fields is enclosed in double quotes.
+     * <p/>
+     * Additionally, since CSV is a flat file format, nesting of data is not directly supported. That is, <i>field</i>
+     * values having type {@code Bindings} or {@code List}, although legal Bindings value types, have no representation
+     * in CSV. Currently, such values are simply converted to strings via {@code toString()}, however this may change in
+     * a future revision.
+     */
+    public static void toCsv(Object jsonValue, String name, StringBuilder target, int indent) {
+        jsonValue = toBindings(jsonValue);
+        if (jsonValue instanceof Map) {
+            if (name == null) {
+                Map map = (Map) jsonValue;
+                if (map.size() == 1) {
+                    // single entry with no name implies root, defer to the root
+                    Object rootKey = map.keySet().iterator().next();
+                    Object rootValue = map.get(rootKey);
+                    if (rootValue instanceof Pair) {
+                        rootValue = ((Pair) rootValue).getSecond();
+                    }
+                    toCsv(rootValue, rootKey.toString(), target, indent);
+                    return;
+                } else {
+                    //todo: factor out Csv.CSV_DEFAULT_ROOT
+                    name = "root_object";
+                }
+            }
+            // a single row of data consisting of the name/value pairs in the map
+            toCsv(Collections.singletonList(jsonValue), name, target, indent);
+        } else if (jsonValue instanceof Iterable) {
+            // A list of data
+
+            toCsv((Iterable) jsonValue, name, target, indent);
+        } else {
+            // a single row of data consisting of just one column of the name/value pair
+
+            toCsv(Collections.singletonList(jsonValue), name, target, indent);
         }
-      }
-      // a single row of data consisting of the name/value pairs in the map
-      toCsv( Collections.singletonList( jsonValue ), name, target, indent );
     }
-    else if( jsonValue instanceof Iterable )
-    {
-      // A list of data
 
-      toCsv( (Iterable)jsonValue, name, target, indent );
-    }
-    else
-    {
-      // a single row of data consisting of just one column of the name/value pair
+    private static void toCsv(Iterable value, String name, StringBuilder target, int indent) {
+        Iterator iterator = value.iterator();
+        if (iterator.hasNext()) {
+            // Csv header
 
-      toCsv( Collections.singletonList( jsonValue ), name, target, indent );
-    }
-  }
+            Object comp = iterator.next();
+            comp = toBindings(comp);
+            if (comp instanceof Pair) {
+                comp = ((Pair) comp).getSecond();
+            }
 
-  private static void toCsv( Iterable value, String name, StringBuilder target, int indent )
-  {
-    Iterator iterator = value.iterator();
-    if( iterator.hasNext() )
-    {
-      // Csv header
+            if (comp instanceof Map) {
+                // row of data
 
-      Object comp = iterator.next();
-      comp = toBindings( comp );
-      if( comp instanceof Pair )
-      {
-        comp = ((Pair)comp).getSecond();
-      }
+                int i = 0;
+                for (Object key : ((Map) comp).keySet()) {
+                    if (i > 0) {
+                        target.append(',');
+                    }
+                    appendCsvValue(target, key);
+                    i++;
+                }
+                target.append('\n');
+            } else if (comp instanceof Iterable) {
+                // single column of data
 
-      if( comp instanceof Map )
-      {
-        // row of data
-
-        int i = 0;
-        for( Object key: ((Map)comp).keySet() )
-        {
-          if( i > 0 )
-          {
-            target.append( ',' );
-          }
-          appendCsvValue( target, key );
-          i++;
+                appendCsvValue(target, name).append('\n');
+            }
+        } else {
+            return;
         }
-        target.append( '\n' );
-      }
-      else if( comp instanceof Iterable )
-      {
-        // single column of data
 
-        appendCsvValue( target, name ).append( '\n' );
-      }
-    }
-    else
-    {
-      return;
-    }
+        for (Object comp : value) {
+            // Csv records
 
-    for( Object comp: value )
-    {
-      // Csv records
+            if (comp instanceof Pair) {
+                comp = ((Pair) comp).getSecond();
+            }
 
-      if( comp instanceof Pair )
-      {
-        comp = ((Pair)comp).getSecond();
-      }
+            comp = toBindings(comp);
 
-      comp = toBindings( comp );
-
-      if( comp instanceof Map )
-      {
-        int i = 0;
-        for( Object v: ((Map)comp).values() )
-        {
-          if( i > 0 )
-          {
-            target.append( ',' );
-          }
-          appendCsvValue( target, v );
-          i++;
+            if (comp instanceof Map) {
+                int i = 0;
+                for (Object v : ((Map) comp).values()) {
+                    if (i > 0) {
+                        target.append(',');
+                    }
+                    appendCsvValue(target, v);
+                    i++;
+                }
+                target.append('\n');
+            } else if (comp instanceof Iterable) {
+                // Lists of lists not supported with CSV, just dumping text for each element to a single value
+                target.append('"');
+                ((Iterable<?>) comp).forEach(e -> target.append("\"\"").append(value).append("\"\","));
+                target.append("\"\n");
+            } else {
+                // single column of data
+                appendCsvValue(target, value).append('\n');
+            }
         }
-        target.append( '\n' );
-      }
-      else if( comp instanceof Iterable )
-      {
-        // Lists of lists not supported with CSV, just dumping text for each element to a single value
-        target.append( '"' );
-        ((Iterable<?>)comp).forEach( e -> target.append( "\"\"" ).append( value ).append( "\"\"," ) );
-        target.append( "\"\n" );
-      }
-      else
-      {
-        // single column of data
-        appendCsvValue( target, value ).append( '\n' );
-      }
     }
-  }
 
-  private static StringBuilder appendCsvValue( StringBuilder target, Object value )
-  {
-    target.append( '"' ).append( String.valueOf( value ).replace( "\"", "\"\"" ) ).append( '"' );
-    return target;
-  }
-
-  public static Object fromCsv( String csv )
-  {
-    return fromCsv( csv, false );
-  }
-
-  public static Object fromCsv( String csv, boolean withTokens )
-  {
-    try( InputStream inputStream = new BufferedInputStream( new ByteArrayInputStream( csv.getBytes() ) ) )
-    {
-      CsvDataSet dataSet = CsvParser.parse( inputStream );
-      return withTokens ? transformType( dataSet ) : transformData( dataSet );
+    private static StringBuilder appendCsvValue(StringBuilder target, Object value) {
+        target.append('"').append(String.valueOf(value).replace("\"", "\"\"")).append('"');
+        return target;
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  private static List<?> transformData( CsvDataSet dataSet )
-  {
-    CsvHeader header = dataSet.getHeader();
-
-    List<?> names = new ArrayList<>();
-    if( header != null )
-    {
-      names = header.getFields().stream().map( f -> f.getToken() ).collect( Collectors.toList() );
+    public static Object fromCsv(String csv) {
+        return fromCsv(csv, false);
     }
-    else
-    {
-      List<CsvRecord> records = dataSet.getRecords();
-      if( !records.isEmpty() )
-      {
-        List<String> labels = new ArrayList<>();
-        for( int i = 0; i < records.get( 0 ).getSize(); i++ )
-        {
-          labels.add( "Field" + (i + 1) );
+
+    public static Object fromCsv(String csv, boolean withTokens) {
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(csv.getBytes()))) {
+            CsvDataSet dataSet = CsvParser.parse(inputStream);
+            return withTokens ? transformType(dataSet) : transformData(dataSet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        names = labels;
-      }
     }
 
-    List<DataBindings> list = new ArrayList<>();
-    for( CsvRecord record: dataSet.getRecords() )
-    {
-      DataBindings bindings = new DataBindings();
-      List<CsvField> fields = record.getFields();
-      for( int fieldNum = 0; fieldNum < fields.size(); fieldNum++ )
-      {
-        CsvField field = fields.get( fieldNum );
-        Object name = names.get( fieldNum );
-        bindings.put( name instanceof CsvToken ? ((CsvToken)name).getData() : name.toString(),
-          field.getToken().getData() );
-      }
-      list.add( bindings );
+    private static List<?> transformData(CsvDataSet dataSet) {
+        CsvHeader header = dataSet.getHeader();
+
+        List<?> names = new ArrayList<>();
+        if (header != null) {
+            names = header.getFields().stream().map(f -> f.getToken()).collect(Collectors.toList());
+        } else {
+            List<CsvRecord> records = dataSet.getRecords();
+            if (!records.isEmpty()) {
+                List<String> labels = new ArrayList<>();
+                for (int i = 0; i < records.get(0).getSize(); i++) {
+                    labels.add("Field" + (i + 1));
+                }
+                names = labels;
+            }
+        }
+
+        List<DataBindings> list = new ArrayList<>();
+        for (CsvRecord record : dataSet.getRecords()) {
+            DataBindings bindings = new DataBindings();
+            List<CsvField> fields = record.getFields();
+            for (int fieldNum = 0; fieldNum < fields.size(); fieldNum++) {
+                CsvField field = fields.get(fieldNum);
+                Object name = names.get(fieldNum);
+                bindings.put(name instanceof CsvToken ? ((CsvToken) name).getData() : name.toString(),
+                        field.getToken().getData());
+            }
+            list.add(bindings);
+        }
+        return list;
     }
-    return list;
-  }
 
-  private static DataBindings transformType( CsvDataSet dataSet )
-  {
-    CsvHeader header = dataSet.getHeader();
+    private static DataBindings transformType(CsvDataSet dataSet) {
+        CsvHeader header = dataSet.getHeader();
 
-    List<?> names = new ArrayList<>();
-    if( header != null )
-    {
-      names = header.getFields().stream().map( f -> f.getToken() ).collect( Collectors.toList() );
+        List<?> names = new ArrayList<>();
+        if (header != null) {
+            names = header.getFields().stream().map(f -> f.getToken()).collect(Collectors.toList());
+        } else {
+            List<CsvRecord> records = dataSet.getRecords();
+            if (!records.isEmpty()) {
+                List<String> labels = new ArrayList<>();
+                for (int i = 0; i < records.get(0).getSize(); i++) {
+                    labels.add("Field" + (i + 1));
+                }
+                names = labels;
+            }
+        }
+        DataBindings typeBindings = new DataBindings();
+        typeBindings.put("$schema", "http://json-schema.org/draft-04/schema#");
+        typeBindings.put("synthetic", true); // indicates this schema is not directly in the data file
+        typeBindings.put("type", "array");
+        DataBindings items = new DataBindings();
+        typeBindings.put("items", items);
+        items.put("type", "object");
+        DataBindings properties = new DataBindings();
+        items.put("properties", properties);
+        List<Class> types = dataSet.getTypes();
+        for (int i = 0; i < types.size(); i++) {
+            DataBindings property = new DataBindings();
+            Object nameObj = names.get(i);
+            if (nameObj instanceof CsvToken) {
+                properties.put(((CsvToken) nameObj).getData(), makeTokensValue((CsvToken) nameObj, property));
+            } else {
+                properties.put(nameObj.toString(), property);
+            }
+            Class type = types.get(i);
+            String t;
+            String format = null;
+            if (type == Boolean.class) {
+                t = "boolean";
+            } else if (type == Integer.class) {
+                t = "integer";
+            } else if (type == Double.class) {
+                t = "number";
+            } else {
+                t = "string";
+                if (type == Long.class) {
+                    format = "int64";
+                } else if (type == BigInteger.class) {
+                    format = "big-integer";
+                } else if (type == BigDecimal.class) {
+                    format = "big-decimal";
+                } else if (type == LocalDateTime.class) {
+                    format = "date-time";
+                } else if (type == LocalDate.class) {
+                    format = "date";
+                } else if (type == LocalTime.class) {
+                    format = "time";
+                }
+            }
+
+            property.put("type", t);
+            property.put("nullable", true);
+            if (format != null) {
+                property.put("format", format);
+            }
+        }
+        return typeBindings;
     }
-    else
-    {
-      List<CsvRecord> records = dataSet.getRecords();
-      if( !records.isEmpty() )
-      {
-        List<String> labels = new ArrayList<>();
-        for( int i = 0; i < records.get( 0 ).getSize(); i++ )
-        {
-          labels.add( "Field" + (i + 1) );
-        }
-        names = labels;
-      }
+
+
+    private static Object makeTokensValue(CsvToken name, DataBindings property) {
+        return new Pair<>(new Token[]{makeToken(name), null}, property);
     }
-    DataBindings typeBindings = new DataBindings();
-    typeBindings.put( "$schema", "http://json-schema.org/draft-04/schema#" );
-    typeBindings.put( "synthetic", true ); // indicates this schema is not directly in the data file
-    typeBindings.put( "type", "array" );
-    DataBindings items = new DataBindings();
-    typeBindings.put( "items", items );
-    items.put( "type", "object" );
-    DataBindings properties = new DataBindings();
-    items.put( "properties", properties );
-    List<Class> types = dataSet.getTypes();
-    for( int i = 0; i < types.size(); i++ )
-    {
-      DataBindings property = new DataBindings();
-      Object nameObj = names.get( i );
-      if( nameObj instanceof CsvToken )
-      {
-        properties.put( ((CsvToken)nameObj).getData(), makeTokensValue( (CsvToken)nameObj, property ) );
-      }
-      else
-      {
-        properties.put( nameObj.toString(), property );
-      }
-      Class type = types.get( i );
-      String t;
-      String format = null;
-      if( type == Boolean.class )
-      {
-        t = "boolean";
-      }
-      else if( type == Integer.class )
-      {
-        t = "integer";
-      }
-      else if( type == Double.class )
-      {
-        t = "number";
-      }
-      else
-      {
-        t = "string";
-        if( type == Long.class )
-        {
-          format = "int64";
-        }
-        else if( type == BigInteger.class )
-        {
-          format = "big-integer";
-        }
-        else if( type == BigDecimal.class )
-        {
-          format = "big-decimal";
-        }
-        else if( type == LocalDateTime.class )
-        {
-          format = "date-time";
-        }
-        else if( type == LocalDate.class )
-        {
-          format = "date";
-        }
-        else if( type == LocalTime.class )
-        {
-          format = "time";
-        }
-      }
 
-      property.put( "type", t );
-      property.put( "nullable", true );
-      if( format != null )
-      {
-        property.put( "format", format );
-      }
+    private static Token makeToken(CsvToken token) {
+        return new Token(TokenType.STRING, token.getData(), token.getOffset(), token.getLine(), -1);
     }
-    return typeBindings;
-  }
-
-
-  private static Object makeTokensValue( CsvToken name, DataBindings property )
-  {
-    return new Pair<>( new Token[]{makeToken( name ), null}, property );
-  }
-
-  private static Token makeToken( CsvToken token )
-  {
-    return new Token( TokenType.STRING, token.getData(), token.getOffset(), token.getLine(), -1 );
-  }
 }

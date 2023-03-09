@@ -16,8 +16,8 @@
 
 package manifold.ext.delegation.shapes;
 
-public abstract class Shape
-{
-  public abstract int sides();
-  public abstract String name();
+public abstract class Shape {
+    public abstract int sides();
+
+    public abstract String name();
 }

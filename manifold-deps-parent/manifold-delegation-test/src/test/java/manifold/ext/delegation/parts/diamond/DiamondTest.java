@@ -25,44 +25,41 @@ import static manifold.ext.delegation.parts.diamond.Teacher.Department.Science;
  * Together PersonPart, StudentPart, TeacherPart, and TaPart form a classic diamond pattern with Person
  * at the top. This test exercises {@code @link(share=true)} in {@link TaPart} to safely handle this use-case.
  */
-public class DiamondTest extends TestCase
-{
-  public void testDiamond()
-  {
-    PersonPart fred = new PersonPart( "Fred" );
-    Student taStudent = new StudentPart( fred, BS );
-    TA ta = new TaPart( taStudent, Science );
+public class DiamondTest extends TestCase {
+    public void testDiamond() {
+        PersonPart fred = new PersonPart("Fred");
+        Student taStudent = new StudentPart(fred, BS);
+        TA ta = new TaPart(taStudent, Science);
 
-    assertEquals( "Fred", ta.getName() );
-    assertEquals( BS, ta.getProgram() );
-    assertEquals( Science, ta.getDepartment() );
+        assertEquals("Fred", ta.getName());
+        assertEquals(BS, ta.getProgram());
+        assertEquals(Science, ta.getDepartment());
 
-    assertEquals( "TA", ta.getTitle() );
-    assertEquals( "TA Fred", ta.getTitledName() );
-  }
+        assertEquals("TA", ta.getTitle());
+        assertEquals("TA Fred", ta.getTitledName());
+    }
 
-  public void testMoreThisReplacement()
-  {
-    PersonPart fred = new PersonPart( "Fred" );
-    Student taStudent = new StudentPart( fred, BS );
-    TA ta = new TaPart( taStudent, Science );
+    public void testMoreThisReplacement() {
+        PersonPart fred = new PersonPart("Fred");
+        Student taStudent = new StudentPart(fred, BS);
+        TA ta = new TaPart(taStudent, Science);
 
-    assertEquals( "TA Fred", ta.getTitledName2() );
-    assertEquals( "TA Fred", ta.getTitledName3() );
+        assertEquals("TA Fred", ta.getTitledName2());
+        assertEquals("TA Fred", ta.getTitledName3());
 
-    assertEquals( "TA", fred.getTitleFromThisArg() );
-    assertEquals( "TA", fred.getTitleFromQualThisArg() );
+        assertEquals("TA", fred.getTitleFromThisArg());
+        assertEquals("TA", fred.getTitleFromQualThisArg());
 
-    assertEquals( "TA", fred.getPersonFromThisReturn().getTitle() );
-    assertEquals( "TA", fred.getPersonFromQualThisReturn().getTitle() );
+        assertEquals("TA", fred.getPersonFromThisReturn().getTitle());
+        assertEquals("TA", fred.getPersonFromQualThisReturn().getTitle());
 
-    assertEquals( "TA", fred.getPersonFromThisAssignment().getTitle() );
-    assertEquals( "TA", fred.getPersonFromQualThisAssignment().getTitle() );
+        assertEquals("TA", fred.getPersonFromThisAssignment().getTitle());
+        assertEquals("TA", fred.getPersonFromQualThisAssignment().getTitle());
 
-    assertEquals( "TA", fred.getPersonFromThisParens().getTitle() );
-    assertEquals( "TA", fred.getPersonFromQualThisParens().getTitle() );
+        assertEquals("TA", fred.getPersonFromThisParens().getTitle());
+        assertEquals("TA", fred.getPersonFromQualThisParens().getTitle());
 
-    assertEquals( "TA", fred.getPersonFromThisCast().getTitle() );
-    assertEquals( "TA", fred.getPersonFromQualThisCast().getTitle() );
-  }
+        assertEquals("TA", fred.getPersonFromThisCast().getTitle());
+        assertEquals("TA", fred.getPersonFromQualThisCast().getTitle());
+    }
 }

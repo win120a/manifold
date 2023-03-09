@@ -17,47 +17,40 @@
 package manifold.preprocessor.statement;
 
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.TokenType;
 
-public class UndefStatement extends Statement
-{
-  private final String _name;
+public class UndefStatement extends Statement {
+    private final String _name;
 
-  public UndefStatement( int start, int end, String name )
-  {
-    super( TokenType.Undef, start, end );
-    _name = name;
-  }
-
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-    preserveMaskedOutSpace( result, source );
-
-    if( !visible )
-    {
-      return;
+    public UndefStatement(int start, int end, String name) {
+        super(TokenType.Undef, start, end);
+        _name = name;
     }
 
-    if( !_name.isEmpty() )
-    {
-      definitions.undef( _name );
-    }
-  }
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+        preserveMaskedOutSpace(result, source);
 
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-    if( visible && !_name.isEmpty() )
-    {
-      definitions.undef( _name );
-    }
-  }
+        if (!visible) {
+            return;
+        }
 
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    return true;
-  }
+        if (!_name.isEmpty()) {
+            definitions.undef(_name);
+        }
+    }
+
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+        if (visible && !_name.isEmpty()) {
+            definitions.undef(_name);
+        }
+    }
+
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        return true;
+    }
 }

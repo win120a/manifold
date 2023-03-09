@@ -16,7 +16,7 @@
 
 package manifold.ext.props.foo;
 
-public class DoNotDeleteThis
-{
-  public void retardedMavenJavadocNeedsThis() {}
+public class DoNotDeleteThis {
+    public void retardedMavenJavadocNeedsThis() {
+    }
 }

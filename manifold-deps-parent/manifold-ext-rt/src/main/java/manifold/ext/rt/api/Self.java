@@ -36,17 +36,16 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE_USE, ElementType.METHOD})
-public @interface Self
-{
-  /**
-   * {@code value} is exclusive to <b>array extension methods</b>. Setting to {@code true} accesses the array's core
-   * <i>component type</i> instead of the array type itself. E.g.,
-   * <pre>
-   *   public class MyArrayExtension {
-   *   public static List<@Self(true) Object> toList(@This Object array) {
-   *     return Arrays.asList((Object[])array);
-   *   }
-   * </pre>
-   */
-  boolean value() default false;
+public @interface Self {
+    /**
+     * {@code value} is exclusive to <b>array extension methods</b>. Setting to {@code true} accesses the array's core
+     * <i>component type</i> instead of the array type itself. E.g.,
+     * <pre>
+     *   public class MyArrayExtension {
+     *   public static List<@Self(true) Object> toList(@This Object array) {
+     *     return Arrays.asList((Object[])array);
+     *   }
+     * </pre>
+     */
+    boolean value() default false;
 }

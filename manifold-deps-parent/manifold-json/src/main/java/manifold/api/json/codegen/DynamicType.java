@@ -19,55 +19,48 @@ package manifold.api.json.codegen;
 import manifold.api.json.codegen.schema.TypeAttributes;
 
 /**
+ *
  */
-public class DynamicType implements IJsonType
-{
-  private static final DynamicType INSTANCE = new DynamicType();
+public class DynamicType implements IJsonType {
+    private static final DynamicType INSTANCE = new DynamicType();
 
-  public static DynamicType instance()
-  {
-    return INSTANCE;
-  }
+    public static DynamicType instance() {
+        return INSTANCE;
+    }
 
-  private final TypeAttributes _typeAttributes;
+    private final TypeAttributes _typeAttributes;
 
-  private DynamicType()
-  {
-    _typeAttributes = new TypeAttributes( true );
-  }
+    private DynamicType() {
+        _typeAttributes = new TypeAttributes(true);
+    }
 
-  @Override
-  public String getName()
-  {
-    return "Dynamic";
-  }
+    @Override
+    public String getName() {
+        return "Dynamic";
+    }
 
-  @Override
-  public String getIdentifier()
-  {
-    return "Object";
-  }
+    @Override
+    public String getIdentifier() {
+        return "Object";
+    }
 
-  @Override
-  public IJsonParentType getParent()
-  {
-    return null;
-  }
+    @Override
+    public IJsonParentType getParent() {
+        return null;
+    }
 
-  @Override
-  public TypeAttributes getTypeAttributes()
-  {
-    return _typeAttributes;
-  }
-  @Override
-  public IJsonType copyWithAttributes( TypeAttributes attributes )
-  {
-    return this;
-  }
+    @Override
+    public TypeAttributes getTypeAttributes() {
+        return _typeAttributes;
+    }
 
-  @Override
-  public IJsonType merge( IJsonType type )
-  {
-    return null;
-  }
+    @Override
+    public IJsonType copyWithAttributes(TypeAttributes attributes) {
+        return this;
+    }
+
+    @Override
+    public IJsonType merge(IJsonType type) {
+        return null;
+    }
 }

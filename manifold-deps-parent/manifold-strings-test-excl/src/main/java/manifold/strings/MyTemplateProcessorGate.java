@@ -19,12 +19,10 @@ package manifold.strings;
 import manifold.strings.api.ITemplateProcessorGate;
 
 // this is for testing only
-public class MyTemplateProcessorGate implements ITemplateProcessorGate
-{
-  @Override
-  public boolean exclude( String typeName )
-  {
-    // for test
-    return typeName.equals( "manifold.strings.TemplateProcessorGateTest" );
-  }
+public class MyTemplateProcessorGate implements ITemplateProcessorGate {
+    @Override
+    public boolean exclude(String typeName) {
+        // for test
+        return typeName.equals("manifold.strings.TemplateProcessorGateTest");
+    }
 }

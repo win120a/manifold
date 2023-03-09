@@ -19,8 +19,8 @@ package manifold.tuple.rt.api;
 import manifold.ext.rt.api.Structural;
 
 @Structural
-public interface TupleItem
-{
-  String getName();
-  Object getValue();
+public interface TupleItem {
+    String getName();
+
+    Object getValue();
 }

@@ -1,6 +1,7 @@
 package manifold.js.demo;
 
 //import demo.ExtendedArrayList;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -10,9 +11,9 @@ import static org.junit.Assert.assertEquals;
 
 public class ExtendingJavaTest {
 
-  @Test
-  @Ignore
-  public void testBasicClassesWorks() {
+    @Test
+    @Ignore
+    public void testBasicClassesWorks() {
 //    ExtendedArrayList extendedArrayList = new ExtendedArrayList();
 //    List asList = extendedArrayList;
 //
@@ -22,6 +23,6 @@ public class ExtendingJavaTest {
 //
 //    assertEquals(3, extendedArrayList.size());
 //    assertEquals(42, extendedArrayList.demo());
-  }
+    }
 
 }

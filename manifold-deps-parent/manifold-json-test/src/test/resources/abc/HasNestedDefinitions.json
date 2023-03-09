@@ -27,13 +27,13 @@
     }
   },
   "properties": {
-    "TheObject" : {
+    "TheObject": {
       "$ref": "#/definitions/MyObject"
     },
-    "TheNestedString" : {
+    "TheNestedString": {
       "$ref": "#/definitions/MyObject/definitions/MyNestedString"
     },
-    "TheNestedObject" : {
+    "TheNestedObject": {
       "$ref": "#/definitions/MyObject/definitions/MyNestedObject"
     }
   }

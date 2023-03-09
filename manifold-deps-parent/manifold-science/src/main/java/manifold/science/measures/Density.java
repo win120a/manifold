@@ -22,38 +22,31 @@ import manifold.science.util.Rational;
 
 import static manifold.science.measures.MassUnit.Kilogram;
 
-public final class Density extends AbstractMeasure<DensityUnit, Density>
-{
-  public Density( Rational value, DensityUnit unit, DensityUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+public final class Density extends AbstractMeasure<DensityUnit, Density> {
+    public Density(Rational value, DensityUnit unit, DensityUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public Density( Rational value, DensityUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public Density(Rational value, DensityUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public DensityUnit getBaseUnit()
-  {
-    return DensityUnit.BASE;
-  }
+    @Override
+    public DensityUnit getBaseUnit() {
+        return DensityUnit.BASE;
+    }
 
-  @Override
-  public Density make( Rational value, DensityUnit unit, DensityUnit displayUnit )
-  {
-    return new Density( value, unit, displayUnit );
-  }
+    @Override
+    public Density make(Rational value, DensityUnit unit, DensityUnit displayUnit) {
+        return new Density(value, unit, displayUnit);
+    }
 
-  @Override
-  public Density make( Rational value, DensityUnit unit )
-  {
-    return new Density( value, unit );
-  }
+    @Override
+    public Density make(Rational value, DensityUnit unit) {
+        return new Density(value, unit);
+    }
 
-  public Mass times( Volume w )
-  {
-    return new Mass( toBaseNumber() * w.toBaseNumber(), Kilogram, getDisplayUnit().getMassUnit() );
-  }
+    public Mass times(Volume w) {
+        return new Mass(toBaseNumber() * w.toBaseNumber(), Kilogram, getDisplayUnit().getMassUnit());
+    }
 }

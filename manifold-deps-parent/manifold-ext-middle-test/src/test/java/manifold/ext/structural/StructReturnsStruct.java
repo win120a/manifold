@@ -25,15 +25,12 @@ import manifold.ext.rt.api.Structural;
  * our own Proxy impl that doesn't insert the CHECKCAST.
  */
 @Structural
-public interface StructReturnsStruct
-{
-  StructReturnsStruct returnStruct();
+public interface StructReturnsStruct {
+    StructReturnsStruct returnStruct();
 
-  class Impl
-  {
-    public StructReturnsStruct returnStruct()
-    {
-      return (StructReturnsStruct)new Impl();
+    class Impl {
+        public StructReturnsStruct returnStruct() {
+            return (StructReturnsStruct) new Impl();
+        }
     }
-  }
 }

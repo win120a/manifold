@@ -17,41 +17,33 @@
 package manifold.preprocessor.statement;
 
 import java.util.List;
+
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.TokenType;
 
-public class SourceStatement extends Statement
-{
-  public SourceStatement( TokenType tokenType, int start, int end )
-  {
-    super( tokenType, start, end );
-  }
-
-  @Override
-  public void execute( StringBuilder result, CharSequence source, boolean visible, Definitions definitions )
-  {
-    if( visible )
-    {
-      result.append( source.subSequence( getTokenStart(), getTokenEnd() ) );
+public class SourceStatement extends Statement {
+    public SourceStatement(TokenType tokenType, int start, int end) {
+        super(tokenType, start, end);
     }
-    else
-    {
-      preserveMaskedOutSpace( result, source );
-    }
-  }
 
-  @Override
-  public void execute( List<SourceStatement> result, boolean visible, Definitions definitions )
-  {
-    if( visible )
-    {
-      result.add( this );
+    @Override
+    public void execute(StringBuilder result, CharSequence source, boolean visible, Definitions definitions) {
+        if (visible) {
+            result.append(source.subSequence(getTokenStart(), getTokenEnd()));
+        } else {
+            preserveMaskedOutSpace(result, source);
+        }
     }
-  }
 
-  @Override
-  public boolean hasPreprocessorDirectives()
-  {
-    return false;
-  }
+    @Override
+    public void execute(List<SourceStatement> result, boolean visible, Definitions definitions) {
+        if (visible) {
+            result.add(this);
+        }
+    }
+
+    @Override
+    public boolean hasPreprocessorDirectives() {
+        return false;
+    }
 }

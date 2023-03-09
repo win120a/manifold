@@ -1,9 +1,10 @@
 # Manifold : Collections
 
-The `manifold-collections` dependency consists of [extension methods](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#extension-classes-via-extension)
+The `manifold-collections` dependency consists
+of [extension methods](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#extension-classes-via-extension)
 on Java's collection classes and the `Range` API, which leverages the unit (or binding) expressions from the
 [`manifold-ext`](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext) dependency
-for concise syntax. 
+for concise syntax.
 
 ```java
 // Use unit expressions with the Range API  
@@ -11,8 +12,9 @@ for( Mass m: 10kg to 100kg ) {
   . . .
 }
 ``` 
- 
+
 ## Table of Contents
+
 * [Collections](#collections-extensions)
 * [Ranges](#ranges)
 * [IDE Support](#ide-support)
@@ -22,20 +24,22 @@ for( Mass m: 10kg to 100kg ) {
 * [Versioning](#versioning)
 * [Author](#author)
 
-
 # Collections Extensions
 
 The `manifold-collections` library uses the `manifold-ext` framework to provide extension methods for Java collection
-classes such as `List`, `Iterator`, and `Map`.  The new methods aim to add a bit more convenience to Java collections.
+classes such as `List`, `Iterator`, and `Map`. The new methods aim to add a bit more convenience to Java collections.
 
 Simply add the `manifold-collections` dependency to your application to automatically access the extensions directly on
-the collection classes.  See the [Using this project](#using-this-project) section below for instructions to use this
+the collection classes. See the [Using this project](#using-this-project) section below for instructions to use this
 dependency with your build environment.
 
-# Ranges 
+# Ranges
 
-You can easily work with ranges using Manifold's [unit expressions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#unit-expressions).
+You can easily work with ranges using
+Manifold's [unit expressions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#unit-expressions)
+.
 Simply import the the `RangeFun` constants to create ranges:
+
 ```java
 // imports the `to`, `step`, and other "binding" constants
 import static manifold.collections.api.range.RangeFun.*;
@@ -44,17 +48,21 @@ if (2 inside 1 to 5) {
   out.println("yer in");
 }
 ```
+
 Although `inside` and `to` look like new Java keywords, they are instead normal variables defined as constants in
 `RangeFun`. They use Manifold's unit expressions to type-safely build ranges with sensible syntax.
 
 All `Number` types from `int` and `float` to `BigInteger`, `BigDecimal`, and `Rational` support *sequential* ranges that
 can be iterated:
+
 ```java
 for (int i: 1 to 5) {
   out.println(i);
 }
 ``` 
+
 To iterate in reverse order, simply reorder the range endpoints:
+
 ```java
 for (int i: 5 to 1) {
   out.println(i);
@@ -62,14 +70,17 @@ for (int i: 5 to 1) {
 ``` 
 
 `RangeFun` also defines constants for iterating over a range with a *step*:
+
 ```java
 for (int i: 10 to 0 step 2) {
   out.println(i);
 }
 ``` 
 
-If you are using [Dimensions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-science)
-for the endpoints, you can use the `unit` constant to define unit increments: 
+If you are
+using [Dimensions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-science)
+for the endpoints, you can use the `unit` constant to define unit increments:
+
 ```java
 for (Mass m: 2kg to 10kg unit oz) {
   out.println(m);
@@ -77,6 +88,7 @@ for (Mass m: 2kg to 10kg unit oz) {
 ``` 
 
 You can use variations of the `to` constant to exclude the range endpoints:
+
 ```java
 for (int i: 1 _to 5) {
   out.println(i); // 1 is excluded
@@ -100,14 +112,14 @@ if ("ockham" inside "n" to "zzz") {
   out.println("ok");
 }
 ```
- 
+
 Note the `Sequential`, `Range`, `SequentialRange` and others abstractions are defined as part of the Range API in the
 `manifold.collections.api.range` package.
 
- 
-# IDE Support 
+# IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -138,7 +150,7 @@ dependencies. Find usages of any extension. Use the `Range` API and unit express
 
 ## Building this project
 
-The `manifold-collections` project is defined with Maven.  To build it install Maven and run the following command.
+The `manifold-collections` project is defined with Maven. To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -146,20 +158,22 @@ mvn compile
 
 ## Using this project
 
-The `manifold-collections` dependency works with all build tooling, including Maven and Gradle. It also works with Java versions
+The `manifold-collections` dependency works with all build tooling, including Maven and Gradle. It also works with Java
+versions
 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
->Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest.  
+version (8 - 19), the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -205,7 +219,9 @@ tasks.compileTestJava {
     dependsOn processTestResources
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyExtProject'
 ```
@@ -266,14 +282,14 @@ rootProject.name = 'MyExtProject'
 </project>
 ```
 
-# Javadoc 
+# Javadoc
 
 `manifold-collections`:<br>
 [![javadoc](https://javadoc.io/badge2/systems.manifold/manifold-collections/2023.1.3/javadoc.svg)](https://javadoc.io/doc/systems.manifold/manifold-collections/2023.1.3)
 
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 # Versioning
 

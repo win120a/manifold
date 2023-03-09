@@ -21,51 +21,42 @@ import manifold.science.util.Rational;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface DimensionlessUnit
-{
-  Rational getAmount();
+public interface DimensionlessUnit {
+    Rational getAmount();
 
-  String getUnitName();
+    String getUnitName();
 
-  String getUnitSymbol();
+    String getUnitSymbol();
 
-  default Rational postfixBind( String value )
-  {
-    return getAmount() * Rational.get( value );
-  }
+    default Rational postfixBind(String value) {
+        return getAmount() * Rational.get(value);
+    }
 
-  default Rational postfixBind( Integer value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(Integer value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( Long value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(Long value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( Float value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(Float value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( Double value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(Double value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( BigInteger value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(BigInteger value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( BigDecimal value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(BigDecimal value) {
+        return getAmount() * value;
+    }
 
-  default Rational postfixBind( Rational value )
-  {
-    return getAmount() * value;
-  }
+    default Rational postfixBind(Rational value) {
+        return getAmount() * value;
+    }
 }

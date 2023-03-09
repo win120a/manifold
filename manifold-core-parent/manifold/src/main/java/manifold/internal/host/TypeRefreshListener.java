@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import manifold.api.fs.IFile;
 import manifold.api.host.ITypeSystemListener;
 import manifold.api.host.RefreshKind;
@@ -28,141 +29,115 @@ import manifold.api.host.RefreshRequest;
 /**
  * For compilation, supports only create events
  */
-public class TypeRefreshListener
-{
-  private final SingleModuleManifoldHost _host;
-  private final CopyOnWriteArrayList<WeakReference<ITypeSystemListener>> _listeners;
+public class TypeRefreshListener {
+    private final SingleModuleManifoldHost _host;
+    private final CopyOnWriteArrayList<WeakReference<ITypeSystemListener>> _listeners;
 
-  TypeRefreshListener( SingleModuleManifoldHost host )
-  {
-    _host = host;
-    _listeners = new CopyOnWriteArrayList<>();
-  }
-
-  /**
-   * Maintains weak refs to listeners. This is primarily so that tests don't
-   * accumulate a bunch of listeners over time. Otherwise this is a potential
-   * memory gobbler in tests.
-   * <p>
-   * Note! Callers must manage the lifecycle of the listener, otherwise since this
-   * method creates a weak ref, it will be collected when it goes out of scope.
-   *
-   * @param l Your type loader listener
-   */
-  void addTypeSystemListenerAsWeakRef( ITypeSystemListener l )
-  {
-    if( !hasListener( l ) )
-    {
-      _listeners.add( new WeakReference<>( l ) );
+    TypeRefreshListener(SingleModuleManifoldHost host) {
+        _host = host;
+        _listeners = new CopyOnWriteArrayList<>();
     }
-  }
 
-  @SuppressWarnings("unused")
-  public void removeTypeSystemListener( ITypeSystemListener l )
-  {
-    for( WeakReference<ITypeSystemListener> ref: _listeners )
-    {
-      if( ref.get() == l )
-      {
-        _listeners.remove( ref );
-        break;
-      }
-    }
-  }
-
-  private List<ITypeSystemListener> getListeners()
-  {
-    List<ITypeSystemListener> listeners = new ArrayList<>( _listeners.size() );
-    List<WeakReference<ITypeSystemListener>> obsoleteListeners = null;
-    for( WeakReference<ITypeSystemListener> ref: _listeners )
-    {
-      ITypeSystemListener typeSystemListener = ref.get();
-      if( typeSystemListener != null )
-      {
-        listeners.add( typeSystemListener );
-      }
-      else
-      {
-        if( obsoleteListeners == null )
-        {
-          obsoleteListeners = new ArrayList<>();
+    /**
+     * Maintains weak refs to listeners. This is primarily so that tests don't
+     * accumulate a bunch of listeners over time. Otherwise this is a potential
+     * memory gobbler in tests.
+     * <p>
+     * Note! Callers must manage the lifecycle of the listener, otherwise since this
+     * method creates a weak ref, it will be collected when it goes out of scope.
+     *
+     * @param l Your type loader listener
+     */
+    void addTypeSystemListenerAsWeakRef(ITypeSystemListener l) {
+        if (!hasListener(l)) {
+            _listeners.add(new WeakReference<>(l));
         }
-        obsoleteListeners.add( ref );
-      }
-    }
-    if( obsoleteListeners != null )
-    {
-      _listeners.removeAll( obsoleteListeners );
     }
 
-    return listeners;
-  }
-
-  private boolean hasListener( ITypeSystemListener l )
-  {
-    for( WeakReference<ITypeSystemListener> ref: _listeners )
-    {
-      if( ref.get() == l )
-      {
-        return true;
-      }
+    @SuppressWarnings("unused")
+    public void removeTypeSystemListener(ITypeSystemListener l) {
+        for (WeakReference<ITypeSystemListener> ref : _listeners) {
+            if (ref.get() == l) {
+                _listeners.remove(ref);
+                break;
+            }
+        }
     }
-    return false;
-  }
 
-  //  void modified( IResource file )
+    private List<ITypeSystemListener> getListeners() {
+        List<ITypeSystemListener> listeners = new ArrayList<>(_listeners.size());
+        List<WeakReference<ITypeSystemListener>> obsoleteListeners = null;
+        for (WeakReference<ITypeSystemListener> ref : _listeners) {
+            ITypeSystemListener typeSystemListener = ref.get();
+            if (typeSystemListener != null) {
+                listeners.add(typeSystemListener);
+            } else {
+                if (obsoleteListeners == null) {
+                    obsoleteListeners = new ArrayList<>();
+                }
+                obsoleteListeners.add(ref);
+            }
+        }
+        if (obsoleteListeners != null) {
+            _listeners.removeAll(obsoleteListeners);
+        }
+
+        return listeners;
+    }
+
+    private boolean hasListener(ITypeSystemListener l) {
+        for (WeakReference<ITypeSystemListener> ref : _listeners) {
+            if (ref.get() == l) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //  void modified( IResource file )
 //  {
 //    notify( file, RefreshKind.MODIFICATION );
 //  }
-  void created( IFile file, String[] fqns )
-  {
-    notify( file, fqns, RefreshKind.CREATION );
-  }
+    void created(IFile file, String[] fqns) {
+        notify(file, fqns, RefreshKind.CREATION);
+    }
 //  void deleted( IResource file )
 //  {
 //    notify( file, RefreshKind.DELETION );
 //  }
 
-  private void notify( IFile file, String[] fqns, @SuppressWarnings("SameParameterValue") RefreshKind kind )
-  {
-    RefreshRequest request = new RefreshRequest( file, fqns, _host.getSingleModule(), kind );
-    List<ITypeSystemListener> listeners = getListeners();
-    switch( kind )
-    {
-      case CREATION:
-      case MODIFICATION:
-        // for creation the file system needs to be updated *before* other listeners
-        notifyEarlyListeners( request, listeners );
-        notifyNonearlyListeners( request, listeners );
-        break;
+    private void notify(IFile file, String[] fqns, @SuppressWarnings("SameParameterValue") RefreshKind kind) {
+        RefreshRequest request = new RefreshRequest(file, fqns, _host.getSingleModule(), kind);
+        List<ITypeSystemListener> listeners = getListeners();
+        switch (kind) {
+            case CREATION:
+            case MODIFICATION:
+                // for creation the file system needs to be updated *before* other listeners
+                notifyEarlyListeners(request, listeners);
+                notifyNonearlyListeners(request, listeners);
+                break;
 
-      case DELETION:
-        // for deletion the file system needs to be updated *after* other listeners
-        notifyNonearlyListeners( request, listeners );
-        notifyEarlyListeners( request, listeners );
-        break;
+            case DELETION:
+                // for deletion the file system needs to be updated *after* other listeners
+                notifyNonearlyListeners(request, listeners);
+                notifyEarlyListeners(request, listeners);
+                break;
+        }
     }
-  }
 
-  private void notifyNonearlyListeners( RefreshRequest request, List<ITypeSystemListener> listeners )
-  {
-    for( ITypeSystemListener listener: listeners )
-    {
-      if( !listener.notifyEarly() )
-      {
-        listener.refreshedTypes( request );
-      }
+    private void notifyNonearlyListeners(RefreshRequest request, List<ITypeSystemListener> listeners) {
+        for (ITypeSystemListener listener : listeners) {
+            if (!listener.notifyEarly()) {
+                listener.refreshedTypes(request);
+            }
+        }
     }
-  }
 
-  private void notifyEarlyListeners( RefreshRequest request, List<ITypeSystemListener> listeners )
-  {
-    for( ITypeSystemListener listener: listeners )
-    {
-      if( listener.notifyEarly() )
-      {
-        listener.refreshedTypes( request );
-      }
+    private void notifyEarlyListeners(RefreshRequest request, List<ITypeSystemListener> listeners) {
+        for (ITypeSystemListener listener : listeners) {
+            if (listener.notifyEarly()) {
+                listener.refreshedTypes(request);
+            }
+        }
     }
-  }
 }

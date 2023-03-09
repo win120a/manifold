@@ -22,50 +22,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class JsonList<T> implements IJsonList<T>
-{
-  private final List _list;
-  private final Class<T> _finalComponentType;
+public class JsonList<T> implements IJsonList<T> {
+    private final List _list;
+    private final Class<T> _finalComponentType;
 
-  public JsonList( Class<T> finalComponentType )
-  {
-    _list = new ArrayList<>();
-    _finalComponentType = finalComponentType;
-  }
+    public JsonList(Class<T> finalComponentType) {
+        _list = new ArrayList<>();
+        _finalComponentType = finalComponentType;
+    }
 
-  public JsonList( List jsonList, Class<T> finalComponentType )
-  {
-    _list = jsonList;
-    _finalComponentType = finalComponentType;
-  }
+    public JsonList(List jsonList, Class<T> finalComponentType) {
+        _list = jsonList;
+        _finalComponentType = finalComponentType;
+    }
 
-  @Override
-  public List getList()
-  {
-    return _list;
-  }
+    @Override
+    public List getList() {
+        return _list;
+    }
 
-  @Override
-  public Class<?> getFinalComponentType()
-  {
-    return _finalComponentType;
-  }
+    @Override
+    public Class<?> getFinalComponentType() {
+        return _finalComponentType;
+    }
 
-  @Override
-  public boolean equals( Object o )
-  {
-    return Objects.equals( _list, o );
-  }
+    @Override
+    public boolean equals(Object o) {
+        return Objects.equals(_list, o);
+    }
 
-  @Override
-  public int hashCode()
-  {
-    return Objects.hash( _list );
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(_list);
+    }
 
-  @Override
-  public String toString()
-  {
-    return _list.toString();
-  }
+    @Override
+    public String toString() {
+        return _list.toString();
+    }
 }

@@ -16,33 +16,28 @@
 
 package manifold.ext.props.middle.auto;
 
-public class Rectangle extends Shape
-{
-  public Rectangle( double s1, double s2 )
-  {
-     this( "Rectangle", s1, s1 );
-  }
-  protected Rectangle( String name, double s1, double s2 )
-  {
-    super( name, s1, s2, s1, s2 );
-  }
+public class Rectangle extends Shape {
+    public Rectangle(double s1, double s2) {
+        this("Rectangle", s1, s1);
+    }
 
-  public double getLength()
-  {
-    double[] sides = getSides();
-    return Math.max( sides[0], sides[1] );
-  }
+    protected Rectangle(String name, double s1, double s2) {
+        super(name, s1, s2, s1, s2);
+    }
 
-  public double getWidth()
-  {
-    double[] sides = getSides();
-    return Math.min( sides[0], sides[1] );
-  }
+    public double getLength() {
+        double[] sides = getSides();
+        return Math.max(sides[0], sides[1]);
+    }
 
-  @Override
-  public double getArea()
-  {
-    double[] sides = getSides();
-    return sides[0] * sides[1];
-  }
+    public double getWidth() {
+        double[] sides = getSides();
+        return Math.min(sides[0], sides[1]);
+    }
+
+    @Override
+    public double getArea() {
+        double[] sides = getSides();
+        return sides[0] * sides[1];
+    }
 }

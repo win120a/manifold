@@ -27,21 +27,21 @@ import manifold.ext.delegation.rt.api.link;
  */
 public @part class TaPart implements TA // TA is a "diamond" interface
 {
-  @link(share = true) Student _student; // 'share = true' disambiguates Person shared between TA's Student and Teacher parts
-  @link Teacher _teacher;
+    @link(share = true)
+    Student _student; // 'share = true' disambiguates Person shared between TA's Student and Teacher parts
+    @link
+    Teacher _teacher;
 
 
-  public TaPart( Student student, Department department )
-  {
-    // student is shared as the Person part of the Teacher. Because Person, Student, and Teacher are all @part classes
-    // they share the same 'self' which will be the instance of this TaPart class.
-    _student = student;
-    _teacher = new TeacherPart( _student, department );
-  }
+    public TaPart(Student student, Department department) {
+        // student is shared as the Person part of the Teacher. Because Person, Student, and Teacher are all @part classes
+        // they share the same 'self' which will be the instance of this TaPart class.
+        _student = student;
+        _teacher = new TeacherPart(_student, department);
+    }
 
-  @Override
-  public String getTitle()
-  {
-    return "TA";
-  }
+    @Override
+    public String getTitle() {
+        return "TA";
+    }
 }

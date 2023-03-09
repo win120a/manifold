@@ -20,43 +20,35 @@ package manifold.science.measures;
 import manifold.science.api.AbstractMeasure;
 import manifold.science.util.Rational;
 
-public final class Acceleration extends AbstractMeasure<AccelerationUnit, Acceleration>
-{
-  public Acceleration( Rational value, AccelerationUnit unit, AccelerationUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
+public final class Acceleration extends AbstractMeasure<AccelerationUnit, Acceleration> {
+    public Acceleration(Rational value, AccelerationUnit unit, AccelerationUnit displayUnit) {
+        super(value, unit, displayUnit);
+    }
 
-  public Acceleration( Rational value, AccelerationUnit unit )
-  {
-    this( value, unit, unit );
-  }
+    public Acceleration(Rational value, AccelerationUnit unit) {
+        this(value, unit, unit);
+    }
 
-  @Override
-  public AccelerationUnit getBaseUnit()
-  {
-    return AccelerationUnit.BASE;
-  }
+    @Override
+    public AccelerationUnit getBaseUnit() {
+        return AccelerationUnit.BASE;
+    }
 
-  @Override
-  public Acceleration make( Rational value, AccelerationUnit unit, AccelerationUnit displayUnit )
-  {
-    return new Acceleration( value, unit, displayUnit );
-  }
+    @Override
+    public Acceleration make(Rational value, AccelerationUnit unit, AccelerationUnit displayUnit) {
+        return new Acceleration(value, unit, displayUnit);
+    }
 
-  @Override
-  public Acceleration make( Rational value, AccelerationUnit unit )
-  {
-    return new Acceleration( value, unit );
-  }
+    @Override
+    public Acceleration make(Rational value, AccelerationUnit unit) {
+        return new Acceleration(value, unit);
+    }
 
-  public Force times( Mass mass )
-  {
-    return new Force( toBaseNumber() * mass.toBaseNumber(), ForceUnit.BASE, ForceUnit.get( mass.getDisplayUnit(), getDisplayUnit() ) );
-  }
+    public Force times(Mass mass) {
+        return new Force(toBaseNumber() * mass.toBaseNumber(), ForceUnit.BASE, ForceUnit.get(mass.getDisplayUnit(), getDisplayUnit()));
+    }
 
-  public Velocity times( Time time )
-  {
-    return new Velocity( toBaseNumber() * time.toBaseNumber(), VelocityUnit.BASE, getDisplayUnit().getVelocityUnit() );
-  }
+    public Velocity times(Time time) {
+        return new Velocity(toBaseNumber() * time.toBaseNumber(), VelocityUnit.BASE, getDisplayUnit().getVelocityUnit());
+    }
 }

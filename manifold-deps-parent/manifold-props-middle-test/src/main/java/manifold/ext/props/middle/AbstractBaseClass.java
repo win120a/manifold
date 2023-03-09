@@ -19,8 +19,7 @@ package manifold.ext.props.middle;
 import manifold.ext.props.rt.api.get;
 import manifold.ext.props.rt.api.var;
 
-public abstract class AbstractBaseClass
-{
-  abstract @var String abstractProp;
-  abstract @get String abstractReadonly;
+public abstract class AbstractBaseClass {
+    abstract @var String abstractProp;
+    abstract @get String abstractReadonly;
 }

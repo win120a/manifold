@@ -19,36 +19,30 @@ package manifold.api.highjump;
 import manifold.api.type.ITypeManifold;
 import manifold.internal.host.RuntimeManifoldHost;
 
-public class Highjump
-{
-  private static final Highjump INSTANCE = new Highjump();
-  private final HighjumpTypeManifold _highjump;
+public class Highjump {
+    private static final Highjump INSTANCE = new Highjump();
+    private final HighjumpTypeManifold _highjump;
 
-  public static Highjump instance()
-  {
-    return INSTANCE;
-  }
-
-  private Highjump()
-  {
-    for( ITypeManifold tm: RuntimeManifoldHost.get().getSingleModule().getTypeManifolds() )
-    {
-      if( tm instanceof HighjumpTypeManifold )
-      {
-        _highjump = (HighjumpTypeManifold)tm;
-        return;
-      }
+    public static Highjump instance() {
+        return INSTANCE;
     }
-    throw new IllegalStateException( "Type manifold for '" + HighjumpTypeManifold.class.getTypeName() + "' not found." );
-  }
 
-  public Object evaluate( String expr )
-  {
-    return evaluate( Options.builder( expr ).build() );
-  }
-  public Object evaluate( Options options )
-  {
-    Object result = _highjump.evaluate( options );
-    return result;
-  }
+    private Highjump() {
+        for (ITypeManifold tm : RuntimeManifoldHost.get().getSingleModule().getTypeManifolds()) {
+            if (tm instanceof HighjumpTypeManifold) {
+                _highjump = (HighjumpTypeManifold) tm;
+                return;
+            }
+        }
+        throw new IllegalStateException("Type manifold for '" + HighjumpTypeManifold.class.getTypeName() + "' not found.");
+    }
+
+    public Object evaluate(String expr) {
+        return evaluate(Options.builder(expr).build());
+    }
+
+    public Object evaluate(Options options) {
+        Object result = _highjump.evaluate(options);
+        return result;
+    }
 }

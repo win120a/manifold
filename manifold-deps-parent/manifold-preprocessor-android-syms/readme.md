@@ -1,4 +1,5 @@
 # Preprocessor symbols for Android applications
+
 `manifold-preprocessor-android-syms`
 
 ## Overview
@@ -9,7 +10,8 @@ reference the static constants directly as preprocessor symbols.
 
 Note, in keeping with preprocessor definitions behavior, a `boolean` BuildConfig constant does not have a "true" or
 "false" string value. Instead, if the constant is true, it is defined with an empty string, otherwise if it is false it
-is not defined at all.  As such, we can use the `BuildConfig#DEBUG` constant directly like this:
+is not defined at all. As such, we can use the `BuildConfig#DEBUG` constant directly like this:
+
 ```java
 #if DEBUG
   public void foo() {
@@ -17,7 +19,9 @@ is not defined at all.  As such, we can use the `BuildConfig#DEBUG` constant dir
   }
 #endif
 ```
+
 You can use other symbols from BuildConfig too, such `FLAVOR`:
+
 ```java
 #if FLAVOR == "admin"
   public void reset() {

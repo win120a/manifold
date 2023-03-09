@@ -41,31 +41,29 @@ import java.util.stream.Collectors;
  * com.example.BarFormatTypeCoercer
  * </pre>
  */
-public interface IJsonFormatTypeCoercer extends ICoercionProvider
-{
-  LocklessLazyVar<Set<ICoercionProvider>> _coercionProviders =
-    LocklessLazyVar.make( () -> {
-      Set<ICoercionProvider> registered = new HashSet<>();
-      //!! for IJ plugin: need the classloader from here
-      ServiceUtil.loadRegisteredServices( registered, ICoercionProvider.class, IJsonFormatTypeCoercer.class.getClassLoader() );
-      return registered;
-    } );
+public interface IJsonFormatTypeCoercer extends ICoercionProvider {
+    LocklessLazyVar<Set<ICoercionProvider>> _coercionProviders =
+            LocklessLazyVar.make(() -> {
+                Set<ICoercionProvider> registered = new HashSet<>();
+                //!! for IJ plugin: need the classloader from here
+                ServiceUtil.loadRegisteredServices(registered, ICoercionProvider.class, IJsonFormatTypeCoercer.class.getClassLoader());
+                return registered;
+            });
 
-  LocklessLazyVar<List<IJsonFormatTypeCoercer>> _instances =
-    LocklessLazyVar.make( () ->
-      _coercionProviders.get().stream()
-        .filter( e -> e instanceof IJsonFormatTypeCoercer )
-        .map( e -> (IJsonFormatTypeCoercer)e )
-        .collect( Collectors.toList() ) );
+    LocklessLazyVar<List<IJsonFormatTypeCoercer>> _instances =
+            LocklessLazyVar.make(() ->
+                    _coercionProviders.get().stream()
+                            .filter(e -> e instanceof IJsonFormatTypeCoercer)
+                            .map(e -> (IJsonFormatTypeCoercer) e)
+                            .collect(Collectors.toList()));
 
-  static List<IJsonFormatTypeCoercer> get()
-  {
-    return _instances.get();
-  }
+    static List<IJsonFormatTypeCoercer> get() {
+        return _instances.get();
+    }
 
-  /**
-   * @return Pairs of one or more format names to Java type such as {@code "date-time"->LocalDateTime.class} to be
-   * referenced in Json Schema {@code "format"} types.
-   */
-  Map<String, Class<?>> getFormats();
+    /**
+     * @return Pairs of one or more format names to Java type such as {@code "date-time"->LocalDateTime.class} to be
+     * referenced in Json Schema {@code "format"} types.
+     */
+    Map<String, Class<?>> getFormats();
 }

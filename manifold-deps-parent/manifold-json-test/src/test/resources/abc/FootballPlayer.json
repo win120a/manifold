@@ -3,35 +3,57 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "FootballPlayer",
   "type": "object",
-
   "definitions": {
     "person": {
       "type": "object",
-      "required": ["first_name", "last_name"],
+      "required": [
+        "first_name",
+        "last_name"
+      ],
       "properties": {
-        "first_name": {"type": "string"},
-        "last_name": {"type": "string"},
-        "age": {"type": "integer"}
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        }
       }
     },
     "football_team": {
       "type": "object",
-      "required": ["name", "league"],
+      "required": [
+        "name",
+        "league"
+      ],
       "properties": {
-        "name": {"type": "string"},
-        "league": {"type": "string"},
-        "year_founded": {"type": "integer"}
+        "name": {
+          "type": "string"
+        },
+        "league": {
+          "type": "string"
+        },
+        "year_founded": {
+          "type": "integer"
+        }
       }
     }
   },
-
   "allOf": [
-    {"$ref": "#/definitions/person"},
+    {
+      "$ref": "#/definitions/person"
+    },
     {
       "type": "object",
-      "required": ["current_club"],
+      "required": [
+        "current_club"
+      ],
       "properties": {
-        "current_club": {"$ref": "#/definitions/football_team"}
+        "current_club": {
+          "$ref": "#/definitions/football_team"
+        }
       }
     }
   ]

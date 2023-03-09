@@ -19,21 +19,17 @@ package manifold.ext.props.middle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NameTypeCollisionClass
-{
-  private List<String> errors = new ArrayList<>();
+public class NameTypeCollisionClass {
+    private List<String> errors = new ArrayList<>();
 
-  public NameTypeCollisionClass()
-  {
-  }
+    public NameTypeCollisionClass() {
+    }
 
-  public void addError(String err)
-  {
-    errors.add( err );
-  }
+    public void addError(String err) {
+        errors.add(err);
+    }
 
-  public String[] getErrors()
-  {
-    return errors.toArray( new String[0] );
-  }
+    public String[] getErrors() {
+        return errors.toArray(new String[0]);
+    }
 }

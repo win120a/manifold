@@ -16,19 +16,19 @@
 
 package manifold.ext.delegation.parts.diamond;
 
-public interface Person
-{
-  String getName();
-  String getTitle();
+public interface Person {
+    String getName();
 
-  // exercises default method linking
-  default String getTitledName()
-  {
-    return getTitle() + " " + getName();
-  }
+    String getTitle();
 
-  // exercises 'this' replacement
-  String getTitledName2();
-  // exercises 'Enclosing.this' replacement
-  String getTitledName3();
+    // exercises default method linking
+    default String getTitledName() {
+        return getTitle() + " " + getName();
+    }
+
+    // exercises 'this' replacement
+    String getTitledName2();
+
+    // exercises 'Enclosing.this' replacement
+    String getTitledName3();
 }

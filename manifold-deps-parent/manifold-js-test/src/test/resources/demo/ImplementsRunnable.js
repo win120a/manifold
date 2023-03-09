@@ -1,12 +1,15 @@
-import java.lang.Runnable
+import java
+
+.
+lang.Runnable
 
 class ImplementsRunnable extends Runnable {
 
- constructor(msg) {
-   this._msg = msg;
- }
+    constructor(msg) {
+        this._msg = msg;
+    }
 
- run() {
-   print(this._msg);
- }
+    run() {
+        print(this._msg);
+    }
 }

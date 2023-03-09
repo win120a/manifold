@@ -21,6 +21,5 @@ import manifold.json.rt.api.IJsonBindingsBacked;
 /**
  * Base interface for all query result types type-safely reflecting query fields and structure.
  */
-public interface GqlQueryResult extends GqlType
-{
+public interface GqlQueryResult extends GqlType {
 }

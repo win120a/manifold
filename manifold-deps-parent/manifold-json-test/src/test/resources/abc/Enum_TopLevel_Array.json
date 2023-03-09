@@ -4,7 +4,11 @@
   "type": "array",
   "definitions": {
     "MyEnum": {
-      "enum": ["a", "b", "c"]
+      "enum": [
+        "a",
+        "b",
+        "c"
+      ]
     }
   },
   "items": {
@@ -13,7 +17,10 @@
         "$ref": "#/definitions/MyEnum"
       },
       {
-        "enum": ["d", "e"]
+        "enum": [
+          "d",
+          "e"
+        ]
       }
     ]
   }

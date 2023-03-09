@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import manifold.rt.api.ScriptException;
 import manifold.api.fs.IFile;
 import manifold.json.rt.parser.Token;
@@ -34,140 +35,115 @@ import manifold.rt.api.util.StreamUtil;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ *
  */
-public class JsonIssueContainer implements IIssueContainer
-{
-  private final IFile _file;
-  private final List<IIssue> _issues;
+public class JsonIssueContainer implements IIssueContainer {
+    private final IFile _file;
+    private final List<IIssue> _issues;
 
-  @SuppressWarnings("unused")
-  public JsonIssueContainer()
-  {
-    _issues = Collections.emptyList();
-    _file = null;
-  }
+    @SuppressWarnings("unused")
+    public JsonIssueContainer() {
+        _issues = Collections.emptyList();
+        _file = null;
+    }
 
-  /**
-   * Format of errors reported in ScriptException is:
-   * <pre>
-   * Found Errors:\n
-   * [line:column] first error\n
-   * [line:column] second error\n
-   * ...
-   * </pre>
-   */
-  @SuppressWarnings("WeakerAccess")
-  public JsonIssueContainer( ScriptException cause, IFile file )
-  {
-    _issues = new ArrayList<>();
-    _file = file;
+    /**
+     * Format of errors reported in ScriptException is:
+     * <pre>
+     * Found Errors:\n
+     * [line:column] first error\n
+     * [line:column] second error\n
+     * ...
+     * </pre>
+     */
+    @SuppressWarnings("WeakerAccess")
+    public JsonIssueContainer(ScriptException cause, IFile file) {
+        _issues = new ArrayList<>();
+        _file = file;
 
-    addIssues( cause );
-  }
+        addIssues(cause);
+    }
 
-  @SuppressWarnings("WeakerAccess")
-  public JsonIssueContainer( IFile file )
-  {
-    _issues = new ArrayList<>();
-    _file = file;
-  }
+    @SuppressWarnings("WeakerAccess")
+    public JsonIssueContainer(IFile file) {
+        _issues = new ArrayList<>();
+        _file = file;
+    }
 
-  private int findOffset( IFile file, int lineNum, int column )
-  {
-    try
-    {
-      int offset = 0;
-      String content = StreamUtil.getContent( new InputStreamReader( file.openInputStream(), UTF_8 ) );
-      for( int i = 1; i < lineNum; i++ )
-      {
-        if( content.length() > offset )
-        {
-          offset = content.indexOf( '\n', offset ) + 1;
+    private int findOffset(IFile file, int lineNum, int column) {
+        try {
+            int offset = 0;
+            String content = StreamUtil.getContent(new InputStreamReader(file.openInputStream(), UTF_8));
+            for (int i = 1; i < lineNum; i++) {
+                if (content.length() > offset) {
+                    offset = content.indexOf('\n', offset) + 1;
+                }
+            }
+            return offset + column - 1;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-      }
-      return offset + column - 1;
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  private int parseNum( String line, char delim )
-  {
-    StringBuilder num = new StringBuilder();
-    for( int i = 0; i < line.length(); i++ )
-    {
-      char c = line.charAt( i );
-      if( c != delim )
-      {
-        num.append( c );
-      }
-      else
-      {
-        try
-        {
-          return Integer.parseInt( num.toString() );
+    private int parseNum(String line, char delim) {
+        StringBuilder num = new StringBuilder();
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c != delim) {
+                num.append(c);
+            } else {
+                try {
+                    return Integer.parseInt(num.toString());
+                } catch (Exception e) {
+                    return -1;
+                }
+            }
         }
-        catch( Exception e )
-        {
-          return -1;
+        return -1;
+    }
+
+    @Override
+    public List<IIssue> getIssues() {
+        return _issues;
+    }
+
+    @Override
+    public List<IIssue> getWarnings() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<IIssue> getErrors() {
+        return getIssues();
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public void addIssues(ScriptException cause) {
+        String message = cause.getMessage();
+        for (StringTokenizer tokenizer = new StringTokenizer(message, "\r\n"); tokenizer.hasMoreTokens(); ) {
+            String line = tokenizer.nextToken();
+            if (line.startsWith("[")) {
+                int lineNum = parseNum(line.substring(1), ':');
+                int column = parseNum(line.substring(line.indexOf(':') + 1) + 1, ']');
+                int offset = findOffset(_file, lineNum, column);
+                String msg = line.substring(line.indexOf(']') + 1);
+                _issues.add(new JsonIssue(IIssue.Kind.Error, offset, lineNum, column, msg));
+            }
         }
-      }
     }
-    return -1;
-  }
 
-  @Override
-  public List<IIssue> getIssues()
-  {
-    return _issues;
-  }
-
-  @Override
-  public List<IIssue> getWarnings()
-  {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public List<IIssue> getErrors()
-  {
-    return getIssues();
-  }
-
-  @SuppressWarnings("WeakerAccess")
-  public void addIssues( ScriptException cause )
-  {
-    String message = cause.getMessage();
-    for( StringTokenizer tokenizer = new StringTokenizer( message, "\r\n" ); tokenizer.hasMoreTokens(); )
-    {
-      String line = tokenizer.nextToken();
-      if( line.startsWith( "[" ) )
-      {
-        int lineNum = parseNum( line.substring( 1 ), ':' );
-        int column = parseNum( line.substring( line.indexOf( ':' ) + 1 ) + 1, ']' );
-        int offset = findOffset( _file, lineNum, column );
-        String msg = line.substring( line.indexOf( ']' ) + 1 );
-        _issues.add( new JsonIssue( IIssue.Kind.Error, offset, lineNum, column, msg ) );
-      }
+    @SuppressWarnings("WeakerAccess")
+    public void addIssues(IllegalSchemaTypeName cause) {
+        Token token = cause.getToken();
+        int lineNum = token.getLineNumber();
+        int column = token.getColumn();
+        int offset = token.getOffset();
+        String msg = "Unknown schema type: " + cause.getTypeName();
+        _issues.add(new JsonIssue(IIssue.Kind.Error, offset, lineNum, column, msg));
     }
-  }
 
-  @SuppressWarnings("WeakerAccess")
-  public void addIssues( IllegalSchemaTypeName cause )
-  {
-    Token token = cause.getToken();
-    int lineNum = token.getLineNumber();
-    int column = token.getColumn();
-    int offset = token.getOffset();
-    String msg = "Unknown schema type: " + cause.getTypeName();
-    _issues.add( new JsonIssue( IIssue.Kind.Error, offset, lineNum, column, msg ) );
-  }
-
-  @Override
-  public boolean isEmpty()
-  {
-    return _issues == null;
-  }
+    @Override
+    public boolean isEmpty() {
+        return _issues == null;
+    }
 }

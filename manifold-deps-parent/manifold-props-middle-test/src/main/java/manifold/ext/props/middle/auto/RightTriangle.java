@@ -16,31 +16,25 @@
 
 package manifold.ext.props.middle.auto;
 
-public class RightTriangle extends Triangle
-{
-  public RightTriangle( double a, double b )
-  {
-    super( a, b, Math.sqrt( a*a + b*b ) );
-  }
+public class RightTriangle extends Triangle {
+    public RightTriangle(double a, double b) {
+        super(a, b, Math.sqrt(a * a + b * b));
+    }
 
-  public double getA()
-  {
-    return getSides()[0];
-  }
+    public double getA() {
+        return getSides()[0];
+    }
 
-  public double getB()
-  {
-    return getSides()[1];
-  }
+    public double getB() {
+        return getSides()[1];
+    }
 
-  public double getC()
-  {
-    return getSides()[2];
-  }
+    public double getC() {
+        return getSides()[2];
+    }
 
-  @Override
-  public double getArea()
-  {
-    return (getA() * getB())/2;
-  }
+    @Override
+    public double getArea() {
+        return (getA() * getB()) / 2;
+    }
 }

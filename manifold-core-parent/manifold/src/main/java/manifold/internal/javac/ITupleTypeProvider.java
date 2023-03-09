@@ -23,18 +23,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public interface ITupleTypeProvider
-{
-  LocklessLazyVar<ITupleTypeProvider> INSTANCE =
-    LocklessLazyVar.make( () -> {
-      Set<ITupleTypeProvider> registered = new HashSet<>();
-      ServiceUtil.loadRegisteredServices( registered, ITupleTypeProvider.class, ITupleTypeProvider.class.getClassLoader() );
-      return registered.iterator().next(); // should only be one
-    } );
+public interface ITupleTypeProvider {
+    LocklessLazyVar<ITupleTypeProvider> INSTANCE =
+            LocklessLazyVar.make(() -> {
+                Set<ITupleTypeProvider> registered = new HashSet<>();
+                ServiceUtil.loadRegisteredServices(registered, ITupleTypeProvider.class, ITupleTypeProvider.class.getClassLoader());
+                return registered.iterator().next(); // should only be one
+            });
 
-  String makeType( String pkg, Map<String, String> fieldNameToTypeName );
+    String makeType(String pkg, Map<String, String> fieldNameToTypeName);
 
-  Set<String> getTypes();
+    Set<String> getTypes();
 
-  Map<String, String> getFields( String fqn );
+    Map<String, String> getFields(String fqn);
 }

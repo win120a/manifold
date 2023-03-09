@@ -3,7 +3,13 @@
   "description": "Test schema for CSV, for standard and formatted data types",
   "definitions": {
     "MyEnum": {
-      "enum": ["red", "orange", 6, 9.0, null]
+      "enum": [
+        "red",
+        "orange",
+        6,
+        9.0,
+        null
+      ]
     }
   },
   "type": "array",
@@ -22,7 +28,7 @@
       "aBoolean": {
         "type": "boolean"
       },
-      "aEnumRef" : {
+      "aEnumRef": {
         "$ref": "#/definitions/MyEnum"
       },
       "aLong": {

@@ -16,13 +16,13 @@
     }
   },
   "properties": {
-    "TheDateAndTime_ReadOnly" : {
+    "TheDateAndTime_ReadOnly": {
       "$ref": "#/definitions/MyDateTime"
     },
     "TheTimestamp_ReadOnly": {
       "$ref": "#/definitions/MyUtcMillisec"
     },
-    "TheDateAndTime_NotReadOnly" : {
+    "TheDateAndTime_NotReadOnly": {
       "$ref": "#/definitions/MyDateTime",
       "readOnly": false
     },
@@ -65,8 +65,12 @@
       },
       "readOnly": true,
       "patternProperties": {
-        "^S_": { "type": "string" },
-        "^I_": { "type": "integer" }
+        "^S_": {
+          "type": "string"
+        },
+        "^I_": {
+          "type": "integer"
+        }
       },
       "additionalProperties": false
     }

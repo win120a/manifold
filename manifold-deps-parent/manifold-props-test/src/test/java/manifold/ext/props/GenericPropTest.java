@@ -23,107 +23,130 @@ import manifold.ext.props.rt.api.var;
 import java.util.Arrays;
 import java.util.List;
 
-public class GenericPropTest extends TestCase
-{
-  interface IGenericProps<T> {
-    @var List list_Raw;
-    @var List<String> list_String;
-    @var List<CharSequence> list_CharSequence;
-    @var List<?> list_Wildcard;
-    @var List<? extends CharSequence> list_Wildcard_Extends_CharSequence;
-    @var List<? super CharSequence> list_Wildcard_Super_CharSequence;
-    @var List<String>[] list_String_Array;
-    @var List<T> list_t;
-    @var T _t;
-  }
-  static class GenericPropsImpl implements IGenericProps<String>
-  {
-    @override @var List list_Raw;
-    @override @var List<String> list_String;
-    @override @var List<CharSequence> list_CharSequence;
-    @override @var List<?> list_Wildcard;
-    @override @var List<? extends CharSequence> list_Wildcard_Extends_CharSequence;
-    @override @var List<? super CharSequence> list_Wildcard_Super_CharSequence;
-    @override @var List<String>[] list_String_Array;
-    @override @var List<String> list_t;
-    @override @var String _t;
-
-    // tests that List<String> and List<String>[] don't match with PropertyProcessor#ghettoErasure
-    public void setList_String_Array( List<String> fooledya )
-    {
-      throw new RuntimeException();
+public class GenericPropTest extends TestCase {
+    interface IGenericProps<T> {
+        @var
+        List list_Raw;
+        @var
+        List<String> list_String;
+        @var
+        List<CharSequence> list_CharSequence;
+        @var
+        List<?> list_Wildcard;
+        @var
+        List<? extends CharSequence> list_Wildcard_Extends_CharSequence;
+        @var
+        List<? super CharSequence> list_Wildcard_Super_CharSequence;
+        @var
+        List<String>[] list_String_Array;
+        @var
+        List<T> list_t;
+        @var
+        T _t;
     }
-  }
 
-  public void testFromInterface()
-  {
-    IGenericProps props = new GenericPropsImpl();
+    static class GenericPropsImpl implements IGenericProps<String> {
+        @override
+        @var
+        List list_Raw;
+        @override
+        @var
+        List<String> list_String;
+        @override
+        @var
+        List<CharSequence> list_CharSequence;
+        @override
+        @var
+        List<?> list_Wildcard;
+        @override
+        @var
+        List<? extends CharSequence> list_Wildcard_Extends_CharSequence;
+        @override
+        @var
+        List<? super CharSequence> list_Wildcard_Super_CharSequence;
+        @override
+        @var
+        List<String>[] list_String_Array;
+        @override
+        @var
+        List<String> list_t;
+        @override
+        @var
+        String _t;
 
-    List list_Raw = Arrays.asList( "abc", 123 );
-    props.list_Raw = list_Raw;
-    assertEquals( list_Raw, props.list_Raw );
+        // tests that List<String> and List<String>[] don't match with PropertyProcessor#ghettoErasure
+        public void setList_String_Array(List<String> fooledya) {
+            throw new RuntimeException();
+        }
+    }
 
-    List<CharSequence> list_CharSequence = Arrays.asList( "abc", new StringBuilder( "abc" ) );
-    props.list_CharSequence = list_CharSequence;
-    assertEquals( list_CharSequence, props.list_CharSequence );
+    public void testFromInterface() {
+        IGenericProps props = new GenericPropsImpl();
 
-    List<String> list_String = Arrays.asList( "abc", "def" );
-    props.list_String = list_String;
-    assertEquals( list_String, props.list_String );
+        List list_Raw = Arrays.asList("abc", 123);
+        props.list_Raw = list_Raw;
+        assertEquals(list_Raw, props.list_Raw);
 
-    //noinspection UnnecessaryLocalVariable
-    List<?> list_Wildcard = list_Raw;
-    props.list_Wildcard = list_Wildcard;
-    assertEquals( list_Wildcard, props.list_Wildcard );
+        List<CharSequence> list_CharSequence = Arrays.asList("abc", new StringBuilder("abc"));
+        props.list_CharSequence = list_CharSequence;
+        assertEquals(list_CharSequence, props.list_CharSequence);
 
-    //noinspection UnnecessaryLocalVariable
-    List<? extends CharSequence> list_Wildcard_Extends_CharSequence = list_CharSequence;
-    props.list_Wildcard_Extends_CharSequence = list_Wildcard_Extends_CharSequence;
-    assertEquals( list_Wildcard_Extends_CharSequence, props.list_Wildcard_Extends_CharSequence );
+        List<String> list_String = Arrays.asList("abc", "def");
+        props.list_String = list_String;
+        assertEquals(list_String, props.list_String);
 
-    List<Object> list_Wildcard_Super_CharSequence = Arrays.asList( "abc", 123 );
-    props.list_Wildcard_Super_CharSequence = list_Wildcard_Super_CharSequence;
-    assertEquals( list_Wildcard_Super_CharSequence, props.list_Wildcard_Super_CharSequence );
+        //noinspection UnnecessaryLocalVariable
+        List<?> list_Wildcard = list_Raw;
+        props.list_Wildcard = list_Wildcard;
+        assertEquals(list_Wildcard, props.list_Wildcard);
 
-    //noinspection unchecked
-    List<String>[] list_String_Array = new List[] {Arrays.asList( "abc", "def" )};
-    props.list_String_Array = list_String_Array;
-    assertEquals( list_String_Array, props.list_String_Array );
-  }
+        //noinspection UnnecessaryLocalVariable
+        List<? extends CharSequence> list_Wildcard_Extends_CharSequence = list_CharSequence;
+        props.list_Wildcard_Extends_CharSequence = list_Wildcard_Extends_CharSequence;
+        assertEquals(list_Wildcard_Extends_CharSequence, props.list_Wildcard_Extends_CharSequence);
 
-  public void testFromImpl()
-  {
-    IGenericProps props = new GenericPropsImpl();
+        List<Object> list_Wildcard_Super_CharSequence = Arrays.asList("abc", 123);
+        props.list_Wildcard_Super_CharSequence = list_Wildcard_Super_CharSequence;
+        assertEquals(list_Wildcard_Super_CharSequence, props.list_Wildcard_Super_CharSequence);
 
-    List list_Raw = Arrays.asList( "abc", 123 );
-    props.list_Raw = list_Raw;
-    assertEquals( list_Raw, props.list_Raw );
+        //noinspection unchecked
+        List<String>[] list_String_Array = new List[]{Arrays.asList("abc", "def")};
+        props.list_String_Array = list_String_Array;
+        assertEquals(list_String_Array, props.list_String_Array);
+    }
 
-    List<CharSequence> list_CharSequence = Arrays.asList( "abc", new StringBuilder( "abc" ) );
-    props.list_CharSequence = list_CharSequence;
-    assertEquals( list_CharSequence, props.list_CharSequence );
+    public void testFromImpl() {
+        IGenericProps props = new GenericPropsImpl();
 
-    List<String> list_String = Arrays.asList( "abc", "def" );
-    props.list_String = list_String;
-    assertEquals( list_String, props.list_String );
+        List list_Raw = Arrays.asList("abc", 123);
+        props.list_Raw = list_Raw;
+        assertEquals(list_Raw, props.list_Raw);
 
-    //noinspection UnnecessaryLocalVariable
-    List<?> list_Wildcard = list_Raw;
-    props.list_Wildcard = list_Wildcard;
-    assertEquals( list_Wildcard, props.list_Wildcard );
+        List<CharSequence> list_CharSequence = Arrays.asList("abc", new StringBuilder("abc"));
+        props.list_CharSequence = list_CharSequence;
+        assertEquals(list_CharSequence, props.list_CharSequence);
 
-    //noinspection UnnecessaryLocalVariable
-    List<? extends CharSequence> list_Wildcard_Extends_CharSequence = list_CharSequence;
-    props.list_Wildcard_Extends_CharSequence = list_Wildcard_Extends_CharSequence;
-    assertEquals( list_Wildcard_Extends_CharSequence, props.list_Wildcard_Extends_CharSequence );
+        List<String> list_String = Arrays.asList("abc", "def");
+        props.list_String = list_String;
+        assertEquals(list_String, props.list_String);
 
-    List<Object> list_Wildcard_Super_CharSequence = Arrays.asList( "abc", 123 );
-    props.list_Wildcard_Super_CharSequence = list_Wildcard_Super_CharSequence;
-    assertEquals( list_Wildcard_Super_CharSequence, props.list_Wildcard_Super_CharSequence );
+        //noinspection UnnecessaryLocalVariable
+        List<?> list_Wildcard = list_Raw;
+        props.list_Wildcard = list_Wildcard;
+        assertEquals(list_Wildcard, props.list_Wildcard);
 
-    //noinspection unchecked
-    List<String>[] list_String_Array = new List[] {Arrays.asList( "abc", "def" )};
-    props.list_String_Array = list_String_Array;
-    assertEquals( list_String_Array, props.list_String_Array );
-  }
+        //noinspection UnnecessaryLocalVariable
+        List<? extends CharSequence> list_Wildcard_Extends_CharSequence = list_CharSequence;
+        props.list_Wildcard_Extends_CharSequence = list_Wildcard_Extends_CharSequence;
+        assertEquals(list_Wildcard_Extends_CharSequence, props.list_Wildcard_Extends_CharSequence);
+
+        List<Object> list_Wildcard_Super_CharSequence = Arrays.asList("abc", 123);
+        props.list_Wildcard_Super_CharSequence = list_Wildcard_Super_CharSequence;
+        assertEquals(list_Wildcard_Super_CharSequence, props.list_Wildcard_Super_CharSequence);
+
+        //noinspection unchecked
+        List<String>[] list_String_Array = new List[]{Arrays.asList("abc", "def")};
+        props.list_String_Array = list_String_Array;
+        assertEquals(list_String_Array, props.list_String_Array);
+    }
 }

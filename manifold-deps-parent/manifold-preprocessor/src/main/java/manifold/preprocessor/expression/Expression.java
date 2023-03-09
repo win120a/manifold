@@ -19,65 +19,54 @@ package manifold.preprocessor.expression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
 import manifold.preprocessor.definitions.Definitions;
 
-public abstract class Expression
-{
-  private final List<ParseError> _errors = new ArrayList<>();
-  private final int _startOffset;
-  private final int _endOffset;
+public abstract class Expression {
+    private final List<ParseError> _errors = new ArrayList<>();
+    private final int _startOffset;
+    private final int _endOffset;
 
-  public Expression( int startOffset, int endOffset )
-  {
-    _startOffset = startOffset;
-    _endOffset = endOffset;
-  }
-
-  public abstract List<Expression> getChildren();
-
-  public abstract boolean evaluate( Definitions definitions );
-
-  public String getValue( Definitions definitions )
-  {
-    return String.valueOf( evaluate( definitions ) );
-  }
-
-  public int getStartOffset()
-  {
-    return _startOffset;
-  }
-
-  public int getEndOffset()
-  {
-    return _endOffset;
-  }
-
-  void error( String message, int tokenStart )
-  {
-    _errors.add( new ParseError( message, tokenStart ) );
-  }
-
-  public boolean visitErrors( Predicate<ParseError> visitor )
-  {
-    for( ParseError e: _errors )
-    {
-      if( !visitor.test( e ) )
-      {
-        return false;
-      }
+    public Expression(int startOffset, int endOffset) {
+        _startOffset = startOffset;
+        _endOffset = endOffset;
     }
-    for( Expression child: getChildren() )
-    {
-      if( !child.visitErrors( visitor ) )
-      {
-        return false;
-      }
-    }
-    return true;
-  }
 
-  public boolean hasErrors()
-  {
-    return !visitErrors( e -> false );
-  }
+    public abstract List<Expression> getChildren();
+
+    public abstract boolean evaluate(Definitions definitions);
+
+    public String getValue(Definitions definitions) {
+        return String.valueOf(evaluate(definitions));
+    }
+
+    public int getStartOffset() {
+        return _startOffset;
+    }
+
+    public int getEndOffset() {
+        return _endOffset;
+    }
+
+    void error(String message, int tokenStart) {
+        _errors.add(new ParseError(message, tokenStart));
+    }
+
+    public boolean visitErrors(Predicate<ParseError> visitor) {
+        for (ParseError e : _errors) {
+            if (!visitor.test(e)) {
+                return false;
+            }
+        }
+        for (Expression child : getChildren()) {
+            if (!child.visitErrors(visitor)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasErrors() {
+        return !visitErrors(e -> false);
+    }
 }

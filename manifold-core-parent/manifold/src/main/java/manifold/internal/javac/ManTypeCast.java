@@ -18,10 +18,8 @@ package manifold.internal.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 
-public class ManTypeCast extends JCTree.JCTypeCast
-{
-  protected ManTypeCast( JCTree clazz, JCExpression expr )
-  {
-    super( clazz, expr );
-  }
+public class ManTypeCast extends JCTree.JCTypeCast {
+    protected ManTypeCast(JCTree clazz, JCExpression expr) {
+        super(clazz, expr);
+    }
 }

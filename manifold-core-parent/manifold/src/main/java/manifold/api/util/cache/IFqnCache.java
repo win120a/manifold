@@ -20,31 +20,31 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
+ *
  */
-public interface IFqnCache<T>
-{
-  T get( String fqn );
+public interface IFqnCache<T> {
+    T get(String fqn);
 
-  FqnCacheNode getNode( String fqn );
+    FqnCacheNode getNode(String fqn);
 
-  boolean contains( String fqn );
+    boolean contains(String fqn);
 
-  void add( String fqn );
+    void add(String fqn);
 
-  void add( String fqn, T userData );
+    void add(String fqn, T userData);
 
-  void remove( String[] fqns );
+    void remove(String[] fqns);
 
-  boolean remove( String fqn );
+    boolean remove(String fqn);
 
-  void clear();
+    void clear();
 
-  Set<String> getFqns();
+    Set<String> getFqns();
 
-  /**
-   * @param visitor returns whether or not to terminate visiting
-   */
-  boolean visitDepthFirst( Predicate<T> visitor );
+    /**
+     * @param visitor returns whether or not to terminate visiting
+     */
+    boolean visitDepthFirst(Predicate<T> visitor);
 
-  boolean visitNodeDepthFirst( Predicate<FqnCacheNode> visitor );
+    boolean visitNodeDepthFirst(Predicate<FqnCacheNode> visitor);
 }

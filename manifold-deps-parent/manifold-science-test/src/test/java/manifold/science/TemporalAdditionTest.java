@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+
 import manifold.science.measures.TimeUnit;
 import org.junit.Test;
 
@@ -27,139 +28,134 @@ import static manifold.science.util.UnitConstants.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class TemporalAdditionTest
-{
-  @Test
-  public void testPlusWithDateBasedTime()
-  {
-    LocalDateTime date = LocalDateTime.of( 2018, 10, 17, 17, 35 );
+public class TemporalAdditionTest {
+    @Test
+    public void testPlusWithDateBasedTime() {
+        LocalDateTime date = LocalDateTime.of(2018, 10, 17, 17, 35);
 
-    assertEquals( date + Period.of( 1, 0, 0 ), date + 1yr );
-    assertEquals( date + Period.of( 1, 1, 0 ), date + 1yr  + 1mo );
-    assertEquals( date + Period.of( 1, 1, 1 ), date + 1yr  + 1mo + 1 day );
+        assertEquals(date + Period.of(1, 0, 0), date + 1yr);
+        assertEquals(date + Period.of(1, 1, 0), date + 1yr + 1mo);
+        assertEquals(date + Period.of(1, 1, 1), date + 1yr + 1mo + 1day);
 
-    assertEquals( date + Period.of( 1, 1, 1 ) + Duration.ofHours( 1 ),
-      date + 1yr  + 1mo + 1 day + 1 hr );
-    assertEquals( date + Period.of( 1, 1, 1 ) + Duration.ofHours( 1 ) + Duration.ofMinutes( 1 ),
-      date + 1yr  + 1mo + 1 day + 1 hr + 1 min );
-    assertEquals( date + Period.of( 1, 1, 1 ) + Duration.ofHours( 1 ) + Duration.ofMinutes( 1 ) + Duration.ofSeconds( 1 ),
-      date + 1yr  + 1mo + 1 day + 1 hr + 1 min + 1 s );
-    assertEquals( date + Period.of( 1, 1, 1 ) + Duration.ofHours( 1 ) + Duration.ofMinutes( 1 ) + Duration.ofSeconds( 1, 1 ),
-      date + 1yr  + 1mo + 1 day + 1 hr + 1 min + 1 s + 1 ns );
-  }
+        assertEquals(date + Period.of(1, 1, 1) + Duration.ofHours(1),
+                date + 1yr + 1mo + 1day + 1hr);
+        assertEquals(date + Period.of(1, 1, 1) + Duration.ofHours(1) + Duration.ofMinutes(1),
+                date + 1yr + 1mo + 1day + 1hr + 1min);
+        assertEquals(date + Period.of(1, 1, 1) + Duration.ofHours(1) + Duration.ofMinutes(1) + Duration.ofSeconds(1),
+                date + 1yr + 1mo + 1day + 1hr + 1min + 1s);
+        assertEquals(date + Period.of(1, 1, 1) + Duration.ofHours(1) + Duration.ofMinutes(1) + Duration.ofSeconds(1, 1),
+                date + 1yr + 1mo + 1day + 1hr + 1min + 1s + 1ns);
+    }
 
-  @Test
-  public void testMinusWithDateBasedTime()
-  {
-    LocalDateTime date = LocalDateTime.of( 2018, 10, 17, 17, 35 );
+    @Test
+    public void testMinusWithDateBasedTime() {
+        LocalDateTime date = LocalDateTime.of(2018, 10, 17, 17, 35);
 
-    assertEquals( date - Period.of( 1, 0, 0 ), date - 1yr );
-    assertEquals( date - Period.of( 1, 1, 0 ), date - 1yr  - 1mo );
-    assertEquals( date - Period.of( 1, 1, 1 ), date - 1yr  - 1mo - 1 day );
+        assertEquals(date - Period.of(1, 0, 0), date - 1yr);
+        assertEquals(date - Period.of(1, 1, 0), date - 1yr - 1mo);
+        assertEquals(date - Period.of(1, 1, 1), date - 1yr - 1mo - 1day);
 
-    assertEquals( date - Period.of( 1, 1, 1 ) - Duration.ofHours( 1 ),
-                  date - 1yr  - 1mo - 1 day - 1 hr );
-    assertEquals( date - Period.of( 1, 1, 1 ) - Duration.ofHours( 1 ) - Duration.ofMinutes( 1 ),
-                  date - 1yr  - 1mo - 1 day - 1 hr - 1 min );
-    assertEquals( date - Period.of( 1, 1, 1 ) - Duration.ofHours( 1 ) - Duration.ofMinutes( 1 ) - Duration.ofSeconds( 1 ),
-                  date - 1yr  - 1mo - 1 day - 1 hr - 1 min - 1 s );
-    assertEquals( date - Period.of( 1, 1, 1 ) - Duration.ofHours( 1 ) - Duration.ofMinutes( 1 ) - Duration.ofSeconds( 1, 1 ),
-                  date - 1yr  - 1mo - 1 day - 1 hr - 1 min - 1 s - 1 ns );
-  }
+        assertEquals(date - Period.of(1, 1, 1) - Duration.ofHours(1),
+                date - 1yr - 1mo - 1day - 1hr);
+        assertEquals(date - Period.of(1, 1, 1) - Duration.ofHours(1) - Duration.ofMinutes(1),
+                date - 1yr - 1mo - 1day - 1hr - 1min);
+        assertEquals(date - Period.of(1, 1, 1) - Duration.ofHours(1) - Duration.ofMinutes(1) - Duration.ofSeconds(1),
+                date - 1yr - 1mo - 1day - 1hr - 1min - 1s);
+        assertEquals(date - Period.of(1, 1, 1) - Duration.ofHours(1) - Duration.ofMinutes(1) - Duration.ofSeconds(1, 1),
+                date - 1yr - 1mo - 1day - 1hr - 1min - 1s - 1ns);
+    }
 
-  @Test
-  public void testPlusWithNonDateBasedTime()
-  {
-    LocalDateTime date = LocalDateTime.of( 2018, 10, 17, 17, 35 );
+    @Test
+    public void testPlusWithNonDateBasedTime() {
+        LocalDateTime date = LocalDateTime.of(2018, 10, 17, 17, 35);
 
-    Period yearPeriod = Period.of( 1, 0, 0 );
-    Duration yearDuration = ChronoUnit.YEARS.getDuration();
-    
-    // A Time value expressed in non-date based units e.g., Seconds, works using the raw amount of time as opposed to
-    // the calendar amount derived from a date-based time amount.
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Planck ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Femto ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Pico ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Nano ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Micro ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Milli ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Second ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Minute ) );
-    assertNotEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Hour ) );
+        Period yearPeriod = Period.of(1, 0, 0);
+        Duration yearDuration = ChronoUnit.YEARS.getDuration();
 
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Planck ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Femto ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Pico) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Nano ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Micro ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Milli ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Second ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Minute ) );
-    assertEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Hour ) );
-    
-    // A Time value expressed in date-based units such as Month works in terms of calendar value
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Day ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Week ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Month ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Year ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Decade ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Century ) );
-    assertEquals( date + yearPeriod, date + (1 yr).to( TimeUnit.Era ) );
+        // A Time value expressed in non-date based units e.g., Seconds, works using the raw amount of time as opposed to
+        // the calendar amount derived from a date-based time amount.
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Planck) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Femto) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Pico) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Nano) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Micro) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Milli) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Second) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Minute) );
+        assertNotEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Hour) );
 
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Day ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Week ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Month ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Year ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Decade ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Century ) );
-    assertNotEquals( date + yearDuration, date + (1 yr).to( TimeUnit.Era ) );
-  }
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Planck) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Femto) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Pico) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Nano) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Micro) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Milli) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Second) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Minute) );
+        assertEquals(date + yearDuration, date + (1yr).to(TimeUnit.Hour) );
 
-  @Test
-  public void testMinusWithNonDateBasedTime()
-  {
-    LocalDateTime date = LocalDateTime.of( 2018, 10, 17, 17, 35 );
+        // A Time value expressed in date-based units such as Month works in terms of calendar value
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Day) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Week) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Month) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Year) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Decade) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Century) );
+        assertEquals(date + yearPeriod, date + (1yr).to(TimeUnit.Era) );
 
-    Period yearPeriod = Period.of( 1, 0, 0 );
-    Duration yearDuration = ChronoUnit.YEARS.getDuration();
-    
-    // A Time value expressed in non-date based units e.g., Seconds, works using the raw amount of time as opposed to
-    // the calendar amount derived from a date-based time amount.
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Planck ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Femto ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Pico ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Nano ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Micro ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Milli ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Second ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Minute ) );
-    assertNotEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Hour ) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Day) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Week) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Month) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Year) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Decade) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Century) );
+        assertNotEquals(date + yearDuration, date + (1yr).to(TimeUnit.Era) );
+    }
 
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Planck ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Femto ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Pico) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Nano ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Micro ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Milli ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Second ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Minute ) );
-    assertEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Hour ) );
-    
-    // A Time value expressed in date-based units such as Month works in terms of calendar value
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Day ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Week ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Month ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Year ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Decade ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Century ) );
-    assertEquals( date - yearPeriod, date - (1 yr).to( TimeUnit.Era ) );
+    @Test
+    public void testMinusWithNonDateBasedTime() {
+        LocalDateTime date = LocalDateTime.of(2018, 10, 17, 17, 35);
 
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Day ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Week ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Month ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Year ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Decade ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Century ) );
-    assertNotEquals( date - yearDuration, date - (1 yr).to( TimeUnit.Era ) );
-  }
+        Period yearPeriod = Period.of(1, 0, 0);
+        Duration yearDuration = ChronoUnit.YEARS.getDuration();
+
+        // A Time value expressed in non-date based units e.g., Seconds, works using the raw amount of time as opposed to
+        // the calendar amount derived from a date-based time amount.
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Planck) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Femto) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Pico) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Nano) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Micro) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Milli) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Second) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Minute) );
+        assertNotEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Hour) );
+
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Planck) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Femto) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Pico) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Nano) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Micro) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Milli) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Second) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Minute) );
+        assertEquals(date - yearDuration, date - (1yr).to(TimeUnit.Hour) );
+
+        // A Time value expressed in date-based units such as Month works in terms of calendar value
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Day) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Week) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Month) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Year) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Decade) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Century) );
+        assertEquals(date - yearPeriod, date - (1yr).to(TimeUnit.Era) );
+
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Day) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Week) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Month) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Year) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Decade) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Century) );
+        assertNotEquals(date - yearDuration, date - (1yr).to(TimeUnit.Era) );
+    }
 }

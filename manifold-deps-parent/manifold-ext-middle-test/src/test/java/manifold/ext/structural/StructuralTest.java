@@ -18,12 +18,10 @@ package manifold.ext.structural;
 
 import junit.framework.TestCase;
 
-public class StructuralTest extends TestCase
-{
-  public void testStructReturnsStruct()
-  {
-    StructReturnsStruct value = (StructReturnsStruct)new StructReturnsStruct.Impl();
-    StructReturnsStruct returnValue = value.returnStruct();
-    assertNotSame( value, returnValue );
-  }
+public class StructuralTest extends TestCase {
+    public void testStructReturnsStruct() {
+        StructReturnsStruct value = (StructReturnsStruct) new StructReturnsStruct.Impl();
+        StructReturnsStruct returnValue = value.returnStruct();
+        assertNotSame(value, returnValue);
+    }
 }

@@ -21,11 +21,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ *
  */
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
 @Repeatable(TypeReferences.class)
-public @interface TypeReference
-{
-  String value();
+public @interface TypeReference {
+    String value();
 }

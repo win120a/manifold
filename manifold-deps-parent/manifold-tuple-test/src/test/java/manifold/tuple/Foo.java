@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Foo
-{
-  public auto callHere()
-  {
+public class Foo {
+    public auto callHere() {
 //    if( true )
 //    {
 //      // compile error: 'tuple' requires non-null value
@@ -38,79 +36,73 @@ public class Foo
 //      return value;
 //    }
 
-    if( true )
-    {
-      return explicitTupleConstruction();
-    }
-    // ok, same type
-    return explicitTupleConstruction();
+        if (true) {
+            return explicitTupleConstruction();
+        }
+        // ok, same type
+        return explicitTupleConstruction();
 
 //    // compile error: Return statements require the same 'tuple' type
 //    return new tuple() {public int myField = 5;};
-  }
-
-  public auto indirectReturn()
-  {
-    auto res = new Object() {public int myField = 5;};
-    return res;
-  }
-
-  public auto explicitTupleConstruction()
-  {
-    return new Object() {public int myField = 5;};
-  }
-
-  public auto nonlabeledMultiReturn()
-  {
-    String name = "Helga";
-    int age = 2;
-    return name, age;
-  }
-
-  public auto labeledMultiReturn()
-  {
-    String n = "Helga";
-    int a = 2;
-    return Name: n, Age: a;
-  }
-
-  public auto fromNonlabeledTupleExpression()
-  {
-    String name = "Helga";
-    int age = 2;
-    auto myTuple = (name, age);
-    return myTuple;
-  }
-  public auto fromLabeledTupleExpression()
-  {
-    String name = "Helga";
-    int age = 2;
-    auto myTuple = (Name: "Helga", Age: age);
-    return myTuple;
-  }
-
-  public auto fromGenericTupleExpression()
-  {
-    List<String> list = new ArrayList<>();
-    for( int i = 0; i < 10; i++ )
-    {
-      list.add( "Helga" + i );
     }
-    return list.stream().map( e -> (name: e, age: 2) )
-      .collect( Collectors.toList() );
-  }
 
-  public auto refCycle()
-  {
-    Abc abc = new Abc();
-    return abc.refCycle();
-  }
+    public auto indirectReturn() {
+        auto res = new Object() {
+            public int myField = 5;
+        };
+        return res;
+    }
 
-  public auto fib( int n )
-  {
-    if (n <= 1) return n;
-    return fib(n - 1) + fib(n - 2);
-  }
+    public auto explicitTupleConstruction() {
+        return new Object() {
+            public int myField = 5;
+        };
+    }
+
+    public auto nonlabeledMultiReturn() {
+        String name = "Helga";
+        int age = 2;
+        return name,age;
+    }
+
+    public auto labeledMultiReturn() {
+        String n = "Helga";
+        int a = 2;
+        return Name:n, Age:a;
+    }
+
+    public auto fromNonlabeledTupleExpression() {
+        String name = "Helga";
+        int age = 2;
+        auto myTuple = (name, age);
+        return myTuple;
+    }
+
+    public auto fromLabeledTupleExpression() {
+        String name = "Helga";
+        int age = 2;
+        auto myTuple = (Name:"Helga", Age:age);
+        return myTuple;
+    }
+
+    public auto fromGenericTupleExpression() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add("Helga" + i);
+        }
+        return list.stream().map(e -> (name:e, age:2) )
+      .collect(Collectors.toList());
+    }
+
+    public auto refCycle() {
+        Abc abc = new Abc();
+        return abc.refCycle();
+    }
+
+    public auto fib(int n) {
+        if (n <= 1) return n;
+        return fib(n - 1) + fib(n - 2);
+    }
 
 //  public auto headRecursion( int i )
 //  {

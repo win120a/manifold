@@ -20,24 +20,22 @@ import junit.framework.TestCase;
 
 import java.math.BigDecimal;
 
-public class DefaultMethodTest extends TestCase
-{
-  public void testDefaultMethod()
-  {
-    // uses test BigDecimalExt and BigDecimal_To_SqlNumber IProxyFactory
-    
-    SqlNumber n1 = new BigDecimal("1");
-    SqlNumber n2 = new BigDecimal("2");
-    SqlNumber n3 = n1.plus(n2);
-    assertEquals( new BigDecimal("3"), n3 );
-    SqlNumber sum = n1 + n2;
-    assertEquals( new BigDecimal("3"), sum );
+public class DefaultMethodTest extends TestCase {
+    public void testDefaultMethod() {
+        // uses test BigDecimalExt and BigDecimal_To_SqlNumber IProxyFactory
 
-    double result = n1.something( 4.5, 6 );
-    assertEquals(11.5, result);
+        SqlNumber n1 = new BigDecimal("1");
+        SqlNumber n2 = new BigDecimal("2");
+        SqlNumber n3 = n1.plus(n2);
+        assertEquals(new BigDecimal("3"), n3);
+        SqlNumber sum = n1 + n2;
+        assertEquals(new BigDecimal("3"), sum);
 
-    SqlNumber f = (SqlNumber)new FooNumber("9");
-    sum = f.plus(n2);
-    assertEquals( new BigDecimal("11"), sum );
-  }
+        double result = n1.something(4.5, 6);
+        assertEquals(11.5, result);
+
+        SqlNumber f = (SqlNumber) new FooNumber("9");
+        sum = f.plus(n2);
+        assertEquals(new BigDecimal("11"), sum);
+    }
 }

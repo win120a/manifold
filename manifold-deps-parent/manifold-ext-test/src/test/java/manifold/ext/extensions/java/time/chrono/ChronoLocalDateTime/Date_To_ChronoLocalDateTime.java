@@ -30,59 +30,58 @@ import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 public class Date_To_ChronoLocalDateTime implements IProxyFactory<Date, ChronoLocalDateTime<LocalDate>> {
-  @Override
-  public ChronoLocalDateTime<LocalDate> proxy(Date date, Class<ChronoLocalDateTime<LocalDate>> aClass) {
-    return new Proxy(date);
-  }
-
-  public static class Proxy implements ChronoLocalDateTime<LocalDate>
-  {
-    private final LocalDateTime _delegate;
-
-    public Proxy(Date date) {
-      _delegate = date.toInstant()
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime();
-    }
-
     @Override
-    public LocalDate toLocalDate() {
-      return _delegate.toLocalDate();
+    public ChronoLocalDateTime<LocalDate> proxy(Date date, Class<ChronoLocalDateTime<LocalDate>> aClass) {
+        return new Proxy(date);
     }
 
-    @Override
-    public LocalTime toLocalTime() {
-      return _delegate.toLocalTime();
-    }
+    public static class Proxy implements ChronoLocalDateTime<LocalDate> {
+        private final LocalDateTime _delegate;
 
-    @Override
-    public boolean isSupported(TemporalField field) {
-      return _delegate.isSupported(field);
-    }
+        public Proxy(Date date) {
+            _delegate = date.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        }
 
-    @Override
-    public long getLong(TemporalField field) {
-      return _delegate.getLong(field);
-    }
+        @Override
+        public LocalDate toLocalDate() {
+            return _delegate.toLocalDate();
+        }
 
-    @Override
-    public ChronoLocalDateTime<LocalDate> with(TemporalField field, long newValue) {
-      return _delegate.with(field, newValue);
-    }
+        @Override
+        public LocalTime toLocalTime() {
+            return _delegate.toLocalTime();
+        }
 
-    @Override
-    public ChronoLocalDateTime<LocalDate> plus(long amountToAdd, TemporalUnit unit) {
-      return _delegate.plus(amountToAdd, unit);
-    }
+        @Override
+        public boolean isSupported(TemporalField field) {
+            return _delegate.isSupported(field);
+        }
 
-    @Override
-    public long until(Temporal endExclusive, TemporalUnit unit) {
-      return _delegate.until(endExclusive, unit);
-    }
+        @Override
+        public long getLong(TemporalField field) {
+            return _delegate.getLong(field);
+        }
 
-    @Override
-    public ChronoZonedDateTime<LocalDate> atZone(ZoneId zone) {
-      return _delegate.atZone(zone);
+        @Override
+        public ChronoLocalDateTime<LocalDate> with(TemporalField field, long newValue) {
+            return _delegate.with(field, newValue);
+        }
+
+        @Override
+        public ChronoLocalDateTime<LocalDate> plus(long amountToAdd, TemporalUnit unit) {
+            return _delegate.plus(amountToAdd, unit);
+        }
+
+        @Override
+        public long until(Temporal endExclusive, TemporalUnit unit) {
+            return _delegate.until(endExclusive, unit);
+        }
+
+        @Override
+        public ChronoZonedDateTime<LocalDate> atZone(ZoneId zone) {
+            return _delegate.atZone(zone);
+        }
     }
-  }
 }

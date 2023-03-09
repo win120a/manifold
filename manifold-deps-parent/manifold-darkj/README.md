@@ -1,6 +1,7 @@
 # Manifold : Dark Java
 
 ## Table of Contents
+
 * [Usage](#usage)
 * [IDE Support](#ide-support)
 * [Setup](#setup)
@@ -11,13 +12,14 @@
 ## Usage
 
 A Dark Java file is a Java *resource* source file with the extension, `.darkj`. A Dark Java file is "dark" because the
-compiler does not produce a `.class` file for it.  The basic properties of a type manifold are what makes Dark Java
+compiler does not produce a `.class` file for it. The basic properties of a type manifold are what makes Dark Java
 interesting:
+
 * You can reference a Dark Java class as a normal Java class directly from any `.java` source file in your project
 * The JRE compiles and loads a Dark Java class *dynamically* at *runtime* only if and when it is first used, otherwise
-it is ignored 
+  it is ignored
 * Despite the absence of a `.class` file, you can access a Dark Java class using reflection
- 
+
 To illustrate, the following example is statically compiled with Java 8; it runs with Java 8 or later.  
 It demonstrates how you can target Java versions dynamically -- Java 8 with `Foo8` and Java 9+ with `Foo9` using an
 interface to abstract their use:
@@ -67,10 +69,11 @@ public class Main {
 ```
 
 This basic interface factory pattern can be used anywhere late-bound compilation is desirable.
- 
-# IDE Support 
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
+# IDE Support
+
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
+and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -79,7 +82,6 @@ Get the [Manifold plugin](https://plugins.jetbrains.com/plugin/10057-manifold) d
 <kbd>Settings</kbd> ➜ <kbd>Plugins</kbd> ➜ <kbd>Marketplace</kbd> ➜ search: `Manifold`
 
 <p><img src="http://manifold.systems/images/ManifoldPlugin.png" alt="echo method" width="60%" height="60%"/></p>
-
 
 ## Sample Project
 
@@ -102,7 +104,7 @@ project-wide changes.
 
 ## Building this project
 
-The `manifold-darkj` project is defined with Maven.  To build it install Maven and run the following command.
+The `manifold-darkj` project is defined with Maven. To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -113,19 +115,20 @@ mvn compile
 The `manifold-darkj` dependency works with all build tooling, including Maven and Gradle. It also works with Java
 versions 8 - 19.
 
->Note, since Dark Java is a dynamic compilation feature, you must include Manifold dependencies in both compile-time
->and runtime. As a consequence, the Manifold runtime compilation services add a bit of overhead in terms of
->application initialization time and footprint.  
- 
+> Note, since Dark Java is a dynamic compilation feature, you must include Manifold dependencies in both compile-time
+> and runtime. As a consequence, the Manifold runtime compilation services add a bit of overhead in terms of
+> application initialization time and footprint.
+
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
-
+If you are *not* using Maven or Gradle, you can download the latest
+binaries [here](http://manifold.systems/docs.html#download).
 
 ## Gradle
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest. 
+version (8 - 19), the script takes care of the rest.
+
 ```groovy
 plugins {
     id 'java'
@@ -177,7 +180,9 @@ tasks.compileTestJava {
     dependsOn processTestResources
 }
 ```
+
 Use with accompanying `settings.gradle` file:
+
 ```groovy
 rootProject.name = 'MyDarkJavaProject'
 ```
@@ -254,6 +259,7 @@ rootProject.name = 'MyDarkJavaProject'
 ```
 
 ### Java 9 or later
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -310,7 +316,7 @@ rootProject.name = 'MyDarkJavaProject'
 
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
 
 # Versioning
 

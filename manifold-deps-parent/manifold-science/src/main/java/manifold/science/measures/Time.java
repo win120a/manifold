@@ -22,6 +22,7 @@ import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.List;
+
 import manifold.science.api.AbstractMeasure;
 import manifold.science.util.Rational;
 
@@ -56,132 +57,106 @@ import static manifold.science.measures.TimeUnit.Nano;
  *   LocalDateTime tomorrowOneHourLater = date + 1 day + 1 hr;
  * </code></pre>
  */
-final public class Time extends AbstractMeasure<TimeUnit, Time> implements TemporalAmount
-{
-  public Time( Rational value, TimeUnit unit, TimeUnit displayUnit )
-  {
-    super( value, unit, displayUnit );
-  }
-
-  public Time( Rational value, TimeUnit unit )
-  {
-    this( value, unit, unit );
-  }
-
-  @Override
-  public TimeUnit getBaseUnit()
-  {
-    return TimeUnit.BASE;
-  }
-
-  @Override
-  public Time make( Rational value, TimeUnit unit, TimeUnit displayUnit )
-  {
-    return new Time( value, unit, displayUnit );
-  }
-
-  @Override
-  public Time make( Rational value, TimeUnit unit )
-  {
-    return new Time( value, unit, unit );
-  }
-
-  public static Time now()
-  {
-    return new Time( Rational.get( System.nanoTime() ), Nano );
-  }
-
-  //
-  // TemporalAmount impl
-  //
-
-  @Override
-  public long get( TemporalUnit unit )
-  {
-    if( unit == SECONDS )
-    {
-      return toBaseNumber().wholePart().longValue();
+final public class Time extends AbstractMeasure<TimeUnit, Time> implements TemporalAmount {
+    public Time(Rational value, TimeUnit unit, TimeUnit displayUnit) {
+        super(value, unit, displayUnit);
     }
-    else if( unit == NANOS )
-    {
-      return toBaseNumber().fractionPart().times( 1.0e9 ).longValue();
+
+    public Time(Rational value, TimeUnit unit) {
+        this(value, unit, unit);
     }
-    else
-    {
-      throw new UnsupportedTemporalTypeException( "Unsupported unit: " + unit );
+
+    @Override
+    public TimeUnit getBaseUnit() {
+        return TimeUnit.BASE;
     }
-  }
 
-  @Override
-  public List<TemporalUnit> getUnits()
-  {
-    return getBaseUnit().getDuration().getUnits();
-  }
-
-  @Override
-  public Temporal addTo( Temporal temporal )
-  {
-    BigInteger wholePart = toBaseNumber().wholePart();
-    if( !wholePart.equals( BigInteger.ZERO ) )
-    {
-      temporal = temporal.plus( wholePart.longValue(), SECONDS );
+    @Override
+    public Time make(Rational value, TimeUnit unit, TimeUnit displayUnit) {
+        return new Time(value, unit, displayUnit);
     }
-    Rational fractionPart = toBaseNumber().fractionPart();
-    if( !fractionPart.equals( Rational.ZERO ) )
-    {
-      temporal = temporal.plus( fractionPart.times( 1.0e9 ).longValue(), NANOS );
+
+    @Override
+    public Time make(Rational value, TimeUnit unit) {
+        return new Time(value, unit, unit);
     }
-    return temporal;
-  }
 
-  @Override
-  public Temporal subtractFrom( Temporal temporal )
-  {
-    BigInteger wholePart = toBaseNumber().wholePart();
-    if( !wholePart.equals( BigInteger.ZERO ) )
-    {
-      temporal = temporal.minus( wholePart.longValue(), SECONDS );
+    public static Time now() {
+        return new Time(Rational.get(System.nanoTime()), Nano);
     }
-    Rational fractionPart = toBaseNumber().fractionPart();
-    if( !fractionPart.equals( Rational.ZERO ) )
-    {
-      temporal = temporal.minus( fractionPart.times( 1.0e9 ).longValue(), NANOS );
+
+    //
+    // TemporalAmount impl
+    //
+
+    @Override
+    public long get(TemporalUnit unit) {
+        if (unit == SECONDS) {
+            return toBaseNumber().wholePart().longValue();
+        } else if (unit == NANOS) {
+            return toBaseNumber().fractionPart().times(1.0e9).longValue();
+        } else {
+            throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
+        }
     }
-    return temporal;
-  }
+
+    @Override
+    public List<TemporalUnit> getUnits() {
+        return getBaseUnit().getDuration().getUnits();
+    }
+
+    @Override
+    public Temporal addTo(Temporal temporal) {
+        BigInteger wholePart = toBaseNumber().wholePart();
+        if (!wholePart.equals(BigInteger.ZERO)) {
+            temporal = temporal.plus(wholePart.longValue(), SECONDS);
+        }
+        Rational fractionPart = toBaseNumber().fractionPart();
+        if (!fractionPart.equals(Rational.ZERO)) {
+            temporal = temporal.plus(fractionPart.times(1.0e9).longValue(), NANOS);
+        }
+        return temporal;
+    }
+
+    @Override
+    public Temporal subtractFrom(Temporal temporal) {
+        BigInteger wholePart = toBaseNumber().wholePart();
+        if (!wholePart.equals(BigInteger.ZERO)) {
+            temporal = temporal.minus(wholePart.longValue(), SECONDS);
+        }
+        Rational fractionPart = toBaseNumber().fractionPart();
+        if (!fractionPart.equals(Rational.ZERO)) {
+            temporal = temporal.minus(fractionPart.times(1.0e9).longValue(), NANOS);
+        }
+        return temporal;
+    }
 
 
-  //
-  // Operators
-  //
+    //
+    // Operators
+    //
 
-  public Length times( Velocity r )
-  {
-    return new Length( toBaseNumber() * r.toBaseNumber(), LengthUnit.BASE, r.getDisplayUnit().getLengthUnit() );
-  }
+    public Length times(Velocity r) {
+        return new Length(toBaseNumber() * r.toBaseNumber(), LengthUnit.BASE, r.getDisplayUnit().getLengthUnit());
+    }
 
-  public Velocity times( Acceleration acc )
-  {
-    return new Velocity( toBaseNumber() * acc.toBaseNumber(), VelocityUnit.BASE, acc.getDisplayUnit().getVelocityUnit() );
-  }
+    public Velocity times(Acceleration acc) {
+        return new Velocity(toBaseNumber() * acc.toBaseNumber(), VelocityUnit.BASE, acc.getDisplayUnit().getVelocityUnit());
+    }
 
-  public Charge times( Current current )
-  {
-    return new Charge( toBaseNumber() * current.toBaseNumber(), ChargeUnit.BASE, current.getDisplayUnit().getChargeUnit() );
-  }
+    public Charge times(Current current) {
+        return new Charge(toBaseNumber() * current.toBaseNumber(), ChargeUnit.BASE, current.getDisplayUnit().getChargeUnit());
+    }
 
-  public Angle times( Frequency frequency )
-  {
-    return new Angle( toBaseNumber() * frequency.toBaseNumber(), AngleUnit.BASE, frequency.getDisplayUnit().getAngleUnit() );
-  }
+    public Angle times(Frequency frequency) {
+        return new Angle(toBaseNumber() * frequency.toBaseNumber(), AngleUnit.BASE, frequency.getDisplayUnit().getAngleUnit());
+    }
 
-  public Energy times( Power power )
-  {
-    return new Energy( toBaseNumber() * power.toBaseNumber(), EnergyUnit.BASE, power.getDisplayUnit().getEnergyUnit() );
-  }
+    public Energy times(Power power) {
+        return new Energy(toBaseNumber() * power.toBaseNumber(), EnergyUnit.BASE, power.getDisplayUnit().getEnergyUnit());
+    }
 
-  public Momentum times( Force force )
-  {
-    return new Momentum( toBaseNumber() * force.toBaseNumber(), MomentumUnit.BASE, getDisplayUnit() * force.getDisplayUnit() );
-  }
+    public Momentum times(Force force) {
+        return new Momentum(toBaseNumber() * force.toBaseNumber(), MomentumUnit.BASE, getDisplayUnit() * force.getDisplayUnit());
+    }
 }

@@ -18,42 +18,36 @@ package manifold.preprocessor;
 
 import java.net.URI;
 import java.util.function.Consumer;
+
 import manifold.api.fs.IFile;
 import manifold.api.type.IPreprocessor;
 import manifold.internal.javac.JavacPlugin;
 import manifold.preprocessor.definitions.Definitions;
 import manifold.preprocessor.statement.FileStatement;
 
-public class JavaPreprocessor implements IPreprocessor
-{
-  @Override
-  public Order getPreferredOrder()
-  {
-    return Order.First;
-  }
-
-  @Override
-  public CharSequence process( URI sourceFile, CharSequence source )
-  {
-    return process( sourceFile, source, null );
-  }
-  public CharSequence process( URI sourceFile, CharSequence source, Consumer<Tokenizer> consumer )
-  {
-    FileStatement fileStmt = new PreprocessorParser( source, consumer ).parseFile();
-    if( fileStmt.hasPreprocessorDirectives() )
-    {
-      StringBuilder result = new StringBuilder();
-      try
-      {
-        IFile file = JavacPlugin.instance().getHost().getFileSystem().getIFile( sourceFile.toURL() );
-        fileStmt.execute( result, source, true, new Definitions( file ) );
-        return result;
-      }
-      catch( Exception e )
-      {
-        throw new IllegalStateException( e );
-      }
+public class JavaPreprocessor implements IPreprocessor {
+    @Override
+    public Order getPreferredOrder() {
+        return Order.First;
     }
-    return source;
-  }
+
+    @Override
+    public CharSequence process(URI sourceFile, CharSequence source) {
+        return process(sourceFile, source, null);
+    }
+
+    public CharSequence process(URI sourceFile, CharSequence source, Consumer<Tokenizer> consumer) {
+        FileStatement fileStmt = new PreprocessorParser(source, consumer).parseFile();
+        if (fileStmt.hasPreprocessorDirectives()) {
+            StringBuilder result = new StringBuilder();
+            try {
+                IFile file = JavacPlugin.instance().getHost().getFileSystem().getIFile(sourceFile.toURL());
+                fileStmt.execute(result, source, true, new Definitions(file));
+                return result;
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        return source;
+    }
 }

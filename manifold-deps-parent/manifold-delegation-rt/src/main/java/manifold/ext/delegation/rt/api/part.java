@@ -31,8 +31,7 @@ import java.lang.annotation.Target;
  * invoked from the {@code part} class are also polymorphic with respect to the linking class. As with sub/super classes,
  * linked interface method calls are polymorphic both going it and out of a {@code part} class.
  */
-@Target( ElementType.TYPE )
-@Retention( RetentionPolicy.CLASS )
-public @interface part
-{
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.CLASS)
+public @interface part {
 }

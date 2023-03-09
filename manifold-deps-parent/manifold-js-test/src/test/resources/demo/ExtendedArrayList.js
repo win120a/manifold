@@ -1,9 +1,14 @@
-import java.util.ArrayList;
+import java
+
+.
+util.ArrayList;
 
 class ExtendedArrayList extends java.util.ArrayList {
 
-    function demo() { // Newly added method
-      return 42;
+    function
+
+    demo() { // Newly added method
+        return 42;
     }
 
     //TODO overriding/super calls

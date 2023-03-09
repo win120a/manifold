@@ -19,21 +19,19 @@ package manifold.api.json;
 import manifold.api.host.IModule;
 
 /**
+ *
  */
-public class JsonTypeManifold extends AbstractJsonTypeManifold<JsonModel>
-{
-  @SuppressWarnings("WeakerAccess")
-  public static final String FILE_EXTENSION = "json";
+public class JsonTypeManifold extends AbstractJsonTypeManifold<JsonModel> {
+    @SuppressWarnings("WeakerAccess")
+    public static final String FILE_EXTENSION = "json";
 
-  @Override
-  public void init( IModule module )
-  {
-    init( module, (fqn, files) -> new JsonModel( getModule().getHost(), fqn, files ) );
-  }
+    @Override
+    public void init(IModule module) {
+        init(module, (fqn, files) -> new JsonModel(getModule().getHost(), fqn, files));
+    }
 
-  @Override
-  public boolean handlesFileExtension( String fileExtension )
-  {
-    return fileExtension.equals( FILE_EXTENSION );
-  }
+    @Override
+    public boolean handlesFileExtension(String fileExtension) {
+        return fileExtension.equals(FILE_EXTENSION);
+    }
 }

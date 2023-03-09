@@ -23,53 +23,43 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 
-public class DebugLogUtil
-{
-  /**
-   * Log debug message to specified path/file.  Note this is a last ditch logging effort for use-cases
-   * where logging to System.err/out or other means fails.
-   */
-  public static void log( String path, String msg )
-  {
-    log( path, msg, false );
-  }
-  public static void log( String path, String msg, boolean append )
-  {
-    try( PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( path, append ) ) ) )
-    {
-      pw.write( LocalDateTime.now() + ": " + msg + "\n" );
+public class DebugLogUtil {
+    /**
+     * Log debug message to specified path/file.  Note this is a last ditch logging effort for use-cases
+     * where logging to System.err/out or other means fails.
+     */
+    public static void log(String path, String msg) {
+        log(path, msg, false);
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  /**
-   * Log exception stack trace to specified path/file.  Note this is a last ditch logging effort for use-cases
-   * where logging to System.err/out or other means fails.
-   */
-  public static void log( String path, Throwable t )
-  {
-    log( path, t, false );
-  }
-  public static void log( String path, Throwable t, boolean append )
-  {
-    try( PrintWriter pw = new PrintWriter( new BufferedWriter( new FileWriter( path, append ) ) ) )
-    {
-      pw.write( LocalDateTime.now() + "\n" );
-      t.printStackTrace( pw );
+    public static void log(String path, String msg, boolean append) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path, append)))) {
+            pw.write(LocalDateTime.now() + ": " + msg + "\n");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    catch( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
 
-  public static String getStackTrace( Throwable e )
-  {
-    StringWriter sw = new StringWriter();
-    e.printStackTrace( new PrintWriter( sw ) );
-    return sw.toString();
-  }
+    /**
+     * Log exception stack trace to specified path/file.  Note this is a last ditch logging effort for use-cases
+     * where logging to System.err/out or other means fails.
+     */
+    public static void log(String path, Throwable t) {
+        log(path, t, false);
+    }
+
+    public static void log(String path, Throwable t, boolean append) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path, append)))) {
+            pw.write(LocalDateTime.now() + "\n");
+            t.printStackTrace(pw);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getStackTrace(Throwable e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
 }

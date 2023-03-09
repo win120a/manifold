@@ -24,62 +24,50 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListProxy
-{
-  public static Object invoke( List list, Object proxy, Method method, Object[] args )
-  {
-    assert method.getParameterCount() == (args == null ? 0 : args.length);
+public class ListProxy {
+    public static Object invoke(List list, Object proxy, Method method, Object[] args) {
+        assert method.getParameterCount() == (args == null ? 0 : args.length);
 
-    String methodName = method.getName();
-    Object result;
-    if( method.isDefault() )
-    {
-      result = ReflectUtil.invokeDefault( proxy, method, args );
-    }
-    else
-    {
-      result = ICallHandler.UNHANDLED;
+        String methodName = method.getName();
+        Object result;
+        if (method.isDefault()) {
+            result = ReflectUtil.invokeDefault(proxy, method, args);
+        } else {
+            result = ICallHandler.UNHANDLED;
 
-      if( proxy instanceof IListBacked && methodName.equals( "getList" ) )
-      {
-        result = list;
-      }
-      if( result == ICallHandler.UNHANDLED )
-      {
-        switch( methodName )
-        {
-          case "hashCode":
-            result = _hashCode( list );
-            break;
-          case "equals":
-            result = _equals( list, args[0] );
-            break;
-          case "toString":
-            result = _toString( list );
-            break;
+            if (proxy instanceof IListBacked && methodName.equals("getList")) {
+                result = list;
+            }
+            if (result == ICallHandler.UNHANDLED) {
+                switch (methodName) {
+                    case "hashCode":
+                        result = _hashCode(list);
+                        break;
+                    case "equals":
+                        result = _equals(list, args[0]);
+                        break;
+                    case "toString":
+                        result = _toString(list);
+                        break;
+                }
+            }
         }
-      }
+        if (result == ICallHandler.UNHANDLED) {
+            throw new RuntimeException("Missing method: " + methodName + "(" + Arrays.toString(method.getParameterTypes()) + ")");
+        }
+        return result;
     }
-    if( result == ICallHandler.UNHANDLED )
-    {
-      throw new RuntimeException( "Missing method: " + methodName + "(" + Arrays.toString( method.getParameterTypes() ) + ")" );
+
+    private static String _toString(List list) {
+        return list.toString();
     }
-    return result;
-  }
 
-  private static String _toString( List list )
-  {
-    return list.toString();
-  }
+    private static int _hashCode(List list) {
+        return list.hashCode();
+    }
 
-  private static int _hashCode( List list )
-  {
-    return list.hashCode();
-  }
-
-  private static boolean _equals( List list, Object obj )
-  {
-    return list.equals( obj ) ||
-      obj instanceof IListBacked && list.equals( ((IListBacked)obj).getList() );
-  }
+    private static boolean _equals(List list, Object obj) {
+        return list.equals(obj) ||
+                obj instanceof IListBacked && list.equals(((IListBacked) obj).getList());
+    }
 }

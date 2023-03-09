@@ -19,46 +19,42 @@ package manifold.preprocessor.expression;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import manifold.preprocessor.definitions.Definitions;
 
 import static manifold.preprocessor.expression.ExpressionTokenType.Equals;
 import static manifold.preprocessor.expression.ExpressionTokenType.NotEquals;
 
-public class EqualityExpression extends Expression
-{
-  private final Expression _lhs;
-  private final Expression _rhs;
-  private final boolean _not;
+public class EqualityExpression extends Expression {
+    private final Expression _lhs;
+    private final Expression _rhs;
+    private final boolean _not;
 
-  EqualityExpression( Expression lhs, Expression rhs, boolean not, int start, int end )
-  {
-    super( start, end );
-    _lhs = lhs;
-    _rhs = rhs;
-    _not = not;
-  }
+    EqualityExpression(Expression lhs, Expression rhs, boolean not, int start, int end) {
+        super(start, end);
+        _lhs = lhs;
+        _rhs = rhs;
+        _not = not;
+    }
 
-  @Override
-  public List<Expression> getChildren()
-  {
-    ArrayList<Expression> children = new ArrayList<>();
-    children.add( _lhs );
-    children.add( _rhs );
-    return children;
-  }
+    @Override
+    public List<Expression> getChildren() {
+        ArrayList<Expression> children = new ArrayList<>();
+        children.add(_lhs);
+        children.add(_rhs);
+        return children;
+    }
 
-  /**
-   * True if operands evaluate to the same true/false value AND they have the same value
-   */
-  @Override
-  public boolean evaluate( Definitions definitions )
-  {
-    return _not != (_lhs.evaluate( definitions ) == _rhs.evaluate( definitions ) &&
-                    Objects.equals( _lhs.getValue( definitions ), _rhs.getValue( definitions ) ));
-  }
+    /**
+     * True if operands evaluate to the same true/false value AND they have the same value
+     */
+    @Override
+    public boolean evaluate(Definitions definitions) {
+        return _not != (_lhs.evaluate(definitions) == _rhs.evaluate(definitions) &&
+                Objects.equals(_lhs.getValue(definitions), _rhs.getValue(definitions)));
+    }
 
-  public String toString()
-  {
-    return _lhs + (_not ? NotEquals.getToken() : Equals.getToken()) + _rhs;
-  }
+    public String toString() {
+        return _lhs + (_not ? NotEquals.getToken() : Equals.getToken()) + _rhs;
+    }
 }

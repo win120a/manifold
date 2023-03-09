@@ -21,6 +21,5 @@ import manifold.json.rt.api.IJsonBindingsBacked;
 /**
  * Common base type for GraphQL generated types.
  */
-public interface GqlType extends IJsonBindingsBacked
-{
+public interface GqlType extends IJsonBindingsBacked {
 }

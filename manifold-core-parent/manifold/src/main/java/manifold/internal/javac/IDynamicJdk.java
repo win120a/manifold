@@ -24,7 +24,9 @@ import com.sun.tools.javac.util.JCDiagnostic;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Log;
 import com.sun.tools.javac.util.Name;
+
 import javax.tools.Diagnostic;
+
 import manifold.util.JreUtil;
 import manifold.api.util.PerfLogUtil;
 import manifold.util.concurrent.LocklessLazyVar;
@@ -34,97 +36,84 @@ import java.util.function.Predicate;
 /**
  * This interface facilitates JDK API version independence via dynamically compiled Dark Java implementations
  */
-public interface IDynamicJdk
-{
-  <T> void report( Log issueLogger, Diagnostic<? extends T> diagnostic );
+public interface IDynamicJdk {
+    <T> void report(Log issueLogger, Diagnostic<? extends T> diagnostic);
 
-  default Iterable<Symbol> getMembers( Symbol.ClassSymbol classSym )
-  {
-    return getMembers( classSym, true );
-  }
-  Iterable<Symbol> getMembers( Symbol.ClassSymbol members, boolean completeFirst );
+    default Iterable<Symbol> getMembers(Symbol.ClassSymbol classSym) {
+        return getMembers(classSym, true);
+    }
 
-  default Iterable<Symbol> getMembers( Symbol.ClassSymbol classSym, Predicate<Symbol> predicate )
-  {
-    return getMembers( classSym, predicate, true );
-  }
-  Iterable<Symbol> getMembers( Symbol.ClassSymbol classSym, Predicate<Symbol> predicate, boolean completeFirst );
+    Iterable<Symbol> getMembers(Symbol.ClassSymbol members, boolean completeFirst);
 
-  default Iterable<Symbol> getMembersByName( Symbol.ClassSymbol classSym, Name name )
-  {
-    return getMembersByName( classSym, name, true );
-  }
-  Iterable<Symbol> getMembersByName( Symbol.ClassSymbol classSym, Name call, boolean completeFirst );
+    default Iterable<Symbol> getMembers(Symbol.ClassSymbol classSym, Predicate<Symbol> predicate) {
+        return getMembers(classSym, predicate, true);
+    }
 
-  Symbol.ClassSymbol getTypeElement( Context ctx, Object moduleCtx, String fqn );
+    Iterable<Symbol> getMembers(Symbol.ClassSymbol classSym, Predicate<Symbol> predicate, boolean completeFirst);
 
-  Symbol.ClassSymbol getLoadedClass( Context ctx, String fqn );
+    default Iterable<Symbol> getMembersByName(Symbol.ClassSymbol classSym, Name name) {
+        return getMembersByName(classSym, name, true);
+    }
 
-  void setOperatorSymbol( Context ctx, JCTree.JCBinary expr, JCTree.Tag tag, String op, Symbol operandType );
+    Iterable<Symbol> getMembersByName(Symbol.ClassSymbol classSym, Name call, boolean completeFirst);
 
-  List<Type> getTargets( JCTree.JCLambda tree );
-  void setTargets( JCTree.JCLambda tree, List<Type> targets );
+    Symbol.ClassSymbol getTypeElement(Context ctx, Object moduleCtx, String fqn);
 
-  Symbol getOperator( JCTree.JCExpression tree );
-  void setOperator( JCTree.JCExpression tree, Symbol.OperatorSymbol operator );
+    Symbol.ClassSymbol getLoadedClass(Context ctx, String fqn);
 
-  void logError( Log logger, JCDiagnostic.DiagnosticPosition pos, String key, Object... message );
-  void logWarning( Log logger, JCDiagnostic.DiagnosticPosition pos, String key, Object... message );
+    void setOperatorSymbol(Context ctx, JCTree.JCBinary expr, JCTree.Tag tag, String op, Symbol operandType);
 
-  class Instance
-  {
-    private static boolean INITIALIZING = false;
+    List<Type> getTargets(JCTree.JCLambda tree);
 
-    private static LocklessLazyVar<IDynamicJdk> INSTANCE = LocklessLazyVar.make( () -> {
-      INITIALIZING = true;
-      try
-      {
-        long before = System.nanoTime();
-        try
-        {
-          String fqnIssueReporter;
-          if( JreUtil.isJava8() ) // Java 8
-          {
-            fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_8";
-          }
-          else if( JreUtil.isJava11() ) // Java 11
-          {
-            fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_11";
-          }
-          else if( JreUtil.isJava17orLater() )// Java 17+
-          {
-            fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_17";
-          }
-          else
-          {
-            throw new RuntimeException( "Unsupported JDK version " + JreUtil.JAVA_VERSION +
-              ". Only LTS versions starting with Java 8 and the latest release are supported." );
-          }
-          return (IDynamicJdk)Class.forName( fqnIssueReporter ).newInstance();
-        }
-        finally
-        {
-          PerfLogUtil.log( "Dynamic JDK Time", before );
-        }
-      }
-      catch( Exception e )
-      {
-        throw new RuntimeException( e );
-      }
-      finally
-      {
-        INITIALIZING = false;
-      }
-    } );
-  }
+    void setTargets(JCTree.JCLambda tree, List<Type> targets);
 
-  static IDynamicJdk instance()
-  {
-    return Instance.INSTANCE.get();
-  }
+    Symbol getOperator(JCTree.JCExpression tree);
 
-  static boolean isInitializing()
-  {
-    return Instance.INITIALIZING;
-  }
+    void setOperator(JCTree.JCExpression tree, Symbol.OperatorSymbol operator);
+
+    void logError(Log logger, JCDiagnostic.DiagnosticPosition pos, String key, Object... message);
+
+    void logWarning(Log logger, JCDiagnostic.DiagnosticPosition pos, String key, Object... message);
+
+    class Instance {
+        private static boolean INITIALIZING = false;
+
+        private static LocklessLazyVar<IDynamicJdk> INSTANCE = LocklessLazyVar.make(() -> {
+            INITIALIZING = true;
+            try {
+                long before = System.nanoTime();
+                try {
+                    String fqnIssueReporter;
+                    if (JreUtil.isJava8()) // Java 8
+                    {
+                        fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_8";
+                    } else if (JreUtil.isJava11()) // Java 11
+                    {
+                        fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_11";
+                    } else if (JreUtil.isJava17orLater())// Java 17+
+                    {
+                        fqnIssueReporter = "manifold.internal.javac.JavaDynamicJdk_17";
+                    } else {
+                        throw new RuntimeException("Unsupported JDK version " + JreUtil.JAVA_VERSION +
+                                ". Only LTS versions starting with Java 8 and the latest release are supported.");
+                    }
+                    return (IDynamicJdk) Class.forName(fqnIssueReporter).newInstance();
+                } finally {
+                    PerfLogUtil.log("Dynamic JDK Time", before);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                INITIALIZING = false;
+            }
+        });
+    }
+
+    static IDynamicJdk instance() {
+        return Instance.INSTANCE.get();
+    }
+
+    static boolean isInitializing() {
+        return Instance.INITIALIZING;
+    }
 }

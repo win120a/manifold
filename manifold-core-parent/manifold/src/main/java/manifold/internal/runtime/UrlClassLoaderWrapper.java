@@ -32,234 +32,191 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import manifold.util.JreUtil;
 import manifold.util.ReflectUtil;
 import manifold.util.ReflectUtil.LiveMethodRef;
 
 /**
+ *
  */
-public class UrlClassLoaderWrapper
-{
-  private static final Set<Integer> VISITED_LOADER_IDS = new HashSet<>();
-  private final ClassLoader _loader;
+public class UrlClassLoaderWrapper {
+    private static final Set<Integer> VISITED_LOADER_IDS = new HashSet<>();
+    private final ClassLoader _loader;
 
-  private final LiveMethodRef _getURLs;
-  private final LiveMethodRef _addUrl;
+    private final LiveMethodRef _getURLs;
+    private final LiveMethodRef _addUrl;
 
-  static UrlClassLoaderWrapper wrapIfNotAlreadyVisited( ClassLoader loader )
-  {
-    int loaderId = System.identityHashCode( loader );
-    if( VISITED_LOADER_IDS.contains( loaderId ) )
-    {
-      // Already visited
-      return null;
-    }
-    VISITED_LOADER_IDS.add( loaderId );
-    UrlClassLoaderWrapper wrapped = wrap( loader );
-    if( wrapped == null )
-    {
-      throw new IllegalStateException( "Could not wrap loader: " + loader.getClass().getName() );
-    }
-    return wrapped;
-  }
-
-  @SuppressWarnings("unused")
-  public static boolean canWrap( ClassLoader loader )
-  {
-    LiveMethodRef getURLs = getURLsMethod( loader );
-    if( getURLs != null )
-    {
-      LiveMethodRef addUrl = ReflectUtil.WithNull.method( getURLs.getReceiver(), "addURL|addUrl", URL.class );
-      return addUrl != null;
-    }
-    return false;
-  }
-
-  public static UrlClassLoaderWrapper wrap( ClassLoader loader )
-  {
-    LiveMethodRef getURLs = getURLsMethod( loader );
-    if( getURLs != null )
-    {
-      LiveMethodRef addUrl = ReflectUtil.WithNull.method( getURLs.getReceiver(), "addURL|addUrl", URL.class );
-      if( addUrl != null )
-      {
-        return new UrlClassLoaderWrapper( loader, getURLs, addUrl );
-      }
-    }
-    return null;
-  }
-
-  private static LiveMethodRef getURLsMethod( Object receiver )
-  {
-    LiveMethodRef getURLs = ReflectUtil.WithNull.methodWithReturn( receiver, "getURLs|getUrls", URL[].class );
-    if( getURLs == null )
-    {
-      getURLs = ReflectUtil.WithNull.methodWithReturn( receiver, "getURLs|getUrls", List.class );
-      if( getURLs == null && receiver instanceof ClassLoader )
-      {
-        ReflectUtil.LiveFieldRef ucpField = ReflectUtil.WithNull.field( receiver, "ucp" );
-        if( ucpField != null )
-        {
-          Object ucp = ucpField.get();
-          if( ucp != null )
-          {
-            getURLs = getURLsMethod( ucp );
-          }
+    static UrlClassLoaderWrapper wrapIfNotAlreadyVisited(ClassLoader loader) {
+        int loaderId = System.identityHashCode(loader);
+        if (VISITED_LOADER_IDS.contains(loaderId)) {
+            // Already visited
+            return null;
         }
-      }
-    }
-    return getURLs;
-  }
-
-  private UrlClassLoaderWrapper( ClassLoader loader, LiveMethodRef getURLs, LiveMethodRef addUrl )
-  {
-    _loader = loader;
-    _getURLs = getURLs;
-    _addUrl = addUrl;
-  }
-
-  public ClassLoader getLoader()
-  {
-    return _loader;
-  }
-
-  void addURL( URL url )
-  {
-    try
-    {
-      _addUrl.invoke( url );
-      if( JreUtil.isJava9Modular_runtime() )
-      {
-        wrapReaders();
-      }
-    }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-  }
-
-  private void wrapReaders()
-  {
-    Map/*<ModuleReference, ModuleReader>*/ moduleToReader = (Map)ReflectUtil.field( _loader, "moduleToReader" ).get();
-    for( Object mr: moduleToReader.keySet() )
-    {
-      //noinspection unchecked
-      Optional<URI> location = (Optional<URI>)ReflectUtil.method( mr, "location" ).invoke();
-      URI uri = location.orElse( null );
-      if( uri == null )
-      {
-        continue;
-      }
-
-      //## note: "jmod" files are not supported here because they are currently (2018) supported exclusively at compiler/linker time
-      String scheme = uri.getScheme();
-      if( scheme.equalsIgnoreCase( "file" ) || scheme.equalsIgnoreCase( "jar" ) )
-      {
-        Object reader = moduleToReader.get( mr );
-        Class<?> moduleReaderClass = ReflectUtil.type( "java.lang.module.ModuleReader" );
-        ManModuleReader wrapper = new ManModuleReader( reader, ReflectUtil.field( _loader, "ucp" ).get() );
-        Object/*ModuleReader*/ proxy = Proxy.newProxyInstance( moduleReaderClass.getClassLoader(), new Class<?>[]{moduleReaderClass},
-          new ManModuleReaderInvocationHandler( wrapper ) );
-        //noinspection unchecked
-        moduleToReader.put( mr, proxy );
-      }
-    }
-  }
-
-  private static class ManModuleReaderInvocationHandler implements InvocationHandler
-  {
-    private final Object /*ManModuleReader*/ _wrapper;
-
-    private ManModuleReaderInvocationHandler( Object /*ManModuleReader*/ wrapper )
-    {
-      _wrapper = wrapper;
-    }
-
-    @Override
-    public Object invoke( Object proxy, Method method, Object[] args )
-    {
-      return ReflectUtil.method( _wrapper, method.getName(), method.getParameterTypes() ).invoke( args );
-    }
-  }
-
-  public List<URL> getURLs()
-  {
-    if( _loader instanceof URLClassLoader )
-    {
-      URL[] urls = ((URLClassLoader)_loader).getURLs();
-      return urls == null ? Collections.emptyList() : Arrays.asList( urls );
-    }
-
-    List<URL> allUrls = new ArrayList<>( getClasspathUrls() );
-    if( JreUtil.isJava9Modular_runtime() )
-    {
-      allUrls.addAll( getModularUrls() );
-    }
-
-    return Collections.unmodifiableList( allUrls );
-  }
-
-  private Set<URL> getModularUrls()
-  {
-    //## todo: look at other JRE impls (IBM) to see if they provide a different class loader / field name (other than Oracle's BuiltinClassLoader)
-
-    ReflectUtil.LiveFieldRef nameToModuleField;
-    try
-    {
-      nameToModuleField = ReflectUtil.field( _loader, "nameToModule" );
-    }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
-    }
-
-    Set<URL> modulePath = new HashSet<>();
-    Map/*<String, ModuleReference>*/nameToModule = (Map)nameToModuleField.get();
-    for( Object mr: nameToModule.values() )
-    {
-      //noinspection unchecked
-      Optional<URI> location = (Optional<URI>)ReflectUtil.method( mr, "location" ).invoke();
-      URI uri = location.orElse( null );
-      if( uri == null )
-      {
-        continue;
-      }
-
-      //## note: "jmod" files are not supported here because they are currently (2018) supported exclusively at compiler/linker time
-      String scheme = uri.getScheme();
-      if( scheme.equalsIgnoreCase( "file" ) || scheme.equalsIgnoreCase( "jar" ) )
-      {
-        try
-        {
-          modulePath.add( new File( uri ).toURI().toURL() );
+        VISITED_LOADER_IDS.add(loaderId);
+        UrlClassLoaderWrapper wrapped = wrap(loader);
+        if (wrapped == null) {
+            throw new IllegalStateException("Could not wrap loader: " + loader.getClass().getName());
         }
-        catch( MalformedURLException e )
-        {
-          throw new RuntimeException( e );
-        }
-      }
+        return wrapped;
     }
-    return modulePath;
-  }
 
-  private List<URL> getClasspathUrls()
-  {
-    try
-    {
-      Object urls = _getURLs.invoke();
-      urls = urls == null
-             ? Collections.<URL>emptyList()
-             : urls.getClass().isArray()
-               ? Arrays.asList( (URL[])urls )
-               : urls;
-      //noinspection unchecked
-      return (List)urls;
+    @SuppressWarnings("unused")
+    public static boolean canWrap(ClassLoader loader) {
+        LiveMethodRef getURLs = getURLsMethod(loader);
+        if (getURLs != null) {
+            LiveMethodRef addUrl = ReflectUtil.WithNull.method(getURLs.getReceiver(), "addURL|addUrl", URL.class);
+            return addUrl != null;
+        }
+        return false;
     }
-    catch( Exception e )
-    {
-      throw new RuntimeException( e );
+
+    public static UrlClassLoaderWrapper wrap(ClassLoader loader) {
+        LiveMethodRef getURLs = getURLsMethod(loader);
+        if (getURLs != null) {
+            LiveMethodRef addUrl = ReflectUtil.WithNull.method(getURLs.getReceiver(), "addURL|addUrl", URL.class);
+            if (addUrl != null) {
+                return new UrlClassLoaderWrapper(loader, getURLs, addUrl);
+            }
+        }
+        return null;
     }
-  }
+
+    private static LiveMethodRef getURLsMethod(Object receiver) {
+        LiveMethodRef getURLs = ReflectUtil.WithNull.methodWithReturn(receiver, "getURLs|getUrls", URL[].class);
+        if (getURLs == null) {
+            getURLs = ReflectUtil.WithNull.methodWithReturn(receiver, "getURLs|getUrls", List.class);
+            if (getURLs == null && receiver instanceof ClassLoader) {
+                ReflectUtil.LiveFieldRef ucpField = ReflectUtil.WithNull.field(receiver, "ucp");
+                if (ucpField != null) {
+                    Object ucp = ucpField.get();
+                    if (ucp != null) {
+                        getURLs = getURLsMethod(ucp);
+                    }
+                }
+            }
+        }
+        return getURLs;
+    }
+
+    private UrlClassLoaderWrapper(ClassLoader loader, LiveMethodRef getURLs, LiveMethodRef addUrl) {
+        _loader = loader;
+        _getURLs = getURLs;
+        _addUrl = addUrl;
+    }
+
+    public ClassLoader getLoader() {
+        return _loader;
+    }
+
+    void addURL(URL url) {
+        try {
+            _addUrl.invoke(url);
+            if (JreUtil.isJava9Modular_runtime()) {
+                wrapReaders();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void wrapReaders() {
+        Map/*<ModuleReference, ModuleReader>*/ moduleToReader = (Map) ReflectUtil.field(_loader, "moduleToReader").get();
+        for (Object mr : moduleToReader.keySet()) {
+            //noinspection unchecked
+            Optional<URI> location = (Optional<URI>) ReflectUtil.method(mr, "location").invoke();
+            URI uri = location.orElse(null);
+            if (uri == null) {
+                continue;
+            }
+
+            //## note: "jmod" files are not supported here because they are currently (2018) supported exclusively at compiler/linker time
+            String scheme = uri.getScheme();
+            if (scheme.equalsIgnoreCase("file") || scheme.equalsIgnoreCase("jar")) {
+                Object reader = moduleToReader.get(mr);
+                Class<?> moduleReaderClass = ReflectUtil.type("java.lang.module.ModuleReader");
+                ManModuleReader wrapper = new ManModuleReader(reader, ReflectUtil.field(_loader, "ucp").get());
+                Object/*ModuleReader*/ proxy = Proxy.newProxyInstance(moduleReaderClass.getClassLoader(), new Class<?>[]{moduleReaderClass},
+                        new ManModuleReaderInvocationHandler(wrapper));
+                //noinspection unchecked
+                moduleToReader.put(mr, proxy);
+            }
+        }
+    }
+
+    private static class ManModuleReaderInvocationHandler implements InvocationHandler {
+        private final Object /*ManModuleReader*/ _wrapper;
+
+        private ManModuleReaderInvocationHandler(Object /*ManModuleReader*/ wrapper) {
+            _wrapper = wrapper;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) {
+            return ReflectUtil.method(_wrapper, method.getName(), method.getParameterTypes()).invoke(args);
+        }
+    }
+
+    public List<URL> getURLs() {
+        if (_loader instanceof URLClassLoader) {
+            URL[] urls = ((URLClassLoader) _loader).getURLs();
+            return urls == null ? Collections.emptyList() : Arrays.asList(urls);
+        }
+
+        List<URL> allUrls = new ArrayList<>(getClasspathUrls());
+        if (JreUtil.isJava9Modular_runtime()) {
+            allUrls.addAll(getModularUrls());
+        }
+
+        return Collections.unmodifiableList(allUrls);
+    }
+
+    private Set<URL> getModularUrls() {
+        //## todo: look at other JRE impls (IBM) to see if they provide a different class loader / field name (other than Oracle's BuiltinClassLoader)
+
+        ReflectUtil.LiveFieldRef nameToModuleField;
+        try {
+            nameToModuleField = ReflectUtil.field(_loader, "nameToModule");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Set<URL> modulePath = new HashSet<>();
+        Map/*<String, ModuleReference>*/nameToModule = (Map) nameToModuleField.get();
+        for (Object mr : nameToModule.values()) {
+            //noinspection unchecked
+            Optional<URI> location = (Optional<URI>) ReflectUtil.method(mr, "location").invoke();
+            URI uri = location.orElse(null);
+            if (uri == null) {
+                continue;
+            }
+
+            //## note: "jmod" files are not supported here because they are currently (2018) supported exclusively at compiler/linker time
+            String scheme = uri.getScheme();
+            if (scheme.equalsIgnoreCase("file") || scheme.equalsIgnoreCase("jar")) {
+                try {
+                    modulePath.add(new File(uri).toURI().toURL());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return modulePath;
+    }
+
+    private List<URL> getClasspathUrls() {
+        try {
+            Object urls = _getURLs.invoke();
+            urls = urls == null
+                    ? Collections.<URL>emptyList()
+                    : urls.getClass().isArray()
+                    ? Arrays.asList((URL[]) urls)
+                    : urls;
+            //noinspection unchecked
+            return (List) urls;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 

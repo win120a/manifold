@@ -21,8 +21,8 @@ package manifold.collections.api.range;
 import java.util.Iterator;
 
 /**
+ *
  */
-public abstract class AbstractIntIterator implements Iterator<Integer>
-{
-  abstract public int nextInt();
+public abstract class AbstractIntIterator implements Iterator<Integer> {
+    abstract public int nextInt();
 }

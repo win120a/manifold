@@ -20,118 +20,100 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import manifold.api.fs.IDirectory;
 import manifold.api.fs.IDirectoryUtil;
 import manifold.api.fs.IFile;
 import manifold.api.fs.IFileSystem;
 import manifold.api.fs.IResource;
 
-public class JarEntryDirectoryImpl extends JarEntryResourceImpl implements IJarFileDirectory
-{
-  private Map<String, JarEntryDirectoryImpl> _directories = new HashMap<>();
-  private Map<String, JarEntryFileImpl> _files = new HashMap<>();
-  private List<IDirectory> _childDirs = new ArrayList<>();
-  private List<IFile> _childFiles = new ArrayList<>();
+public class JarEntryDirectoryImpl extends JarEntryResourceImpl implements IJarFileDirectory {
+    private Map<String, JarEntryDirectoryImpl> _directories = new HashMap<>();
+    private Map<String, JarEntryFileImpl> _files = new HashMap<>();
+    private List<IDirectory> _childDirs = new ArrayList<>();
+    private List<IFile> _childFiles = new ArrayList<>();
 
-  public JarEntryDirectoryImpl( IFileSystem fs, String name, IJarFileDirectory parent, JarFileDirectoryImpl jarFile )
-  {
-    super( fs, name, parent, jarFile );
-  }
-
-  @Override
-  public JarEntryDirectoryImpl getOrCreateDirectory( String relativeName )
-  {
-    JarEntryDirectoryImpl result = _directories.get( relativeName );
-    if( result == null )
-    {
-      result = new JarEntryDirectoryImpl( getFileSystem(), relativeName, this, _jarFile );
-      _directories.put( relativeName, result );
-      _childDirs.add( result );
+    public JarEntryDirectoryImpl(IFileSystem fs, String name, IJarFileDirectory parent, JarFileDirectoryImpl jarFile) {
+        super(fs, name, parent, jarFile);
     }
-    return result;
-  }
 
-  @Override
-  public JarEntryFileImpl getOrCreateFile( String relativeName )
-  {
-    JarEntryFileImpl result = _files.get( relativeName );
-    if( result == null )
-    {
-      result = new JarEntryFileImpl( getFileSystem(), relativeName, this, _jarFile );
-      _files.put( relativeName, result );
-      _childFiles.add( result );
+    @Override
+    public JarEntryDirectoryImpl getOrCreateDirectory(String relativeName) {
+        JarEntryDirectoryImpl result = _directories.get(relativeName);
+        if (result == null) {
+            result = new JarEntryDirectoryImpl(getFileSystem(), relativeName, this, _jarFile);
+            _directories.put(relativeName, result);
+            _childDirs.add(result);
+        }
+        return result;
     }
-    return result;
-  }
 
-  @Override
-  public IDirectory dir( String relativePath )
-  {
-    return IDirectoryUtil.dir( this, relativePath );
-  }
-
-  @Override
-  public IFile file( String path )
-  {
-    return IDirectoryUtil.file( this, path );
-  }
-
-  @Override
-  public boolean mkdir()
-  {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<? extends IDirectory> listDirs()
-  {
-    List<IDirectory> results = new ArrayList<>();
-    for( IDirectory child : _childDirs )
-    {
-      if( child.exists() )
-      {
-        results.add( child );
-      }
+    @Override
+    public JarEntryFileImpl getOrCreateFile(String relativeName) {
+        JarEntryFileImpl result = _files.get(relativeName);
+        if (result == null) {
+            result = new JarEntryFileImpl(getFileSystem(), relativeName, this, _jarFile);
+            _files.put(relativeName, result);
+            _childFiles.add(result);
+        }
+        return result;
     }
-    return results;
-  }
 
-  @Override
-  public List<? extends IFile> listFiles()
-  {
-    List<IFile> results = new ArrayList<>();
-    for( IFile child : _childFiles )
-    {
-      if( child.exists() )
-      {
-        results.add( child );
-      }
+    @Override
+    public IDirectory dir(String relativePath) {
+        return IDirectoryUtil.dir(this, relativePath);
     }
-    return results;
-  }
 
-  @Override
-  public String relativePath( IResource resource )
-  {
-    return IDirectoryUtil.relativePath( this, resource );
-  }
+    @Override
+    public IFile file(String path) {
+        return IDirectoryUtil.file(this, path);
+    }
 
-  @Override
-  public void clearCaches()
-  {
-    // Do nothing
-  }
+    @Override
+    public boolean mkdir() {
+        throw new UnsupportedOperationException();
+    }
 
-  @Override
-  public boolean hasChildFile( String path )
-  {
-    IFile childFile = file( path );
-    return childFile != null && childFile.exists();
-  }
+    @Override
+    public List<? extends IDirectory> listDirs() {
+        List<IDirectory> results = new ArrayList<>();
+        for (IDirectory child : _childDirs) {
+            if (child.exists()) {
+                results.add(child);
+            }
+        }
+        return results;
+    }
 
-  @Override
-  public boolean isAdditional()
-  {
-    return false;
-  }
+    @Override
+    public List<? extends IFile> listFiles() {
+        List<IFile> results = new ArrayList<>();
+        for (IFile child : _childFiles) {
+            if (child.exists()) {
+                results.add(child);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public String relativePath(IResource resource) {
+        return IDirectoryUtil.relativePath(this, resource);
+    }
+
+    @Override
+    public void clearCaches() {
+        // Do nothing
+    }
+
+    @Override
+    public boolean hasChildFile(String path) {
+        IFile childFile = file(path);
+        return childFile != null && childFile.exists();
+    }
+
+    @Override
+    public boolean isAdditional() {
+        return false;
+    }
 }

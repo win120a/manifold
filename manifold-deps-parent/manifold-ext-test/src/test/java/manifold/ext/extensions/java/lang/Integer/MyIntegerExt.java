@@ -24,10 +24,8 @@ import manifold.ext.rt.api.This;
  * This is necessary because the Java compiler optimizes compiled code to inline the values where the fields are used.
  */
 @Extension
-public class MyIntegerExt
-{
-  public static String myMethod( @This Integer thiz )
-  {
-    return "myMethod";
-  }
+public class MyIntegerExt {
+    public static String myMethod(@This Integer thiz) {
+        return "myMethod";
+    }
 }

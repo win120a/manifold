@@ -41,8 +41,7 @@ import java.lang.annotation.Target;
  * @see get
  * @see set
  */
-@Target( {ElementType.FIELD} )
-@Retention( RetentionPolicy.CLASS )
-public @interface override
-{
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.CLASS)
+public @interface override {
 }

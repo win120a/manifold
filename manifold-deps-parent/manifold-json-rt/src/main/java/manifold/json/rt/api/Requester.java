@@ -48,609 +48,545 @@ import java.util.function.Function;
  *            from GET calls and is also the type of the payload sent for POST, PUT, and PATCH calls. Since DELETE calls
  *            do not necessarily send or receive this type, it is not part of the signatures of those methods.
  */
-public class Requester<T>
-{
-  private final Endpoint _endpoint;
-  private Function<Object, Object> _resultCoercer;
-  private Format _format;
-  private Map<String, String> _headers;
-  private Map<String, String> _parameters;
-  private Function<T, Object> _rawResponseHandler;
-  private int _timeout;
+public class Requester<T> {
+    private final Endpoint _endpoint;
+    private Function<Object, Object> _resultCoercer;
+    private Format _format;
+    private Map<String, String> _headers;
+    private Map<String, String> _parameters;
+    private Function<T, Object> _rawResponseHandler;
+    private int _timeout;
 
-  public enum Format
-  {
-    Json, Yaml, Xml, Csv, Text
-  }
-
-  /**
-   * Get an instance of {@code Requester} from a JSON API type eg., {@code User.request()}.  Requester is a builder
-   * type: you can configure the requests you'll make using {@code withXxx()} calls to specify an authorization
-   * token, response format, custom headers, etc. Then you can make one or more requests with a single instance:
-   * <pre><code>
-   * Requester&lt;User&gt; req = User.request("http://example.com/users")
-   *   .withBearerAuthorization("xxx...x"); // eg., using OAuth token
-   * User user = req.getOne("/$id");
-   * user.setName("Scott");
-   * req.putOne("/$id", user);
-   * </code></pre>
-   * @param urlBase A URL providing HTTP services for {@code T}, such as "http://example.com/users"
-   */
-  public Requester( String urlBase )
-  {
-    this( urlBase, result -> result );
-  }
-  public Requester( String urlBase, Function<Object, Object> resultCoercer )
-  {
-    _endpoint = new Endpoint( urlBase );
-    _resultCoercer = resultCoercer;
-    _format = Format.Json;
-    _headers = new HashMap<>();
-    _parameters = Collections.emptyMap();
-    _timeout = 0;
-  }
-  public Requester( Endpoint endpoint )
-  {
-    this( endpoint, result -> result );
-  }
-  public Requester( Endpoint endpoint, Function<Object, Object> resultCoercer )
-  {
-    _endpoint = endpoint;
-    _resultCoercer = resultCoercer;
-    _format = Format.Json;
-    _headers = new HashMap<>();
-    _parameters = Collections.emptyMap();
-    _timeout = 0;
-  }
-
-  public Endpoint getEndpoint()
-  {
-    return _endpoint;
-  }
-
-  public Format getFormat()
-  {
-    return _format;
-  }
-
-  public int getTimeout()
-  {
-    return _timeout;
-  }
-
-  public Map<String, String> getHeaders()
-  {
-    return Collections.unmodifiableMap( _headers );
-  }
-
-  public Map<String, String> getParameters()
-  {
-    return Collections.unmodifiableMap( _parameters );
-  }
-
-  public Requester<T> withCoercer( Function<Object, Object> resultCoercer )
-  {
-    _resultCoercer = resultCoercer;
-    return this;
-  }
-
-  /**
-   * Set the default format expected in the response. The response will be parsed according to this setting.
-   * @param format Json, Yaml, Xml, Csv, or Plain text. Default is Json.
-   */
-  public Requester<T> withResponseFormat( Format format )
-  {
-    _format = format;
-    return this;
-  }
-
-  /**
-   * Set an HTTP request header {@code name : value} pair
-   * See <a href="https://en.wikipedia.org/wiki/List_of_HTTP_header_fields>HTTP header fields</a>
-   */
-  public Requester<T> withHeader( String name, String value )
-  {
-    _headers.put( name, value );
-    return this;
-  }
-
-  /**
-   * Add a {@code name=value} parameter to the request URL.
-   */
-  public Requester<T> withParam( String name, String value )
-  {
-    if( _parameters.isEmpty() )
-    {
-      _parameters = new HashMap<>( 2 );
-    }
-    _parameters.put( name, value );
-    return this;
-  }
-
-  /**
-   * Set the Basic Authorization header using the provided {@code username} and {@code password}
-   */
-  @SuppressWarnings("unused")
-  public Requester<T> withBasicAuthorization( String username, String password )
-  {
-    String authorization = Base64.getEncoder()
-      .encodeToString(( "$username:$password" ).getBytes( StandardCharsets.UTF_8 ) );
-    return withHeader( "Authorization", "Basic $authorization" );
-  }
-
-  /**
-   * Set the Bearer Authorization header using the provided {@code accessToken}.
-   * For instance, if using OAuth, {@code accessToken} is the token response from:
-   * <pre><code>
-   * curl -d "grant_type=password&client_id=[...]&client_secret=[...]&username=[...]&password=[...]"
-   *   https://[domain]/[oauth-service]
-   * </code></pre>
-   */
-  @SuppressWarnings("unused")
-  public Requester<T> withBearerAuthorization( String accessToken )
-  {
-    return withAuthorization( "Bearer", accessToken );
-  }
-  @SuppressWarnings("unused")
-  public Requester<T> withAuthorization( String tokenType, String accessToken )
-  {
-    return withHeader( "Authorization", "$tokenType $accessToken" );
-  }
-
-  /**
-   * The connection timeout setting in milliseconds. If the timeout expires before the connection can be established, a
-   * {@link java.net.SocketTimeoutException) is thrown. A value of zero is interpreted as an infinite timeout, this is
-   * the default setting.
-   */
-  public Requester<T> withTimeout( int timeout )
-  {
-    _timeout = timeout;
-    return this;
-  }
-
-  /**
-   * @param handler An optional handler for processing the raw response as an arbitrary Bindings instance. The handler
-   *                may return a custom bindings object which overrides the default, type-safe result instance. In any
-   *                case, the handler can process the response in any way. Note, modifications made to the response
-   *                persist and, therefore, affect default internal data and error processing.
-   */
-  public Requester<T> withRawResponseHandler( Function<T, Object> handler )
-  {
-    _rawResponseHandler = handler;
-    return this;
-  }
-
-  /**
-   * @return The raw response handler or null if one is not assigned.
-   */
-  public Function<T, Object> getRawResponseHandler()
-  {
-    return _rawResponseHandler;
-  }
-
-  /**
-   * Use HTTP GET for a single {@code T} JSON API object specified in the {@code urlSuffix}, such as {@code "/108"}.
-   *
-   * @return A single {@code T} JSON API object specified in the {@code urlSuffix}
-   * <p/>
-   * Same as calling:
-   * {@link #getOne(String, Object, Format)} with {@code getOne("", null, _format)}
-   */
-  public T getOne()
-  {
-    return getOne( "", null );
-  }
-
-  /**
-   * Use HTTP GET for a single {@code T} JSON API object specified in the {@code urlSuffix}, such as {@code "/108"}.
-   *
-   * @param urlSuffix A suffix identifying the {@code T} JSON API object to getOne
-   *
-   * @return A single {@code T} JSON API object specified in the {@code urlSuffix}
-   * <p/>
-   * Same as calling:
-   * {@link #getOne(String, Object, Format)} with {@code getOne(urlSuffix, null, _format)}
-   */
-  public T getOne( String urlSuffix )
-  {
-    return getOne( urlSuffix, null );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #getOne(String, Object, Format)} with {@code getOne("", arguments, _format)}
-   */
-  public T getOne( Object arguments )
-  {
-    return getOne( "", arguments );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #getOne(String, Object, Format)} with {@code getOne(urlSuffix, arguments, _format)}
-   */
-  public T getOne( String urlSuffix, Object arguments )
-  {
-    return getOne( urlSuffix, arguments, _format );
-  }
-
-  /**
-   * Make an HTTP GET request to {@code urlBase + urlSuffix}.  {@code arguments}, if non-null, is sent in the URL as
-   * JSON encoded URL arguments.
-   *
-   * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or
-   * Bindings of String/JSON value)
-   */
-  public T getOne( String urlSuffix, Object arguments, Format format )
-  {
-    return request( urlSuffix, Http.GET, format, arguments );
-  }
-
-  /**
-   * Uses HTTP GET for the complete list of {@code T} JSON API objects as a {@code IJsonList<T>}.
-   *
-   * @return The complete list of {@code T} JSON API objects as a {@code IJsonList<T>}
-   * <p/>
-   * Same as calling:
-   * {@link #getMany(String, Object, Format)} with {@code getMany("", null, _format)}
-   */
-  public IJsonList<T> getMany()
-  {
-    return getMany( "", null );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #getMany(String, Object, Format)} with {@code getMany(urlSuffix, null, _format)}
-   */
-  public IJsonList<T> getMany( String urlSuffix )
-  {
-    return getMany( urlSuffix, null );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #getMany(String, Object, Format)} with {@code getMany("", arguments, _format)}
-   */
-  public IJsonList<T> getMany( Object arguments )
-  {
-    return getMany( "", arguments );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #getMany(String, Object, Format)} with {@code getMany(urlSuffix, arguments, _format)}
-   */
-  public IJsonList<T> getMany( String urlSuffix, Object arguments )
-  {
-    return getMany( urlSuffix, arguments, _format );
-  }
-
-  /**
-   * Make an HTTP GET request to {@code urlBase + urlSuffix}.  {@code arguments}, if non-null, is sent in the URL as
-   * JSON encoded URL arguments.
-   *
-   * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or
-   * Bindings of String/JSON value)
-   */
-  public IJsonList<T> getMany( String urlSuffix, Object arguments, Format format )
-  {
-    return request( urlSuffix, Http.GET, format, arguments );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #postOne(String, Object, Format)} with {@code postOne("", payload, _format)}
-   */
-  public <R> R postOne( T payload )
-  {
-    return postOne( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #postOne(String, Object, Format)} with {@code postOne(urlSuffix, payload, _format)}
-   */
-  public <R> R postOne( String urlSuffix, T payload )
-  {
-    return postOne( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP POST request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R postOne( String urlSuffix, T payload, Format format )
-  {
-    return request( urlSuffix, Http.POST, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #postMany(String, List, Format)} with {@code postMany("", payload, _format)}
-   */
-  public <R> R postMany( List<T> payload )
-  {
-    return postMany( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #postMany(String, List, Format)} with {@code postMany(urlSuffix, payload, _format)}
-   */
-  public <R> R postMany( String urlSuffix, List<T> payload )
-  {
-    return postMany( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP POST request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R postMany( String urlSuffix, List<T> payload, Format format )
-  {
-    return request( urlSuffix, Http.POST, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #putOne(String, Object, Format)} with {@code putOne("", payload, _format)}
-   */
-  public <R> R putOne( T payload )
-  {
-    return putOne( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #putOne(String, Object, Format)} with {@code putOne(urlSuffix, payload, _format)}
-   */
-  public <R> R putOne( String urlSuffix, T payload )
-  {
-    return putOne( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP PUT request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R putOne( String urlSuffix, T payload, Format format )
-  {
-    return request( urlSuffix, Http.PUT, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #putMany(String, List, Format)} with {@code putMany("", payload, _format)}
-   */
-  public <R> R putMany( List<T> payload )
-  {
-    return putMany( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #putMany(String, List, Format)} with {@code putMany(urlSuffix, payload, _format)}
-   */
-  public <R> R putMany( String urlSuffix, List<T> payload )
-  {
-    return putMany( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP PUT request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R putMany( String urlSuffix, List<T> payload, Format format )
-  {
-    return request( urlSuffix, Http.PUT, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #patchOne(String, Object, Format)} with {@code patchOne("", payload, _format)}
-   */
-  public <R> R patchOne( T payload )
-  {
-    return patchOne( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #patchOne(String, Object, Format)} with {@code patchOne(urlSuffix, payload, _format)}
-   */
-  public <R> R patchOne( String urlSuffix, T payload )
-  {
-    return patchOne( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP PATCH request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R patchOne( String urlSuffix, T payload, Format format )
-  {
-    return request( urlSuffix, Http.PATCH, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #patchMany(String, List, Format)} with {@code patchMany("", payload, _format)}
-   */
-  public <R> R patchMany( List<T> payload )
-  {
-    return patchMany( "", payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #patchMany(String, List, Format)} with {@code patchMany(urlSuffix, payload, _format)}
-   */
-  public <R> R patchMany( String urlSuffix, List<T> payload )
-  {
-    return patchMany( urlSuffix, payload, _format );
-  }
-
-  /**
-   * Make an HTTP PATCH request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
-   * text in the request's message body.
-   *
-   * @param <R>       The expected type of the response
-   * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R patchMany( String urlSuffix, List<T> payload, Format format )
-  {
-    return request( urlSuffix, Http.PATCH, format, payload );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #delete(String, Object, Format)} with {@code delete("", arguments, _format)}
-   */
-  public <R> R delete( Object arguments )
-  {
-    return delete( "", arguments );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #delete(String, Object, Format)} with {@code delete(urlSuffix, null, _format)}
-   */
-  public <R> R delete( String urlSuffix )
-  {
-    return delete( urlSuffix, null );
-  }
-
-  /**
-   * Same as calling:
-   * {@link #delete(String, Object, Format)} with {@code delete(urlSuffix, arguments, _format)}
-   */
-  public <R> R delete( String urlSuffix, Object arguments )
-  {
-    return delete( urlSuffix, arguments, _format );
-  }
-
-  /**
-   * Make an HTTP DELETE request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent in the URL as JSON
-   * encoded URL arguments.
-   *
-   * @param <R>       The expected type of the response
-   * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
-   * @param urlSuffix A suffix, such as "/108", nullable
-   * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
-   *
-   * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
-   */
-  public <R> R delete( String urlSuffix, Object arguments, Format format )
-  {
-    return request( urlSuffix, Http.DELETE, format, arguments );
-  }
-
-
-  private <R> R request( String urlSuffix, Http method, Format format, Object jsonValue )
-  {
-    jsonValue = Json.toBindings( jsonValue );
-    urlSuffix = appendParams( urlSuffix );
-    Endpoint endpoint = urlSuffix != null ? _endpoint.withUrlSuffix( urlSuffix ) : _endpoint;
-    Object result = null;
-    switch( format )
-    {
-      case Json:
-        _headers.put( "Accept", "application/json" );
-        result = endpoint.sendJsonRequest( method.name(), jsonValue, _headers, _timeout );
-        break;
-      case Yaml:
-        _headers.put( "Accept", "application/x-yaml, application/yaml, text/yaml;q=0.9" );
-        result = endpoint.sendYamlRequest( method.name(), jsonValue, _headers, _timeout );
-        break;
-      case Xml:
-        _headers.put( "Accept", "application/xml" );
-        result = endpoint.sendXmlRequest( method.name(), jsonValue, _headers, _timeout );
-        break;
-      case Csv:
-        _headers.put( "Accept", "text/csv" );
-        result = endpoint.sendCsvRequest( method.name(), jsonValue, _headers, _timeout );
-        break;
-      case Text:
-        result = endpoint.sendPlainTextRequest( method.name(), jsonValue, _headers, _timeout );
-        break;
-      default:
-        throw new IllegalArgumentException( "format: " + format );
-    }
-    //noinspection unchecked
-    result = _resultCoercer.apply( result );
-    return (R)result;
-  }
-
-  private String appendParams( String urlSuffix )
-  {
-    if( _parameters.isEmpty() )
-    {
-      return urlSuffix;
+    public enum Format {
+        Json, Yaml, Xml, Csv, Text
     }
 
-    boolean firstParam = urlSuffix.indexOf( '?' ) < 0;
-    StringBuilder sb = new StringBuilder( urlSuffix );
-    for( Map.Entry<String, String> entry: _parameters.entrySet() )
-    {
-      sb.append( firstParam ? '?' : '&' )
-        .append( entry.getKey() )
-        .append( '=' )
-        .append( entry.getValue() );
-      firstParam = false;
+    /**
+     * Get an instance of {@code Requester} from a JSON API type eg., {@code User.request()}.  Requester is a builder
+     * type: you can configure the requests you'll make using {@code withXxx()} calls to specify an authorization
+     * token, response format, custom headers, etc. Then you can make one or more requests with a single instance:
+     * <pre><code>
+     * Requester&lt;User&gt; req = User.request("http://example.com/users")
+     *   .withBearerAuthorization("xxx...x"); // eg., using OAuth token
+     * User user = req.getOne("/$id");
+     * user.setName("Scott");
+     * req.putOne("/$id", user);
+     * </code></pre>
+     *
+     * @param urlBase A URL providing HTTP services for {@code T}, such as "http://example.com/users"
+     */
+    public Requester(String urlBase) {
+        this(urlBase, result -> result);
     }
-    return sb.toString();
-  }
 
-  private enum Http
-  {
-    GET, POST, PUT, PATCH, DELETE
-  }
+    public Requester(String urlBase, Function<Object, Object> resultCoercer) {
+        _endpoint = new Endpoint(urlBase);
+        _resultCoercer = resultCoercer;
+        _format = Format.Json;
+        _headers = new HashMap<>();
+        _parameters = Collections.emptyMap();
+        _timeout = 0;
+    }
+
+    public Requester(Endpoint endpoint) {
+        this(endpoint, result -> result);
+    }
+
+    public Requester(Endpoint endpoint, Function<Object, Object> resultCoercer) {
+        _endpoint = endpoint;
+        _resultCoercer = resultCoercer;
+        _format = Format.Json;
+        _headers = new HashMap<>();
+        _parameters = Collections.emptyMap();
+        _timeout = 0;
+    }
+
+    public Endpoint getEndpoint() {
+        return _endpoint;
+    }
+
+    public Format getFormat() {
+        return _format;
+    }
+
+    public int getTimeout() {
+        return _timeout;
+    }
+
+    public Map<String, String> getHeaders() {
+        return Collections.unmodifiableMap(_headers);
+    }
+
+    public Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(_parameters);
+    }
+
+    public Requester<T> withCoercer(Function<Object, Object> resultCoercer) {
+        _resultCoercer = resultCoercer;
+        return this;
+    }
+
+    /**
+     * Set the default format expected in the response. The response will be parsed according to this setting.
+     *
+     * @param format Json, Yaml, Xml, Csv, or Plain text. Default is Json.
+     */
+    public Requester<T> withResponseFormat(Format format) {
+        _format = format;
+        return this;
+    }
+
+    /**
+     * Set an HTTP request header {@code name : value} pair
+     * See <a href="https://en.wikipedia.org/wiki/List_of_HTTP_header_fields>HTTP header fields</a>
+     */
+    public Requester<T> withHeader(String name, String value) {
+        _headers.put(name, value);
+        return this;
+    }
+
+    /**
+     * Add a {@code name=value} parameter to the request URL.
+     */
+    public Requester<T> withParam(String name, String value) {
+        if (_parameters.isEmpty()) {
+            _parameters = new HashMap<>(2);
+        }
+        _parameters.put(name, value);
+        return this;
+    }
+
+    /**
+     * Set the Basic Authorization header using the provided {@code username} and {@code password}
+     */
+    @SuppressWarnings("unused")
+    public Requester<T> withBasicAuthorization(String username, String password) {
+        String authorization = Base64.getEncoder()
+                .encodeToString(("$username:$password").getBytes(StandardCharsets.UTF_8));
+        return withHeader("Authorization", "Basic $authorization");
+    }
+
+    /**
+     * Set the Bearer Authorization header using the provided {@code accessToken}.
+     * For instance, if using OAuth, {@code accessToken} is the token response from:
+     * <pre><code>
+     * curl -d "grant_type=password&client_id=[...]&client_secret=[...]&username=[...]&password=[...]"
+     *   https://[domain]/[oauth-service]
+     * </code></pre>
+     */
+    @SuppressWarnings("unused")
+    public Requester<T> withBearerAuthorization(String accessToken) {
+        return withAuthorization("Bearer", accessToken);
+    }
+
+    @SuppressWarnings("unused")
+    public Requester<T> withAuthorization(String tokenType, String accessToken) {
+        return withHeader("Authorization", "$tokenType $accessToken");
+    }
+
+    /**
+     * The connection timeout setting in milliseconds. If the timeout expires before the connection can be established, a
+     * {@link java.net.SocketTimeoutException) is thrown. A value of zero is interpreted as an infinite timeout, this is
+     * the default setting.
+     */
+    public Requester<T> withTimeout(int timeout) {
+        _timeout = timeout;
+        return this;
+    }
+
+    /**
+     * @param handler An optional handler for processing the raw response as an arbitrary Bindings instance. The handler
+     *                may return a custom bindings object which overrides the default, type-safe result instance. In any
+     *                case, the handler can process the response in any way. Note, modifications made to the response
+     *                persist and, therefore, affect default internal data and error processing.
+     */
+    public Requester<T> withRawResponseHandler(Function<T, Object> handler) {
+        _rawResponseHandler = handler;
+        return this;
+    }
+
+    /**
+     * @return The raw response handler or null if one is not assigned.
+     */
+    public Function<T, Object> getRawResponseHandler() {
+        return _rawResponseHandler;
+    }
+
+    /**
+     * Use HTTP GET for a single {@code T} JSON API object specified in the {@code urlSuffix}, such as {@code "/108"}.
+     *
+     * @return A single {@code T} JSON API object specified in the {@code urlSuffix}
+     * <p/>
+     * Same as calling:
+     * {@link #getOne(String, Object, Format)} with {@code getOne("", null, _format)}
+     */
+    public T getOne() {
+        return getOne("", null);
+    }
+
+    /**
+     * Use HTTP GET for a single {@code T} JSON API object specified in the {@code urlSuffix}, such as {@code "/108"}.
+     *
+     * @param urlSuffix A suffix identifying the {@code T} JSON API object to getOne
+     * @return A single {@code T} JSON API object specified in the {@code urlSuffix}
+     * <p/>
+     * Same as calling:
+     * {@link #getOne(String, Object, Format)} with {@code getOne(urlSuffix, null, _format)}
+     */
+    public T getOne(String urlSuffix) {
+        return getOne(urlSuffix, null);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #getOne(String, Object, Format)} with {@code getOne("", arguments, _format)}
+     */
+    public T getOne(Object arguments) {
+        return getOne("", arguments);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #getOne(String, Object, Format)} with {@code getOne(urlSuffix, arguments, _format)}
+     */
+    public T getOne(String urlSuffix, Object arguments) {
+        return getOne(urlSuffix, arguments, _format);
+    }
+
+    /**
+     * Make an HTTP GET request to {@code urlBase + urlSuffix}.  {@code arguments}, if non-null, is sent in the URL as
+     * JSON encoded URL arguments.
+     *
+     * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or
+     * Bindings of String/JSON value)
+     */
+    public T getOne(String urlSuffix, Object arguments, Format format) {
+        return request(urlSuffix, Http.GET, format, arguments);
+    }
+
+    /**
+     * Uses HTTP GET for the complete list of {@code T} JSON API objects as a {@code IJsonList<T>}.
+     *
+     * @return The complete list of {@code T} JSON API objects as a {@code IJsonList<T>}
+     * <p/>
+     * Same as calling:
+     * {@link #getMany(String, Object, Format)} with {@code getMany("", null, _format)}
+     */
+    public IJsonList<T> getMany() {
+        return getMany("", null);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #getMany(String, Object, Format)} with {@code getMany(urlSuffix, null, _format)}
+     */
+    public IJsonList<T> getMany(String urlSuffix) {
+        return getMany(urlSuffix, null);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #getMany(String, Object, Format)} with {@code getMany("", arguments, _format)}
+     */
+    public IJsonList<T> getMany(Object arguments) {
+        return getMany("", arguments);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #getMany(String, Object, Format)} with {@code getMany(urlSuffix, arguments, _format)}
+     */
+    public IJsonList<T> getMany(String urlSuffix, Object arguments) {
+        return getMany(urlSuffix, arguments, _format);
+    }
+
+    /**
+     * Make an HTTP GET request to {@code urlBase + urlSuffix}.  {@code arguments}, if non-null, is sent in the URL as
+     * JSON encoded URL arguments.
+     *
+     * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or
+     * Bindings of String/JSON value)
+     */
+    public IJsonList<T> getMany(String urlSuffix, Object arguments, Format format) {
+        return request(urlSuffix, Http.GET, format, arguments);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #postOne(String, Object, Format)} with {@code postOne("", payload, _format)}
+     */
+    public <R> R postOne(T payload) {
+        return postOne("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #postOne(String, Object, Format)} with {@code postOne(urlSuffix, payload, _format)}
+     */
+    public <R> R postOne(String urlSuffix, T payload) {
+        return postOne(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP POST request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R postOne(String urlSuffix, T payload, Format format) {
+        return request(urlSuffix, Http.POST, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #postMany(String, List, Format)} with {@code postMany("", payload, _format)}
+     */
+    public <R> R postMany(List<T> payload) {
+        return postMany("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #postMany(String, List, Format)} with {@code postMany(urlSuffix, payload, _format)}
+     */
+    public <R> R postMany(String urlSuffix, List<T> payload) {
+        return postMany(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP POST request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R postMany(String urlSuffix, List<T> payload, Format format) {
+        return request(urlSuffix, Http.POST, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #putOne(String, Object, Format)} with {@code putOne("", payload, _format)}
+     */
+    public <R> R putOne(T payload) {
+        return putOne("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #putOne(String, Object, Format)} with {@code putOne(urlSuffix, payload, _format)}
+     */
+    public <R> R putOne(String urlSuffix, T payload) {
+        return putOne(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP PUT request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R putOne(String urlSuffix, T payload, Format format) {
+        return request(urlSuffix, Http.PUT, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #putMany(String, List, Format)} with {@code putMany("", payload, _format)}
+     */
+    public <R> R putMany(List<T> payload) {
+        return putMany("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #putMany(String, List, Format)} with {@code putMany(urlSuffix, payload, _format)}
+     */
+    public <R> R putMany(String urlSuffix, List<T> payload) {
+        return putMany(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP PUT request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R putMany(String urlSuffix, List<T> payload, Format format) {
+        return request(urlSuffix, Http.PUT, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #patchOne(String, Object, Format)} with {@code patchOne("", payload, _format)}
+     */
+    public <R> R patchOne(T payload) {
+        return patchOne("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #patchOne(String, Object, Format)} with {@code patchOne(urlSuffix, payload, _format)}
+     */
+    public <R> R patchOne(String urlSuffix, T payload) {
+        return patchOne(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP PATCH request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R patchOne(String urlSuffix, T payload, Format format) {
+        return request(urlSuffix, Http.PATCH, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #patchMany(String, List, Format)} with {@code patchMany("", payload, _format)}
+     */
+    public <R> R patchMany(List<T> payload) {
+        return patchMany("", payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #patchMany(String, List, Format)} with {@code patchMany(urlSuffix, payload, _format)}
+     */
+    public <R> R patchMany(String urlSuffix, List<T> payload) {
+        return patchMany(urlSuffix, payload, _format);
+    }
+
+    /**
+     * Make an HTTP PATCH request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent as JSON encoded
+     * text in the request's message body.
+     *
+     * @param <R>       The expected type of the response
+     * @param payload   A JSON value object, sent as JSON encoded text in the request's message body
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R patchMany(String urlSuffix, List<T> payload, Format format) {
+        return request(urlSuffix, Http.PATCH, format, payload);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #delete(String, Object, Format)} with {@code delete("", arguments, _format)}
+     */
+    public <R> R delete(Object arguments) {
+        return delete("", arguments);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #delete(String, Object, Format)} with {@code delete(urlSuffix, null, _format)}
+     */
+    public <R> R delete(String urlSuffix) {
+        return delete(urlSuffix, null);
+    }
+
+    /**
+     * Same as calling:
+     * {@link #delete(String, Object, Format)} with {@code delete(urlSuffix, arguments, _format)}
+     */
+    public <R> R delete(String urlSuffix, Object arguments) {
+        return delete(urlSuffix, arguments, _format);
+    }
+
+    /**
+     * Make an HTTP DELETE request to {@code urlBase + urlSuffix}.  The {@code payload}, if non-null, is sent in the URL as JSON
+     * encoded URL arguments.
+     *
+     * @param <R>       The expected type of the response
+     * @param arguments A JSON value object, sent in the URL as JSON encoded arguments, nullable
+     * @param urlSuffix A suffix, such as "/108", nullable
+     * @param format    The expected format of the response.  One of: {@code Json}, {@code Yaml}, {@code Xml}, {@code Csv}, or {@code Plain}
+     * @return A JSON value parsed from the {@code format} specified encoded response (primitive/boxed type, String, List of JSON values, or Bindings of String/JSON value)
+     */
+    public <R> R delete(String urlSuffix, Object arguments, Format format) {
+        return request(urlSuffix, Http.DELETE, format, arguments);
+    }
+
+
+    private <R> R request(String urlSuffix, Http method, Format format, Object jsonValue) {
+        jsonValue = Json.toBindings(jsonValue);
+        urlSuffix = appendParams(urlSuffix);
+        Endpoint endpoint = urlSuffix != null ? _endpoint.withUrlSuffix(urlSuffix) : _endpoint;
+        Object result = null;
+        switch (format) {
+            case Json:
+                _headers.put("Accept", "application/json");
+                result = endpoint.sendJsonRequest(method.name(), jsonValue, _headers, _timeout);
+                break;
+            case Yaml:
+                _headers.put("Accept", "application/x-yaml, application/yaml, text/yaml;q=0.9");
+                result = endpoint.sendYamlRequest(method.name(), jsonValue, _headers, _timeout);
+                break;
+            case Xml:
+                _headers.put("Accept", "application/xml");
+                result = endpoint.sendXmlRequest(method.name(), jsonValue, _headers, _timeout);
+                break;
+            case Csv:
+                _headers.put("Accept", "text/csv");
+                result = endpoint.sendCsvRequest(method.name(), jsonValue, _headers, _timeout);
+                break;
+            case Text:
+                result = endpoint.sendPlainTextRequest(method.name(), jsonValue, _headers, _timeout);
+                break;
+            default:
+                throw new IllegalArgumentException("format: " + format);
+        }
+        //noinspection unchecked
+        result = _resultCoercer.apply(result);
+        return (R) result;
+    }
+
+    private String appendParams(String urlSuffix) {
+        if (_parameters.isEmpty()) {
+            return urlSuffix;
+        }
+
+        boolean firstParam = urlSuffix.indexOf('?') < 0;
+        StringBuilder sb = new StringBuilder(urlSuffix);
+        for (Map.Entry<String, String> entry : _parameters.entrySet()) {
+            sb.append(firstParam ? '?' : '&')
+                    .append(entry.getKey())
+                    .append('=')
+                    .append(entry.getValue());
+            firstParam = false;
+        }
+        return sb.toString();
+    }
+
+    private enum Http {
+        GET, POST, PUT, PATCH, DELETE
+    }
 }

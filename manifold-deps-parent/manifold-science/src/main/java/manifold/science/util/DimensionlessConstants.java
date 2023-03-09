@@ -16,25 +16,24 @@
 
 package manifold.science.util;
 
-public interface DimensionlessConstants
-{
-  /**
-   * Pi is the ratio: Circumference/Diameter.
-   */
-  Rational pi = Rational.get( "3.141592653589793" );
+public interface DimensionlessConstants {
+    /**
+     * Pi is the ratio: Circumference/Diameter.
+     */
+    Rational pi = Rational.get("3.141592653589793");
 
-  /**
-   * Phi is the ratio: A/B = B/C where A = B + C
-   */
-  Rational phi = Rational.get( "1.618033988749895" );
+    /**
+     * Phi is the ratio: A/B = B/C where A = B + C
+     */
+    Rational phi = Rational.get("1.618033988749895");
 
-  /**
-   * Fine structure constant, the coupling constant for the electromagnetic force.
-   */
-  Rational kA = Rational.get( "0.0072973525693" );
+    /**
+     * Fine structure constant, the coupling constant for the electromagnetic force.
+     */
+    Rational kA = Rational.get("0.0072973525693");
 
-  /**
-   * The mole is a unit which measures the number of particles in a substance.
-   */
-  Rational mol = Rational.get( "6.02214076e23" );
+    /**
+     * The mole is a unit which measures the number of particles in a substance.
+     */
+    Rational mol = Rational.get("6.02214076e23");
 }

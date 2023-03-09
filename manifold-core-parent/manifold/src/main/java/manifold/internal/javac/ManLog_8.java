@@ -36,11 +36,13 @@ import com.sun.tools.javac.util.DiagnosticSource;
 import com.sun.tools.javac.util.JCDiagnostic;
 import com.sun.tools.javac.util.Log;
 import com.sun.tools.javac.util.MandatoryWarningHandler;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import manifold.api.type.ICompilerComponent;
 import manifold.util.ReflectUtil;
 import manifold.rt.api.util.Stack;
@@ -48,262 +50,220 @@ import manifold.util.concurrent.LocklessLazyVar;
 
 import javax.tools.Diagnostic;
 
-public class ManLog_8 extends Log
-{
-  private Map<DiagnosticHandler, LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>>> _suspendedIssues;
-  private LocklessLazyVar<Class<?>> _extensionTransformerClass;
+public class ManLog_8 extends Log {
+    private Map<DiagnosticHandler, LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>>> _suspendedIssues;
+    private LocklessLazyVar<Class<?>> _extensionTransformerClass;
 
-  public static Log instance( Context ctx )
-  {
-    Log log = ctx.get( logKey );
-    if( !(log instanceof ManLog_8) )
-    {
-      ctx.put( logKey, (Log)null );
-      log = new ManLog_8( ctx,
-        (DiagnosticHandler)ReflectUtil.field( log, "diagnosticHandler" ).get(),
-        log.currentSource(),
-        (PrintWriter)ReflectUtil.field( log, "errWriter" ).get(),
-        (PrintWriter)ReflectUtil.field( log, "warnWriter" ).get(),
-        (PrintWriter)ReflectUtil.field( log, "noticeWriter" ).get() );
+    public static Log instance(Context ctx) {
+        Log log = ctx.get(logKey);
+        if (!(log instanceof ManLog_8)) {
+            ctx.put(logKey, (Log) null);
+            log = new ManLog_8(ctx,
+                    (DiagnosticHandler) ReflectUtil.field(log, "diagnosticHandler").get(),
+                    log.currentSource(),
+                    (PrintWriter) ReflectUtil.field(log, "errWriter").get(),
+                    (PrintWriter) ReflectUtil.field(log, "warnWriter").get(),
+                    (PrintWriter) ReflectUtil.field(log, "noticeWriter").get());
+        }
+
+        return log;
     }
 
-    return log;
-  }
+    private ManLog_8(Context ctx, DiagnosticHandler diagnosticHandler, DiagnosticSource source,
+                     PrintWriter errWriter, PrintWriter warnWriter, PrintWriter noticeWriter) {
+        super(ctx, errWriter, warnWriter, noticeWriter);
+        ReflectUtil.field(this, "diagnosticHandler").set(diagnosticHandler);
+        ensureDiagnosticHandlersEnclosingClassIsThis(diagnosticHandler);
+        ReflectUtil.field(this, "source").set(source);
+        _suspendedIssues = new HashMap<>();
+        _extensionTransformerClass = LocklessLazyVar.make(
+                () -> ReflectUtil.type("manifold.ext.ExtensionTransformer"));
+        reassignLog(ctx);
+    }
 
-  private ManLog_8( Context ctx, DiagnosticHandler diagnosticHandler, DiagnosticSource source,
-                    PrintWriter errWriter, PrintWriter warnWriter, PrintWriter noticeWriter )
-  {
-    super( ctx, errWriter, warnWriter, noticeWriter );
-    ReflectUtil.field( this, "diagnosticHandler" ).set( diagnosticHandler );
-    ensureDiagnosticHandlersEnclosingClassIsThis( diagnosticHandler );
-    ReflectUtil.field( this, "source" ).set( source );
-    _suspendedIssues = new HashMap<>();
-    _extensionTransformerClass = LocklessLazyVar.make(
-      () -> ReflectUtil.type( "manifold.ext.ExtensionTransformer" ) );
-    reassignLog( ctx );
-  }
+    private void ensureDiagnosticHandlersEnclosingClassIsThis(DiagnosticHandler diagnosticHandler) {
+        try {
+            ReflectUtil.field(diagnosticHandler, "this$0").set(this);
+        } catch (Exception ignore) {
+        }
+    }
 
-  private void ensureDiagnosticHandlersEnclosingClassIsThis( DiagnosticHandler diagnosticHandler )
-  {
-    try { ReflectUtil.field( diagnosticHandler, "this$0" ).set( this ); } catch( Exception ignore ){}
-  }
-
-  private void reassignLog( Context ctx )
-  {
-    Object[] earlyAttrHolders = {
-      Annotate.instance( ctx ),
-      Check.instance( ctx ),
-      ClassReader.instance( ctx ),
-      ClassWriter.instance( ctx ),
-      DeferredAttr.instance( ctx ),
-      Enter.instance( ctx ),
-      Flow.instance( ctx ),
-      Gen.instance( ctx ),
-      Infer.instance( ctx ),
-      JavaCompiler.instance( ctx ),
-      JavacProcessingEnvironment.instance( ctx ),
-      JavacProcessingEnvironment.instance( ctx ).getMessager(),
-      JavacTrees.instance( ctx ),
-      MemberEnter.instance( ctx ),
-      Resolve.instance( ctx ),
+    private void reassignLog(Context ctx) {
+        Object[] earlyAttrHolders = {
+                Annotate.instance(ctx),
+                Check.instance(ctx),
+                ClassReader.instance(ctx),
+                ClassWriter.instance(ctx),
+                DeferredAttr.instance(ctx),
+                Enter.instance(ctx),
+                Flow.instance(ctx),
+                Gen.instance(ctx),
+                Infer.instance(ctx),
+                JavaCompiler.instance(ctx),
+                JavacProcessingEnvironment.instance(ctx),
+                JavacProcessingEnvironment.instance(ctx).getMessager(),
+                JavacTrees.instance(ctx),
+                MemberEnter.instance(ctx),
+                Resolve.instance(ctx),
 //      LambdaToMethod.instance( ctx ),
 //      Lower.instance( ctx ),
 //      MemberEnter.instance( ctx ),
 //      TransTypes.instance( ctx ),
 //      TypeAnnotations.instance( ctx ),
-    };
-    for( Object instance: earlyAttrHolders )
-    {
-      ReflectUtil.LiveFieldRef l = ReflectUtil.WithNull.field( instance, "log" );
-      if( l != null )
-      {
-        l.set( this );
-      }
-    }
-
-    // Reassign Log fields
-    // Note this is only relevant when compiling with annotation processors
-
-    // Also reassign the 'log' fields in Check's various MandatoryWarningHandlers...
-    for( Field f: Check.class.getDeclaredFields() )
-    {
-      if( MandatoryWarningHandler.class.isAssignableFrom( f.getType() ) )
-      {
-        f.setAccessible( true );
-        try
-        {
-          Object mwh = f.get( Check.instance( ctx ) );
-          ReflectUtil.field( mwh, "log" ).set( this );
+        };
+        for (Object instance : earlyAttrHolders) {
+            ReflectUtil.LiveFieldRef l = ReflectUtil.WithNull.field(instance, "log");
+            if (l != null) {
+                l.set(this);
+            }
         }
-        catch( IllegalAccessException e )
-        {
-          throw new RuntimeException( e );
+
+        // Reassign Log fields
+        // Note this is only relevant when compiling with annotation processors
+
+        // Also reassign the 'log' fields in Check's various MandatoryWarningHandlers...
+        for (Field f : Check.class.getDeclaredFields()) {
+            if (MandatoryWarningHandler.class.isAssignableFrom(f.getType())) {
+                f.setAccessible(true);
+                try {
+                    Object mwh = f.get(Check.instance(ctx));
+                    ReflectUtil.field(mwh, "log").set(this);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
-      }
-    }
-  }
-
-  @Override
-  public void popDiagnosticHandler( DiagnosticHandler handler )
-  {
-    super.popDiagnosticHandler( handler );
-    _suspendedIssues.remove( handler );
-
-    DiagnosticHandler diagnosticHandler = (DiagnosticHandler) ReflectUtil.field( this, "diagnosticHandler" ).get();
-    ensureDiagnosticHandlersEnclosingClassIsThis( diagnosticHandler );
-  }
-
-  public void error( JCDiagnostic.DiagnosticPosition pos, String key, Object... args )
-  {
-    //noinspection StatementWithEmptyBody
-    if( pos instanceof JCTree.JCFieldAccess &&
-        ("cant.assign.val.to.final.var".equals( key ) ||
-         "var.might.already.be.assigned".equals( key )) &&
-        isJailbreakSelect( (JCTree.JCFieldAccess)pos ) )
-    {
-      // For @Jailbreak assignments, change error to warning re final var assignment
-      //## todo: the error message can't be converted to a warning, make up a custom warning
-      // report( diags.warning( source, pos, key, args ) );
-    }
-    else if( !isSuppressedError( key ) )
-    {
-      super.error( pos, key, args );
-    }
-  }
-
-  private boolean isSuppressedError( String key )
-  {
-    for( ICompilerComponent cc: JavacPlugin.instance().getTypeProcessor().getCompilerComponents() )
-    {
-      if( cc.isSuppressed( key ) )
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private DiagnosticHandler getDiagnosticHandler()
-  {
-    return (DiagnosticHandler)ReflectUtil.field( this, "diagnosticHandler" ).get();
-  }
-
-  @Override
-  public void report( JCDiagnostic issue )
-  {
-    if( issue.getKind().ordinal() > Diagnostic.Kind.ERROR.ordinal() &&
-      issue.getDiagnosticSource().getFile() instanceof GeneratedJavaStubFileObject )
-    {
-      // ignore warnings from generated source
-      return;
     }
 
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.get( getDiagnosticHandler() );
-    if( suspendedIssues == null || suspendedIssues.isEmpty() )
-    {
-      super.report( issue );
-    }
-    else
-    {
-      JCTree last = null;
-      for( JCTree key: suspendedIssues.keySet() )
-      {
-        last = key;
-      }
-      suspendedIssues.get( last ).peek().push( issue );
-    }
-  }
+    @Override
+    public void popDiagnosticHandler(DiagnosticHandler handler) {
+        super.popDiagnosticHandler(handler);
+        _suspendedIssues.remove(handler);
 
-  boolean isJailbreakSelect( JCTree.JCFieldAccess pos )
-  {
-    if( _extensionTransformerClass.get() == null )
-    {
-      return false;
+        DiagnosticHandler diagnosticHandler = (DiagnosticHandler) ReflectUtil.field(this, "diagnosticHandler").get();
+        ensureDiagnosticHandlersEnclosingClassIsThis(diagnosticHandler);
     }
 
-    //noinspection ConstantConditions
-    return (boolean)ReflectUtil.method( _extensionTransformerClass.get(), "isJailbreakReceiver",
-      JCTree.JCFieldAccess.class ).invokeStatic( pos );
-  }
-
-  void pushSuspendIssues( JCTree tree )
-  {
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.computeIfAbsent( getDiagnosticHandler(), k -> new LinkedHashMap<>() );
-    Stack<Stack<JCDiagnostic>> issues = suspendedIssues.get( tree );
-    if( issues == null )
-    {
-      suspendedIssues.put( tree, issues = new Stack<>() );
-    }
-    issues.push( new Stack<>() );
-  }
-
-  void popSuspendIssues( JCTree tree )
-  {
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.get( getDiagnosticHandler() );
-
-    if( suspendedIssues.isEmpty() )
-    {
-      // found method in superclass, already recorded any issues from that attempt
-      return;
+    public void error(JCDiagnostic.DiagnosticPosition pos, String key, Object... args) {
+        //noinspection StatementWithEmptyBody
+        if (pos instanceof JCTree.JCFieldAccess &&
+                ("cant.assign.val.to.final.var".equals(key) ||
+                        "var.might.already.be.assigned".equals(key)) &&
+                isJailbreakSelect((JCTree.JCFieldAccess) pos)) {
+            // For @Jailbreak assignments, change error to warning re final var assignment
+            //## todo: the error message can't be converted to a warning, make up a custom warning
+            // report( diags.warning( source, pos, key, args ) );
+        } else if (!isSuppressedError(key)) {
+            super.error(pos, key, args);
+        }
     }
 
-    Stack<Stack<JCDiagnostic>> issueFrames = suspendedIssues.get( tree );
-    if( issueFrames.size() == 1 )
-    {
-      if( isRootFrame( tree ) )
-      {
-        recordRecentSuspendedIssuesAndRemoveOthers( tree );
-      }
+    private boolean isSuppressedError(String key) {
+        for (ICompilerComponent cc : JavacPlugin.instance().getTypeProcessor().getCompilerComponents()) {
+            if (cc.isSuppressed(key)) {
+                return true;
+            }
+        }
+        return false;
     }
-    else
-    {
-      issueFrames.pop();
+
+    private DiagnosticHandler getDiagnosticHandler() {
+        return (DiagnosticHandler) ReflectUtil.field(this, "diagnosticHandler").get();
     }
-  }
 
-  void recordRecentSuspendedIssuesAndRemoveOthers( JCTree tree )
-  {
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.get( getDiagnosticHandler() );
+    @Override
+    public void report(JCDiagnostic issue) {
+        if (issue.getKind().ordinal() > Diagnostic.Kind.ERROR.ordinal() &&
+                issue.getDiagnosticSource().getFile() instanceof GeneratedJavaStubFileObject) {
+            // ignore warnings from generated source
+            return;
+        }
 
-    Stack<Stack<JCDiagnostic>> issues = suspendedIssues.get( tree );
-    Stack<JCDiagnostic> currentIssues = issues.pop();
-    issues.clear();
-    issues.push( currentIssues );
-    if( isRootFrame( tree ) )
-    {
-      recordSuspendedIssues();
-      suspendedIssues.clear();
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.get(getDiagnosticHandler());
+        if (suspendedIssues == null || suspendedIssues.isEmpty()) {
+            super.report(issue);
+        } else {
+            JCTree last = null;
+            for (JCTree key : suspendedIssues.keySet()) {
+                last = key;
+            }
+            suspendedIssues.get(last).peek().push(issue);
+        }
     }
-  }
 
-  private void recordSuspendedIssues()
-  {
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.get( getDiagnosticHandler() );
+    boolean isJailbreakSelect(JCTree.JCFieldAccess pos) {
+        if (_extensionTransformerClass.get() == null) {
+            return false;
+        }
 
-    for( Map.Entry<JCTree, Stack<Stack<JCDiagnostic>>> entry: suspendedIssues.entrySet() )
-    {
-      Stack<Stack<JCDiagnostic>> issueFrames = entry.getValue();
-      Stack<JCDiagnostic> issueFrame = issueFrames.pop();
-      if( !issueFrames.isEmpty() )
-      {
-        throw new IllegalStateException( "Invalid issue frames, should be only one frame" );
-      }
-      for( JCDiagnostic d: issueFrame )
-      {
-        super.report( d );
-      }
+        //noinspection ConstantConditions
+        return (boolean) ReflectUtil.method(_extensionTransformerClass.get(), "isJailbreakReceiver",
+                JCTree.JCFieldAccess.class).invokeStatic(pos);
     }
-  }
 
-  private boolean isRootFrame( JCTree tree )
-  {
-    LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
-      _suspendedIssues.get( getDiagnosticHandler() );
-    return suspendedIssues.keySet().iterator().next() == tree;
-  }
+    void pushSuspendIssues(JCTree tree) {
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.computeIfAbsent(getDiagnosticHandler(), k -> new LinkedHashMap<>());
+        Stack<Stack<JCDiagnostic>> issues = suspendedIssues.get(tree);
+        if (issues == null) {
+            suspendedIssues.put(tree, issues = new Stack<>());
+        }
+        issues.push(new Stack<>());
+    }
+
+    void popSuspendIssues(JCTree tree) {
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.get(getDiagnosticHandler());
+
+        if (suspendedIssues.isEmpty()) {
+            // found method in superclass, already recorded any issues from that attempt
+            return;
+        }
+
+        Stack<Stack<JCDiagnostic>> issueFrames = suspendedIssues.get(tree);
+        if (issueFrames.size() == 1) {
+            if (isRootFrame(tree)) {
+                recordRecentSuspendedIssuesAndRemoveOthers(tree);
+            }
+        } else {
+            issueFrames.pop();
+        }
+    }
+
+    void recordRecentSuspendedIssuesAndRemoveOthers(JCTree tree) {
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.get(getDiagnosticHandler());
+
+        Stack<Stack<JCDiagnostic>> issues = suspendedIssues.get(tree);
+        Stack<JCDiagnostic> currentIssues = issues.pop();
+        issues.clear();
+        issues.push(currentIssues);
+        if (isRootFrame(tree)) {
+            recordSuspendedIssues();
+            suspendedIssues.clear();
+        }
+    }
+
+    private void recordSuspendedIssues() {
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.get(getDiagnosticHandler());
+
+        for (Map.Entry<JCTree, Stack<Stack<JCDiagnostic>>> entry : suspendedIssues.entrySet()) {
+            Stack<Stack<JCDiagnostic>> issueFrames = entry.getValue();
+            Stack<JCDiagnostic> issueFrame = issueFrames.pop();
+            if (!issueFrames.isEmpty()) {
+                throw new IllegalStateException("Invalid issue frames, should be only one frame");
+            }
+            for (JCDiagnostic d : issueFrame) {
+                super.report(d);
+            }
+        }
+    }
+
+    private boolean isRootFrame(JCTree tree) {
+        LinkedHashMap<JCTree, Stack<Stack<JCDiagnostic>>> suspendedIssues =
+                _suspendedIssues.get(getDiagnosticHandler());
+        return suspendedIssues.keySet().iterator().next() == tree;
+    }
 }

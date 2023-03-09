@@ -21,47 +21,40 @@ import java.util.Base64;
 /**
  * Corresponds with the "byte" format.  See {@code BinaryFormatResolver}.
  */
-public class Base64Encoding
-{
-  private String _encoded;
-  private byte[] _bytes;
+public class Base64Encoding {
+    private String _encoded;
+    private byte[] _bytes;
 
-  @SuppressWarnings("WeakerAccess")
-  public static Base64Encoding encoded( String encoded )
-  {
-    return new Base64Encoding( encoded, null );
-  }
-  public static Base64Encoding decoded( byte[] bytes )
-  {
-    return new Base64Encoding( null, bytes );
-  }
-
-  private Base64Encoding( String encoded, byte[] decoded )
-  {
-    _encoded = encoded;
-    _bytes = decoded;
-  }
-
-  @SuppressWarnings("unused")
-  public byte[] getBytes()
-  {
-    if( _bytes != null )
-    {
-      return _bytes;
-    }
-    // not storing in _bytes because the string is in the bindings
-    return Base64.getDecoder().decode( _encoded );
-  }
-
-  public String toString()
-  {
-    if( _encoded != null )
-    {
-      return _encoded;
+    @SuppressWarnings("WeakerAccess")
+    public static Base64Encoding encoded(String encoded) {
+        return new Base64Encoding(encoded, null);
     }
 
-    String encoded = new String( Base64.getEncoder().encode( _bytes ) );
-    _bytes = null; // release potentially large array
-    return _encoded = encoded;
-  }
+    public static Base64Encoding decoded(byte[] bytes) {
+        return new Base64Encoding(null, bytes);
+    }
+
+    private Base64Encoding(String encoded, byte[] decoded) {
+        _encoded = encoded;
+        _bytes = decoded;
+    }
+
+    @SuppressWarnings("unused")
+    public byte[] getBytes() {
+        if (_bytes != null) {
+            return _bytes;
+        }
+        // not storing in _bytes because the string is in the bindings
+        return Base64.getDecoder().decode(_encoded);
+    }
+
+    public String toString() {
+        if (_encoded != null) {
+            return _encoded;
+        }
+
+        String encoded = new String(Base64.getEncoder().encode(_bytes));
+        _bytes = null; // release potentially large array
+        return _encoded = encoded;
+    }
 }
