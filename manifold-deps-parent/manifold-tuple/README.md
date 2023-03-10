@@ -3,7 +3,6 @@
 > **⚠ Experimental Feature**
 
 The tuples feature provides concise expression syntax to group named data items in a lightweight structure.
-
 ```java
 auto t = (name: "Bob", age: "35");
 System.out.println("Name: " + t.name + " Age: " + t.age);
@@ -11,45 +10,34 @@ System.out.println("Name: " + t.name + " Age: " + t.age);
 auto t = (person.name, person.age);
 System.out.println("Name: " + t.name + " Age: " + t.age);
 ``` 
-
 A tuple expression consists of name/value pairs where the names are optionally labeled, otherwise they are inferred from
 expression identifiers or assigned default names. The names are type-safely reflected in the corresponding tuple type,
-which is inferred from the expression using [**
-auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
+which is inferred from the expression using [**auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
 or **var**.
-> Note, `var` may be used in place of `auto` if using Java 11+, otherwise if using Java 8, you must use `auto` for
+>Note, `var` may be used in place of `auto` if using Java 11+, otherwise if using Java 8, you must use `auto` for
 > variable type inference.
 
-> See [Type inference with **
-auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
-> .
+>See [Type inference with **auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto).
 
 You can define tuples with any number of items.
-
 ```java
 var t = 
   (1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
    11, 12, 13, 14, 15, 16, 17, 18);
 ```
-
 Tuples are read/write.
-
 ```java
 var t = (name: "Bob", age: 35);
 ...
 t.name = "Alec";
 ```
-
 Copy tuples.
-
 ```java
 var t = (name, age);
 var t2 = t.copy(); // shallow copy
 out.println(t2.name);
 ```
-
 Tuples are iterable.
-
 ```java
 var t = ("cat", "dog", "chihuahua");
 for(TupleItem item: t) {
@@ -58,18 +46,14 @@ for(TupleItem item: t) {
 ```
 
 ## Tuple labels
-
 Data items are optionally labeled.
-
 ```java
 var t = (name: "Bob", age: 35);
 String name = t.name;
 int age = t.age;
 ```
-
 If a label is omitted, it is inferred from the value expression, or is given a default name. Default names
 are `item1`, `item2`, etc.
-
 ```java
 var t = (1, 2, 3);
 int one = t.item1;
@@ -83,9 +67,7 @@ String color = t.item3; // default
 ```
 
 ## Multiple return values
-
 A common use-case for tuples is to return multiple values from a method.
-
 ```java
 var result = findMinMax(data);
 System.out.println("Minimum: " + result.min + " Maximum: " + result.max);
@@ -101,18 +83,15 @@ auto findMinMax(int[] data) {
   return min, max;
 }
 ```
-
-Here the combined use of tuples and [**
-auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
+Here the combined use of tuples and [**auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
 provides a clear and concise syntax for type-safely returning multiple values. As with
 fields and local variables, using `auto` on a method infers its return type from its return statements. Additionally,
 for improved readability, in a return statement you can omit the parenthesis otherwise required for tuple expressions.
-> Note, you must use `auto` to infer a method return type; Java's `var` only works on local variables.
+>Note, you must use `auto` to infer a method return type; Java's `var` only works on local variables.
 
-## Tuple types
+## Tuple types 
 
 ### Always inferred
-
 Tuple expressions are designed as a lightweight utility to group loosely related data items. Because their types are
 purely structural, they tend to be less desirable as they lack the basic qualities of nominal typing. For instance,
 a nominal type such as a class is centrally defined, which enables it to be easily referenced by name, allows it to be
@@ -121,20 +100,16 @@ formally documented, and makes it available for deterministic tooling. Tuple typ
 Another issue with tuple types, again because they are purely structural, is they tend to get quite verbose. And because
 they are not centrally defined, they must be redefined wherever they are used. As a consequence, readability suffers.
 
-Manifold works toward solving these problems by altogether hiding tuple types from view. You never directly specify
-tuple
-types or even see them. They are always inferred using [**
-auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
+Manifold works toward solving these problems by altogether hiding tuple types from view. You never directly specify tuple
+types or even see them. They are always inferred using [**auto**](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#type-inference-with-auto)
 or **var**. If you find yourself "needing" a tuple type, as a method parameter for instance, consider instead defining a
 [structural interface](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#structural-interfaces-via-structural)
 to reflect the tuple's structure. As such the parameter is more readable, better conveys its purpose, and is generally
 more in tune with Java's nominal type system.
 
 ### `Tuple` interface
-
 All tuple types implement the `manifold.tuple.rt.api.Tuple` interface. This can be useful, for example, if you need to
 test for a tuple type or need to dynamically access a tuple's values.
-
 ```java
 var t = (person.name, person.age);
 foo(t);
@@ -147,23 +122,18 @@ void foo(Tuple t) {
 ```
 
 ### Type equivalence
-
 For type-safety, tuple types are based on both item types and item names. This means the order of name/value pairs in
 a tuple expression is insignificant with respect to its type.
-
 ```java
 var t1 = (name: "Milo", age: 88);
 var t2 = (age: 77, name: "Twila");
 
 t1.getClass() == t2.getClass() // true!
 ```
-
 Here, `t1` and `t2` have the same tuple type because they project the same name/type pairs.
 
 ## More examples
-
 A common use-case for tuples involves selecting and organizing data from query results.
-
 ```java
 /** Selects a list of (name, age) tuples from a list of Person */
 public auto nameAge(List<Person> list) { 
@@ -179,21 +149,17 @@ for(var t: nameAge(persons)) {
 ```
 
 ## Limitations
-
 ### No tuple types
-
 Tuple types are inferred from tuple expressions, there is no way to define a tuple type explicitly. This is a designed
 limitation, see [Always inferred](#always-inferred) above.
 
 ### Tuples can't reference private classes
-
 A tuple expression may not contain a value having a private inner class type. This is a first draft limitation that will
 likely be supported in a future revision.
 
 # IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
-and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -221,7 +187,7 @@ Use the [plugin](https://plugins.jetbrains.com/plugin/10057-manifold) to really 
 
 ## Building this project
 
-The `manifold-tuple` project is defined with Maven. To build it install Maven and run the following command.
+The `manifold-tuple` project is defined with Maven.  To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -229,33 +195,28 @@ mvn compile
 
 ## Using this project
 
-The `manifold-tuple` dependency works with all build tooling, including Maven and Gradle. It also works with Java
-versions
+The `manifold-tuple` dependency works with all build tooling, including Maven and Gradle. It also works with Java versions
 8 - 19.
 
 This project consists of two modules:
-
 * `manifold-tuple`
 * `manifold-tuple-rt`
 
 For optimal performance and to work with Android and other JVM languages it is recommended to:
-
 * Add a dependency on `manifold-tuple-rt` (Gradle: "implementation", Maven: "compile")
-* Add `manifold-tuple` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "
-  annotationProcessorPaths")
+* Add `manifold-tuple` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "annotationProcessorPaths")
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest
-binaries [here](http://manifold.systems/docs.html#download).
+If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
+
 
 ## Gradle
 
-> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+>Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
 version (8 - 19), the script takes care of the rest.
-
 ```groovy
 plugins {
     id 'java'
@@ -293,9 +254,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
-
 Use with accompanying `settings.gradle` file:
-
 ```groovy
 rootProject.name = 'MyProject'
 ```

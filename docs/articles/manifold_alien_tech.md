@@ -1,5 +1,6 @@
 # Manifold: Alien Technology
 
+
 ## Incident Report
 
 **Place of Occurrence**: CLASSIFIED    **Date**: 24/11/17    **Time**: 22:15Z
@@ -9,65 +10,66 @@
 **Details of Incident**:
 
 Witnessed subject create a JSON file, `Person.json`, as a Java resource in package `com.abc`.  
-Subject immediately began using the file from Java classes in the project as if the JSON file
-were a Java class of type `com.abc.Person`. As subject added and modified properties in the
-JSON file, the changes were immediately available elsewhere in the project using code completion
-etc. Subject later performed a rename refactor on the JSON file, renaming it from `Person` to
-`Contact`. All references to `Person` were immediately changed to `Contact`. Likewise, subject
-frequently performed several usage searches and refactors on JSON properties and types, all
-behaving as if the JSON were Java.
-
-Importantly, there were _no generated class files on disk_ corresponding with the JSON file after
-subject compiled the project -- no extra build steps, no artifacts created. Subject created
+Subject immediately began using the file from Java classes in the project as if the JSON file 
+were a Java class of type `com.abc.Person`.  As subject added and modified properties in the 
+JSON file, the changes were immediately available elsewhere in the project using code completion 
+etc.  Subject later performed a rename refactor on the JSON file, renaming it from `Person` to 
+`Contact`.  All references to `Person` were immediately changed to `Contact`.  Likewise, subject
+frequently performed several usage searches and refactors on JSON properties and types, all 
+behaving as if the JSON were Java.  
+ 
+Importantly, there were _no generated class files on disk_ corresponding with the JSON file after 
+subject compiled the project -- no extra build steps, no artifacts created. Subject created 
 several tests for the project and ran them without incident. The JVM appeared to use the JSON file
-as a Java class file. No extra class loaders were involved, no runtime agents were used. Only a
-single jar file in the classpath was present: **manifold.jar**.
+as a Java class file.  No extra class loaders were involved, no runtime agents were used.  Only a 
+single jar file in the classpath was present: **manifold.jar**.   
 
-Witnessed similar events involving Javascript files, Properties files, and several others. This
-technology appears to be capable of working with any type of data source. Essentially, the
+Witnessed similar events involving Javascript files, Properties files, and several others.  This
+technology appears to be capable of working with any type of data source.  Essentially, the 
 technology somehow extends and enhances Java's type system at will.
 
-More recently observed subject perform other bizarre activities, such as declare and use
+More recently observed subject perform other bizarre activities, such as declare and use 
 _Extension Methods_ as defined in C# and use _Structural Typing_ similar to TypeScript and Go languages.
 More to follow regarding these accounts.
 
+
 **Conclusion**:
 
-Incident demonstrates beyond-next-generation technology. Recommend further investigation.
+Incident demonstrates beyond-next-generation technology.  Recommend further investigation.
 
 ## Earthly Origin?
 
-As dreamy as the "incident report" appears, it is 100% factual. Manifold is real and available as
+As dreamy as the "incident report" appears, it is 100% factual.  Manifold is real and available as
 an open source project from [Manifold Systems](http://manifold.systems/); whether or not
-it is reverse-engineered alien technology is yet to be determined. In any case you can begin using
+it is reverse-engineered alien technology is yet to be determined.  In any case you can begin using
 it with your new or existing Java project.
 
-Using Manifold is easy, simply add it as a dependency to your project. Manifold is designed to work
-with IntelliJ IDEA, which is available free from JetBrains. Visit the Manifold
+Using Manifold is easy, simply add it as a dependency to your project. Manifold is designed to work 
+with IntelliJ IDEA, which is available free from JetBrains.  Visit the Manifold 
 [Setup](http://manifold.systems/docs.html#setup) instructions for information about using Manifold with
-your project and build tools.
+your project and build tools.  
 
 Manifold provides three high-level features:
 
 * **Type-safe Metaprogramming** -- similar in concept to F# type providers
 * **Extension Methods** -- comparable to the same feature in Kotlin and C#
-* **Structural Typing** -- much like interfaces in TypeScript and Go
+* **Structural Typing** -- much like interfaces in TypeScript and Go 
 
 ## Type-safe Metaprogramming
 
-_Metaprogramming_, a term usually reserved for dynamic languages like Javascript, Ruby, and Python, is a powerful
-feature used for dynamic type creation that exploits the lack of design-time type-safety in
-these languages -- all the metaprogramming hocus pocus is a runtime phenomenon. While flexible, metaprogramming
-presents a challenge for programmers using it because there is no design-time type information available for
-them to readily discover and use; you just have to "know".
+_Metaprogramming_, a term usually reserved for dynamic languages like Javascript, Ruby, and Python, is a powerful 
+feature used for dynamic type creation that exploits the lack of design-time type-safety in 
+these languages -- all the metaprogramming hocus pocus is a runtime phenomenon.  While flexible, metaprogramming 
+presents a challenge for programmers using it because there is no design-time type information available for 
+ them to readily discover and use; you just have to "know".
 
-The allure of Manifold is squarely centered on its ability to perform _compile-time_ as well as runtime
-metaprogramming. This capability is achieved via _Type Manifolds_.
-
-Bridging the worlds of information and programming, type manifolds act as adapters
-to automatically connect schematized data sources with Java. More specifically,
-a type manifold transforms a data source into a data _type_ directly accessible in
-your Java code eliminating code generation build steps involved with conventional tools.
+The allure of Manifold is squarely centered on its ability to perform _compile-time_ as well as runtime 
+metaprogramming.  This capability is achieved via _Type Manifolds_.
+ 
+Bridging the worlds of information and programming, type manifolds act as adapters 
+to automatically connect schematized data sources with Java.  More specifically, 
+a type manifold transforms a data source into a data _type_ directly accessible in 
+your Java code eliminating code generation build steps involved with conventional tools. 
 Manifold automatically keeps types in sync with data sources as you make changes.
 In essence with Manifold a data source **_is_** a data type.
 
@@ -97,20 +99,21 @@ spreadsheets, web services, and programming languages.
 
 Currently Manifold provides type manifolds for:
 
-* JSON and [JSON Schema](http://json-schema.org/)
-* JavaScript
-* Properties files
-* Image files
-* Dark Java
-* ManTL (Manifold Template Language)
-* DDL and SQL (work in progress)
+*   JSON and [JSON Schema](http://json-schema.org/)
+*   JavaScript
+*   Properties files
+*   Image files
+*   Dark Java
+*   ManTL (Manifold Template Language)
+*   DDL and SQL (work in progress)
 
 Discover more about type manifolds here: http://manifold.systems/docs.html#what_is_a_type_manifold
+
 
 ## Extensions
 
 The extension manifold is a special kind of type manifold that lets you augment existing Java classes
-including Java's own runtime classes such as `String`. You can add new methods, annotations, and
+including Java's own runtime classes such as `String`. You can add new methods, annotations, and 
 interfaces to any type your project uses.
 
 Let's say you want to make a new method on `String` so you can straightforwardly echo a String to the
@@ -151,11 +154,12 @@ Extensions eliminate a lot of intermediate code such as "Util" and "Manager"
 libraries as well as Factory classes. As a consequence extensions naturally
 promote higher levels of object-orientation, which result in more readable and
 maintainable code. Perhaps the most beneficial aspect of extensions, however, relate more
-to your overall experience with your development environment. For instance,
+to your overall experience with your development environment.  For instance,
 code-completion conveniently presents all the extension methods available on an
 extended class: http://manifold.systems/images/ExtensionMethod.mp4
 
 Extensions provide a lot more capability, learn more here: http://manifold.systems/docs.html#extension_classes
+
 
 ## Structural Typing
 
@@ -179,8 +183,8 @@ Greeting foo = new Foo(); // error
 This does not compile because `Foo` does not explicitly implement `Greeting` by name in its `implements`
 clause.
 
-By contrast a _structurally_ typed language like TypeScript or Go has no problem with this example.
-Basically, structural typing requires only that the interface _methods_ are implemented, there is no
+By contrast a _structurally_ typed language like TypeScript or Go has no problem with this example. 
+Basically, structural typing requires only that the interface _methods_ are implemented, there is no 
 need for a class to declare that it implements a structural interface.
 
 Manifold provides this capability via the `@Structural` annotation:
@@ -191,15 +195,15 @@ public interface Greeting {
   void hello();
 }
 ```  
-
 Adding `@Structural` to `Greeting` effectively changes it to behave _structurally_ -- Java no longer
 requires classes to implement it by name, only its methods must be implemented.
 
-Note a class can still implement a structural interface nominally. Doing so helps both people and tooling
-comprehend your code faster. The general idea is to use an interface structurally when you otherwise can't
+Note a class can still implement a structural interface nominally. Doing so helps both people and tooling 
+comprehend your code faster. The general idea is to use an interface structurally when you otherwise can't 
 use it nominally or doing so overcomplicates your code.
 
 Learn more about Manifold structural interfaces here: http://manifold.systems/docs.html#structural_interfaces
+
 
 ## Benefits
 
@@ -209,22 +213,21 @@ class loaders to engage at runtime.
 
 Benefits of this approach include:
 
-* **Zero turnaround** -- live, type-safe access to data; make, discover, and use changes instantly
-* **Lightweight** -- direct integration with standard Java, requires no special compilers, annotation
-  processors, or runtime agents
-* **Efficient, dynamic** -- Manifold only produces types as they are needed
-* **Simple, open API** -- you can build your own Manifolds
-* **No code generation build step** -- no generated files, no special compilers
-* **[IntelliJ IDEA](https://www.jetbrains.com/idea/download)** support -- all manifold types and extensions work with
-  IntelliJ
+*   **Zero turnaround** -- live, type-safe access to data; make, discover, and use changes instantly
+*   **Lightweight** -- direct integration with standard Java, requires no special compilers, annotation
+processors, or runtime agents
+*   **Efficient, dynamic** -- Manifold only produces types as they are needed
+*   **Simple, open API** -- you can build your own Manifolds
+*   **No code generation build step** -- no generated files, no special compilers
+*   **[IntelliJ IDEA](https://www.jetbrains.com/idea/download)** support -- all manifold types and extensions work with IntelliJ
 
 Additionally, Manifold is just a JAR file you can drop into your existing project -- you can begin using
 it incrementally without having to rewrite classes or conform to a new way of doing things.
 
 ## Conclusion
 
-Finally, with Manifold, Java bridges the gap separating it from many of the features previously granted
-exclusively to dynamic languages. What's more, Manifold delivers these features with type-safety intact.
-Meta-programming, extension classes, and structural typing are readily available and fully integrated in
-IntelliJ IDEA. While this may sound impossible or far fetched, you can verify it first-hand -- explore
-Manifold at [Manifold Systems](http://manifold.systems/). The truth is out there!
+Finally, with Manifold, Java bridges the gap separating it from many of the features previously granted 
+exclusively to dynamic languages. What's more, Manifold delivers these features with type-safety intact. 
+Meta-programming, extension classes, and structural typing are readily available and fully integrated in 
+IntelliJ IDEA.  While this may sound impossible or far fetched, you can verify it first-hand -- explore
+Manifold at [Manifold Systems](http://manifold.systems/).  The truth is out there!

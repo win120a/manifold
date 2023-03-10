@@ -1,6 +1,6 @@
 # Manifold : Science
 
-> **⚠ _Experimental Feature_**
+>**⚠ _Experimental Feature_**
 
 The science library provides comprehensive support for physical quantities such as Length, Mass, and
 Temperature, as well as abstract quantities such as StorageCapacity and Money. Additionally, the library implements
@@ -20,9 +20,8 @@ Force f = 5 kg * 9.807 m/s/s; // result: 49.035 Newtons
 
 Area space = (20ft + 2in) * (37ft + 7.5in); // result: 758 37/48 ft²
 ```
-
+ 
 ## Table of Contents
-
 * [Dimensions & Units API](#dimensions--units-api)
 * [Library](#library)
 * [Rational Numbers](#rational-numbers)
@@ -33,7 +32,7 @@ Area space = (20ft + 2in) * (37ft + 7.5in); // result: 758 37/48 ft²
 * [Versioning](#versioning)
 * [Author](#author)
 
-> Check out the [_Type-safe Unit Expressions_](https://devm.io/java/java-type-safe-171944) article at dev<i>mio</i>!
+>Check out the [_Type-safe Unit Expressions_](https://devm.io/java/java-type-safe-171944) article at dev<i>mio</i>!
 
 # Dimensions & Units API
 
@@ -46,21 +45,18 @@ the primary dimensions and several derived mechanical dimensions used with class
 ## API
 
 The foundational API of the science framework consists of a small set of base classes and interfaces defined in the
-`manifold.science.api` package.
+`manifold.science.api` package.  
 
 ## Measurements
 
 `Dimension` interface is the root of the API. It models a dimension as having a unitless quantity represented as a
-`Rational` value as well as
-common [operator methods](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
+`Rational` value as well as common [operator methods](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
 for arithmetic operations. The `AbstractMeasure` base class implements `Dimension` and incorporates unit functionality
 common to all physical quantities.
 
 Instances of this class store the value (or magnitude) of the quantity in terms of *base units*. As such, arithmetic on
-`AbstractMeasure` derived types is performed using base units, which permits quantities of differing units to work in
-calculations.
-Additionally, a *display unit* can be used for presentation and to interface with other systems requiring specific
-units.
+`AbstractMeasure` derived types is performed using base units, which permits quantities of differing units to work in calculations.
+Additionally, a *display unit* can be used for presentation and to interface with other systems requiring specific units.
 
 For example, the `Length` dimension is defined like this:
 
@@ -132,7 +128,7 @@ public final class LengthUnit extends AbstractPrimaryUnit<Length, LengthUnit> {
 ```
 
 Derived unit types consist of products or quotients of other unit types, thus they extend `AbstractProductUnit` and
-`AbstractQuotientUnit`. For instance, `VelocityUnit` is the quotient of `LengthUnit` and `TimeUnit`, therefore it
+`AbstractQuotientUnit`.  For instance, `VelocityUnit` is the quotient of `LengthUnit` and `TimeUnit`, therefore it
 derives from `AbstractQuotientUnit`:
 
 ```java
@@ -146,9 +142,7 @@ final public class VelocityUnit extends AbstractQuotientUnit<LengthUnit, TimeUni
 
 ## Operator Methods
 
-You can use *all* Dimensions and Units directly in arithmetic, relational,
-and [unit expressions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#unit-expressions)
-.
+You can use *all* Dimensions and Units directly in arithmetic, relational, and [unit expressions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#unit-expressions).
 
 ```java
 // commonly used unit abbreviations e.g., m, ft, hr, mph, etc.
@@ -165,11 +159,10 @@ force == f // true
 force == 49.035 N // true
 ``` 
 
-See the documentation
-for [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
+See the documentation for [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
 and [unit expressions](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#unit-expressions)
 for detail about working with these features.
-
+ 
 # Library
 
 All the primary dimensions and many of the derived dimensions are directly provided in the `manifold.science`
@@ -206,13 +199,13 @@ package. These include:
 * `Volume` & `VolumeUnit`
 
 A small library of experimental vector classes are available in the `manifold.science.vector` package. These classes
-support vector math and can be used directly within arithmetic expressions:
+support vector math and can be used directly within arithmetic expressions: 
 
 * `Vector`
 * `LengthVector`
 * `TimeVector`
 * `VelocityVector`
-
+ 
 Utility classes providing useful constants are available in the `manifold.science.util` package, these include:
 
 * `AngleConstants`
@@ -225,22 +218,18 @@ Utility classes providing useful constants are available in the `manifold.scienc
 # Rational Numbers
 
 The `Rational` class in the `manifold.science.util` package is similar to `BigDecimal` in that it models rational
-numbers with arbitrary precision. However, `Rational` differs from `BigDecimal` in that it models a rational number as
-the quotient of two `BigIntenger` numbers. This has the advantage of maintaining what is otherwise a repeating decimal
+numbers with arbitrary precision. However, `Rational` differs from `BigDecimal` in that it models a rational number as 
+the quotient of two `BigIntenger` numbers.  This has the advantage of maintaining what is otherwise a repeating decimal
 for values such as `1/3`. For instance, dividing a number by 3 then later multiplying that number by 3 should result
 in the original number without rounding errors. While you can handle rounding with `BigDecimal`, using `Rational` can
-be less error prone in some cases particularly when working with equations. For this reason, all the dimensions and
-units
-defined in the `manifold.science` package use `Rational`
-. [Feedback](https://github.com/manifold-systems/manifold/issues)
+be less error prone in some cases particularly when working with equations. For this reason, all the dimensions and units
+defined in the `manifold.science` package use `Rational`. [Feedback](https://github.com/manifold-systems/manifold/issues)
 on this subject is welcome!
 
-> Note, as a performance measure `Rational` does *not* maintain its value in reduced form. You must call `reduce()` to
-> get
-> a separate instance for the reduced form. Call `isReduced()` to determine if an instance is in reduced form.
+>Note, as a performance measure `Rational` does *not* maintain its value in reduced form. You must call `reduce()` to get
+a separate instance for the reduced form. Call `isReduced()` to determine if an instance is in reduced form.
 
 Use the `CoercionConstants` and `MetricScaleUnit` classes to conveniently use literal values as `Rational` numbers:
-
 ```java
   import static manifold.science.measures.MetricScaleUnit.M;
   import static manifold.science.util.CoercionConstants.r;
@@ -249,14 +238,10 @@ Use the `CoercionConstants` and `MetricScaleUnit` classes to conveniently use li
   Rational yocto = "1/1000000000000000000000000"r;
   Rational fiveMillion = 5M;
 ```
-
-`Rational` implements arithmetic, negation, and relational operators
-via [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
-provided by
-the *[manifold-ext](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext)*
+`Rational` implements arithmetic, negation, and relational operators via [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
+provided by the *[manifold-ext](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext)*
 dependency. Operator overloading lets you use `Rataional` numbers directly in arithmetic, negation, and relational
 expressions:
-
 ```java
 Rational oneThird = 1r/3;
 Rational circumference = 3.14159r * 5.27r;
@@ -265,15 +250,12 @@ if (oneThird > 1r/4) {...}
 if (3.14159r == pi) {...}
 ``` 
 
-Note `Dimension` implements the `==` and `!=` operators with `compareTo()`. Read more about implementing relational
-operators
-with [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading)
-.
+Note `Dimension` implements the `==` and `!=` operators with `compareTo()`.  Read more about implementing relational
+operators with [operator overloading](https://github.com/manifold-systems/manifold/tree/master/manifold-deps-parent/manifold-ext#operator-overloading).
 
-# IDE Support
+# IDE Support 
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
-and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -304,7 +286,7 @@ dependencies. Find usages of any extension. Use the `Range` API and unit express
 
 ## Building this project
 
-The `manifold-science` project is defined with Maven. To build it install Maven and run the following command.
+The `manifold-science` project is defined with Maven.  To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -312,22 +294,20 @@ mvn compile
 
 ## Using this project
 
-The `manifold-science` dependency works with all build tooling, including Maven and Gradle. It also works with Java
-versions
+The `manifold-science` dependency works with all build tooling, including Maven and Gradle. It also works with Java versions
 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest
-binaries [here](http://manifold.systems/docs.html#download).
+If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
+
 
 ## Gradle
 
-> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+>Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest.
-
+version (8 - 19), the script takes care of the rest.  
 ```groovy
 plugins {
     id 'java'
@@ -365,9 +345,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
-
 Use with accompanying `settings.gradle` file:
-
 ```groovy
 rootProject.name = 'MyExtProject'
 ```
@@ -433,9 +411,10 @@ rootProject.name = 'MyExtProject'
 `manifold-science`:<br>
 [![javadoc](https://javadoc.io/badge2/systems.manifold/manifold-science/2023.1.3/javadoc.svg)](https://javadoc.io/doc/systems.manifold/manifold-science/2023.1.3)
 
+
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
 
 # Versioning
 

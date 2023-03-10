@@ -1,37 +1,30 @@
 # Properties for Java
-
+  
 > **⚠ Experimental Feature**
-
+ 
 The `manifold-props` project is a compiler plugin to simplify declaring and using properties in Java. Use it to reduce
-the amount of code you would otherwise write and to improve your overall dev experience with properties.
-
+the amount of code you would otherwise write and to improve your overall dev experience with properties. 
 ```java
 public interface Book {
   @var String title; // no more boilerplate getter/setter methods!
 }
 ```
-
 Refer to it directly by name:
-
 ```java
 book.title = "Daisy";     // calls setter
 String name = book.title; // calls getter 
 book.title += " chain";   // calls getter & setter
 ```
-
 Additionally, the feature automatically _**infers**_ properties, both from your existing source files and from
 compiled classes your project uses.
 
 Reduce property *use* from this:
-
 ```java
 Actor person = result.getMovie().getLeadingRole().getActor();
 Likes likes = person.getLikes();
 likes.setCount(likes.getCount() + 1);
 ```
-
 to this:
-
 ```java
 result.movie.leadingRole.actor
   .likes.count++;
@@ -40,11 +33,10 @@ result.movie.leadingRole.actor
 See [Property inference](#property-inference).
 
 Properties are fully integrated in both **IntelliJ IDEA** and **Android Studio**. Use the IDE's features to create new
-properties, verify property references, access properties with code completion, and more.
+properties, verify property references, access properties with code completion, and more. 
 <p><img src="http://manifold.systems/images/properties.png" alt="properties" width="50%" height="50%"/></p>
 
 ### Table of Contents
-
 * [Declaring properties](#declaring-properties)
 * [Modifiers](#modifiers)
 * [Computed properties](#computed-properties)
@@ -63,8 +55,7 @@ properties, verify property references, access properties with code completion, 
 
 # Declaring properties
 
-A property is declared as read-write with `@var`, as read-only with `@val`, or write-only with `@set`.
-
+A property is declared as read-write with `@var`, as read-only with `@val`, or write-only with `@set`. 
 ```java
   public class Person {
     @var String name;
@@ -73,7 +64,6 @@ A property is declared as read-write with `@var`, as read-only with `@val`, or w
 ```
 
 To use a property, simply refer to it by name:
-
 ```java
   Person person = new Person();
 
@@ -83,9 +73,7 @@ To use a property, simply refer to it by name:
   String name = person.name;  // getter is called
   int age = person.age; 
 ```
-
 The compiler automatically creates a `private` backing field and getter/setter methods where necessary:
-
 ```java
 public class Person {
   private String name;
@@ -106,9 +94,7 @@ public class Person {
   }
 }
 ```
-
 Property access compiles as getter/setter calls:
-
 ```java
   Person person = new Person();
 
@@ -144,22 +130,19 @@ The full syntax for declaring a `@var` property:
 ```
 
 # Modifiers
-
+                 
 Properties are always `public` by default.
 
 A property's modifiers always apply to its _getter/setter methods_.
 
 As this example illustrates, `protected`, `abstract`, and `final` all apply exclusively to the getter/setter methods:
-
 ```java 
 public abstract class Account {
   final @var String name;
   protected abstract @var int rate;
 }
 ```
-
 Compiles as:
-
 ```java 
 public abstract class Account {
   private String name;
@@ -171,25 +154,18 @@ public abstract class Account {
   protected abstract void setRate(int value);
 }
 ```
-
-`final` applies to the getter/setter methods too. Since the state for a `@val` is inherently final, a `final @val`
-declare a
+`final` applies to the getter/setter methods too. Since the state for a `@val` is inherently final, a `final @val` declare a
 final getter:
-
 ```java
 final @val Map<String, Object> bindings = new HashMap<>();
 ```
-
 Compiles as:
-
 ```java
 private final Map<String, Object> bindings = new HashMap<>();
 . . . 
 public final Map<String, Object> getBindings() {return bindigs;}
 ```
-
 `static` applies to both getters/setters and state.
-
 ```java
 public class Tree {
   static @var @set(Private) int nodeCount;
@@ -197,9 +173,7 @@ public class Tree {
 . . .
 Tree.nodeCount++;
 ```
-
 Compiles as:
-
 ```java
 public class Tree {
   private static int nodeCount;
@@ -213,10 +187,8 @@ Tree.setNodeCount(Tree.getNodeCount() + 1);
 
 # Computed properties
 
-A property that is not used in its getter/setter methods is considered a _computed_ property; it does not need the
-property
+A property that is not used in its getter/setter methods is considered a _computed_ property; it does not need the property
 field to maintain state, thus no "backing" field is provided.
-
 ```java
 public class Foo {
   @var Stuff stuff; // "computed property", user-defined getter/setter
@@ -229,13 +201,11 @@ public class Foo {
   }
 }
 ```
-
 ```java
     Foo foo = new Foo();
     Stuff s = foo.stuff; // calls getter
     foo.stuff = new Stuff(); // calls setter
 ```
-
 Compiles as:
 
 ```java
@@ -250,22 +220,18 @@ public class Foo {
   }
 }
 ```
-
 ```java
     Foo foo = new Foo();
     Stuff s = foo.getStuff();
     foo.setStuff(new Stuff());
 ```
-
-> Note if you omit `@var Stuff stuff`, users of class `Foo` can still use `stuff` as a property.
+>Note if you omit `@var Stuff stuff`, users of class `Foo` can still use `stuff` as a property.
 > See [Property inference](#property-inference).
-
+ 
 # Backing fields
 
-Getter/setter methods have exclusive access to the private backing field for a property. If they don't use the backing
-field,
+Getter/setter methods have exclusive access to the private backing field for a property. If they don't use the backing field,
 the compiler does not generate one. References to a property outside the getters/setters are compiled as calls to them.
-
 ```java
   @var String name;
   public void setName(String value) {
@@ -279,10 +245,9 @@ the compiler does not generate one. References to a property outside the getters
 
 # Overriding properties
 
-Overriding a property is similar to overriding a method.
+Overriding a property is similar to overriding a method. 
 
 Creating, implementing, and using an interface:
-
 ```java
 public interface Entity {
   @var String name;
@@ -316,15 +281,13 @@ class Rectangle extends Shape {
   @override @val int sides = 4;
 }
 ```
-
 `@var` can override `@val`, but not vice versa. This is because `@var` provides the getter necessary for `@val`, but
-`@val` does not provide the setter required by `@var`. Similarly, `@var` can override `@set`.
-
+`@val` does not provide the setter required by `@var`. Similarly, `@var` can override `@set`. 
+                                                                                
 Note you must use `@override` when overriding a property. This way the compiler can help you identify broken code if the
 super property changes or is removed in a later release.
 
 If you only need to override the _implementation_ of a getter or a setter, just do that:
-
 ```java
 public class Person {
   @var String name;
@@ -347,14 +310,11 @@ public class Foo {
   static @var String data;
 }
 ```
-
 ```java
     Foo.data = "the eagle has landed";
     String data = Foo.data;
 ```
-
 Compile as:
-
 ```java
 public class Foo {
   private static String data;
@@ -367,14 +327,13 @@ public class Foo {
   }
 }
 ```
-
 ```java
 Foo.setData("the eagle has landed");
 String data = Foo.getData();
 ```
 
-Note, since interfaces are restricted to read-only static data, static interface properties are limited to `@val` and
-calculated `@var` static properties.
+Note, since interfaces are restricted to read-only static data, static interface properties are limited to `@val` and calculated `@var` static properties.
+
 
 # L-value benefits
 
@@ -387,8 +346,7 @@ Properties fully support all of Java's assignment operations:
 # Property inference
 
 Properties are inferred from classes that follow the Java naming convention for getters and setters. As a result, you
-can use property syntax instead of calling getter/setter methods with any Java class.
-
+can use property syntax instead of calling getter/setter methods with any Java class. 
 ```java
 import java.util.Calendar;
 
@@ -407,13 +365,10 @@ Properties are inferred from _both_ existing source classes in your project and 
 ### Works with records
 
 Declared fields in record classes are effectively read-only properties and are inferred as such.
-
 ```java
 public record Person(String name, LocalDate dateOfBirth) {}
 ```
-
 Property usage:
-
 ```java
 Person person = new Person("Fred", LocalDate.of(1969, 11, 14));
 String name = person.name; // access as properties
@@ -426,15 +381,12 @@ Property inference automatically works with code generated from annotation proce
 significant since generated code tends to reflect object models which result in a lot of getter/setter boilerplate.
 
 For instance, using property inference reduces this GraphQL excerpt:
-
 ```java
 Actor person = result.getMovie().getLeadingRole().getActor();
 Likes likes = person.getLikes();
 likes.setCount(likes.getCount() + 1);
 ```
-
 to this:
-
 ```java
 result.movie.leadingRole.actor
   .likes.count++;
@@ -445,10 +397,10 @@ result.movie.leadingRole.actor
 Projects not using Manifold can still use classes compiled with Manifold properties. In this case a project uses
 getter/setter methods as it normally would.
 
+
 # IDE Support
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
-and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -462,9 +414,8 @@ Get the [Manifold plugin](https://plugins.jetbrains.com/plugin/10057-manifold) d
 
 ## Building this project
 
-The `manifold-props` project is defined with Maven. To build it install Maven and a Java 8 JDK and run the following
+The `manifold-props` project is defined with Maven.  To build it install Maven and a Java 8 JDK and run the following
 command.
-
 ```
 mvn compile
 ```
@@ -475,28 +426,24 @@ The `manifold-props` dependency works with all build tooling, including Maven an
 versions 8 - 19.
 
 This project consists of two modules:
-
 * `manifold-props`
 * `manifold-props-rt`
 
 For optimal performance and to work with Android and other JVM languages it is recommended to:
-
 * Add a dependency on `manifold-props-rt` (Gradle: "implementation", Maven: "compile")
-* Add `manifold-props` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "
-  annotationProcessorPaths")
+* Add `manifold-props` to the annotationProcessor path (Gradle: "annotationProcessor", Maven: "annotationProcessorPaths")
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest
-binaries [here](http://manifold.systems/docs.html#download).
+If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
+
 
 ## Gradle
 
-> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+>Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
 version (8 - 19), the script takes care of the rest.
-
 ```groovy
 plugins {
     id 'java'
@@ -534,13 +481,11 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
-
 Use with accompanying `settings.gradle` file:
-
 ```groovy
 rootProject.name = 'MyProject'
 ```
-
+                 
 ## Maven
 
 ```xml
@@ -599,8 +544,7 @@ rootProject.name = 'MyProject'
 
 ## Javadoc agent
 
-See [Javadoc agent](http://manifold.systems/javadoc-agent.html) for details about integrating specific language
-extensions
+See [Javadoc agent](http://manifold.systems/javadoc-agent.html) for details about integrating specific language extensions
 with javadoc.
 
 # Javadoc

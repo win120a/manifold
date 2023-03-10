@@ -6,14 +6,12 @@ If your project generates javadoc and uses any of the following Manifold feature
 * Operator overloading (via `manifold-ext`)
 * Preprocessor (via `manifold-preprocessor`)
 
-Although the JDK's javadoc tool uses the Java compiler to parse Java source code, curiously it does not support
-the `-Xplugin`
+Although the JDK's javadoc tool uses the Java compiler to parse Java source code, curiously it does not support the `-Xplugin`
 argument for compiler plugins. This is not a problem for most of Manifold's features, however there are a few that
 require intervention, namely the ones listed above.
 
 If your project generates javadoc and uses any of these language extensions, you'll need to add Manifold's javadoc agent
 to your javadoc config:
-
 ```xml
 <dependencies>
   <!-- For Javadoc agent -->

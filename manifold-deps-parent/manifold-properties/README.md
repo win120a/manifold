@@ -1,11 +1,9 @@
 # Manifold : Properties
 
-Many Java applications
-incorporate [properties resource files](https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html)
+Many Java applications incorporate [properties resource files](https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html)
 (*.properties files) as a means of separating configurable text from code:
 
 `resources/abc/MyProperties.properties`:
-
 ```properties
 my.chocolate = Chocolate
 my.chocolate.dark = Dark Chocolate
@@ -14,7 +12,6 @@ my.chocolate.milk = Milk Chocolate
 
 Unfortunately access to these files requires boilerplate library code and the use
 of hard-coded strings:
-
 ```java
 Properties myProperties = new Properties();
 myProperties.load(getClass().getResourceAsStream("/abc/MyProperties.properties"));
@@ -23,19 +20,17 @@ println(myProperties.getProperty("my.chocolate.dark"));
 ```
 
 With the Properties type manifold we can access properties directly using simple, type-safe code:
-
 ```java
 println(abc.MyProperties.my.chocolate.dark);
 ```
 
 Behind the scenes the properties type manifold creates a Java class for the properties file, which reflects its
-hierarchy of properties. As you develop your application, changes you make in the file are immediately available in
+hierarchy of properties.  As you develop your application, changes you make in the file are immediately available in
 your code with no user intervention in between -- no code gen files and no compiling between changes.
 
-# IDE Support
+# IDE Support 
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
-and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -67,7 +62,7 @@ project-wide changes.
 
 ## Building this project
 
-The `manifold-properties` project is defined with Maven. To build it install Maven and run the following command.
+The `manifold-properties` project is defined with Maven.  To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -75,23 +70,21 @@ mvn compile
 
 ## Using this project
 
-The `manifold-properties` dependency works with all build tooling, including Maven and Gradle. It also works with Java
-versions 8 - 19.
+The `manifold-properties` dependency works with all build tooling, including Maven and Gradle. It also works with Java versions 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest
-binaries [here](http://manifold.systems/docs.html#download).
+If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
+
 
 ## Gradle
 
-> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+>Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
-> Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
+>Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest.
-
+version (8 - 19), the script takes care of the rest. 
 ```groovy
 plugins {
     id 'java'
@@ -128,15 +121,11 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
-
 Use with accompanying `settings.gradle` file:
-
 ```groovy
 rootProject.name = 'MyProject'
 ```
-
 If you are using `module-info` files, you must declare a *static* dependency on `manifold`.
-
 ```java
 module MyProject {
     requires static manifold;
@@ -200,9 +189,7 @@ module MyProject {
     </build>
 </project>
 ```
-
 If you are using `module-info` files, you must declare a *static* dependency on `manifold`.
-
 ```java
 module my.properties.app {
     requires static manifold;
@@ -214,9 +201,10 @@ module my.properties.app {
 `manifold-properties`:<br>
 [![javadoc](https://javadoc.io/badge2/systems.manifold/manifold-properties/2023.1.3/javadoc.svg)](https://javadoc.io/doc/systems.manifold/manifold-properties/2023.1.3)
 
+
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
 
 # Versioning
 

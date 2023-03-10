@@ -1,12 +1,11 @@
 # Manifold : Image
 
-User interfaces frequently use image resource files for one purpose or another. Java supports most of the popular
+User interfaces frequently use image resource files for one purpose or another.  Java supports most of the popular
 formats including png, jpg, gif, and bmp via a collection of utility classes such as `javax.swing.ImageIcon` and
 `javax.scene.image.Image`.
-
-As with any library, access to the underlying data resource is indirect. Here we manually create an `ImageIcon` with a
-raw
-String naming the image file. This is error prone because there is no type-safety connecting the String with the file
+  
+As with any library, access to the underlying data resource is indirect. Here we manually create an `ImageIcon` with a raw
+String naming the image file.  This is error prone because there is no type-safety connecting the String with the file
 on disk -- your build process will not catch typos or file rename related errors:
 
 ```java
@@ -14,7 +13,6 @@ ImageIcon image = new ImageIcon("abc/widget/images/companyLogo.png");
 ```
 
 Custom library layers often contribute toward image caching and other services:
-
 ```java
 import abc.widget.util.ImageUtilities;
 
@@ -23,7 +21,6 @@ render(image);
 ```
 
 The image manifold eliminates much of this with direct, type-safe access to image resources.
-
 ```java
 import abc.widget.images.*;
 
@@ -36,10 +33,9 @@ encoding the image extension, this helps distinguish between images of different
 Additionally image classes are direct subclasses of the familiar `ImageIcon` class to conform with existing frameworks.
 As with all type manifolds there are no code gen files or other build steps involved.
 
-# IDE Support
+# IDE Support 
 
-Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download)
-and [Android Studio](https://developer.android.com/studio).
+Manifold is fully supported in [IntelliJ IDEA](https://www.jetbrains.com/idea/download) and [Android Studio](https://developer.android.com/studio).
 
 ## Install
 
@@ -68,7 +64,7 @@ completion to conveniently access images. Perform rename refactors to quickly an
 
 ## Building this project
 
-The `manifold-image` project is defined with Maven. To build it install Maven and run the following command.
+The `manifold-image` project is defined with Maven.  To build it install Maven and run the following command.
 
 ```
 mvn compile
@@ -81,18 +77,17 @@ versions 8 - 19.
 
 ## Binaries
 
-If you are *not* using Maven or Gradle, you can download the latest
-binaries [here](http://manifold.systems/docs.html#download).
+If you are *not* using Maven or Gradle, you can download the latest binaries [here](http://manifold.systems/docs.html#download).
+
 
 ## Gradle
 
-> Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
+>Note, if you are targeting **Android**, please see the [Android](http://manifold.systems/android.html) docs.
 
-> Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
+>Note, if you are using **Kotlin**, please see the [Kotlin](http://manifold.systems/kotlin.html) docs.
 
 Here is a sample `build.gradle` script. Change `targetCompatibility` and `sourceCompatibility` to your desired Java
-version (8 - 19), the script takes care of the rest.
-
+version (8 - 19), the script takes care of the rest. 
 ```groovy
 plugins {
     id 'java'
@@ -130,16 +125,12 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8 &&
     }
 }
 ```
-
 Use with accompanying `settings.gradle` file:
-
 ```groovy
 rootProject.name = 'MyProject'
 ```
-
-If you are using `module-info` files, you must declare a *static* dependency on `manifold`. Additionally, since
+If you are using `module-info` files, you must declare a *static* dependency on `manifold`.  Additionally, since
 `manifold-images` uses Java's `ImageIcon` class, you also need a runtime dependency on `java.desktop`.
-
 ```java
 module MyProject {
     requires java.desktop;
@@ -204,10 +195,8 @@ module MyProject {
     </build>
 </project>
 ```
-
-If you are using `module-info` files, you must declare a *static* dependency on `manifold`. Additionally, since
+If you are using `module-info` files, you must declare a *static* dependency on `manifold`.  Additionally, since
 `manifold-images` uses Java's `ImageIcon` class, you also need a runtime dependency on `java.desktop`.
-
 ```java
 module my.image.app {
     requires java.desktop;
@@ -222,7 +211,7 @@ module my.image.app {
 
 # License
 
-Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.
+Open source Manifold is free and licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license.  
 
 # Versioning
 
